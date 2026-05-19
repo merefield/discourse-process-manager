@@ -6,20 +6,20 @@ Discuss the plugin here: https://meta.discourse.org/t/discourse-workflow/347110?
 
 ## Introduction
 
-Process Manager provides a secure process-management framework for Discourse topics. Each process is made of configurable workflow steps and options, and topics move through those steps until completion. Some branching and looping is supported.
+Process Manager provides a secure process-management framework for Discourse topics. Each process is made of configurable steps and options, and topics move through those steps until completion. Some branching and looping is supported.
 
 Using topics as work items gives each process a flexible, native Discourse foundation: each item can have a detailed description, attachments, discussion, notifications, tags, categories, permissions, and a full history out of the box.
 
 If you are new to the terminology, see:
 
-- Workflow: https://en.wikipedia.org/wiki/Workflow
+- Workflow terminology: https://en.wikipedia.org/wiki/Workflow
 - Business process: https://en.wikipedia.org/wiki/Business_process
 
 ## Features
 
-- Process-management workflows using Discourse topics as work items
+- Process management using Discourse topics as work items
 - Admin-defined processes made from steps mapped to Categories (or Sub-categories)
-- Visual workflow editor for arranging steps, swim lanes, and transition connectors
+- Visual process editor for arranging steps, swim lanes, and transition connectors
 - Transition actions presented as buttons per step option
 - Permission model aligned to native Discourse category permissions
 - Process discovery list (`/workflow`) with quick filters
@@ -32,7 +32,7 @@ If you are new to the terminology, see:
 - Chart period selector (`1` to `12` weeks), complete-week windows (Sunday to Saturday), per-step colored series
 - Overdue behavior with hierarchy:
   - global default (`process_manager_overdue_days_default`)
-  - workflow override
+  - process override
   - step override
   - `0` disables overdue behavior at that scope
 - Overdue indicator column in the process topic list
@@ -40,14 +40,14 @@ If you are new to the terminology, see:
 - Transition audit trail via small action posts
 - Process visualization modal from topic and list links
 - Data Explorer audit query support
-- Data Explorer workflow stats query support for chart-oriented time series
+- Data Explorer process stats query support for chart-oriented time series
 - Optional AI-assisted step handling with prompt + option guardrails
 
 ## Quickstart
 
 1. Enable the plugin in Site Settings (`process_manager_enabled`).
 2. Go to `Admin -> Plugins -> Process Manager`, create a process, then save it.
-3. Add workflow steps (Categories in journey order), then add step options (actions/transitions).
+3. Add process steps (Categories in journey order), then add step options (actions/transitions).
 4. Create a topic in the first step Category and transition it through actions from the topic banner.
 5. Use `/workflow` to view queue state, apply quick filters, and switch between `List` / `Kanban` / `Chart` views when available.
 6. In Kanban, click a card to open the topic, drag cards to legal target steps, or use keyboard arrows on focused cards.
@@ -86,7 +86,7 @@ Process-level Kanban controls:
 - Optional process-level override: `Workflow.overdue_days`
 - Optional step-level override: `WorkflowStep.overdue_days`
 
-Resolution order is `step -> workflow -> global`. A value of `0` means overdue behavior is disabled at that level.
+Resolution order is `step -> process -> global`. A value of `0` means overdue behavior is disabled at that level.
 
 ### Kanban compatibility and behavior
 
@@ -222,14 +222,14 @@ Permissioning principle:
 | Discovery   | Process list with quick filters, list/kanban toggle, and step filtering | Implemented | `/workflow` supports SPA quick filters plus list/kanban switching          |
 | Discovery   | Real-time process state-change notifier with refresh CTA      | Planned     | Wire MessageBus updates into `/workflow` with a core-style “press to refresh” flow |
 | Kanban      | Card transitions (drag/drop and keyboard arrows)              | Implemented | Legal transitions only; deterministic directed edge mapping                |
-| SLA         | Overdue thresholds (step -> workflow -> global, `0` disables) | Implemented | Includes overdue list indicator                                            |
+| SLA         | Overdue thresholds (step -> process -> global, `0` disables) | Implemented | Includes overdue list indicator                                            |
 | Permissions | Native Discourse category permissions for acting/commenting   | Implemented | Transition authority still aligns with category create access              |
 | Permissions | Step/action-level transition permissions                      | Partial     | Deliberately lower priority to preserve simple, core-aligned permissioning |
 | Validation  | Transition preconditions (required tags/fields/checks)        | Planned     | Intended as optional guardrails before transitions                         |
 | SLA         | Escalation/reminder notifications                             | Partial     | Overdue visibility exists; automated escalation is next                    |
 | Ownership   | Discourse Assign integration                                  | Planned     | Target is step-entry assignment and auditable ownership changes            |
 | Operations  | Bulk process transitions from list views                      | Missing     | High-volume queue operation not yet first-class                            |
-| Performance | Admin/list/chart/transition query-path N+1 and over-fetch hardening | Implemented | Admin serializers preloaded, process quick filters now SQL-scoped, chart loading scoped to selected process, transition lookup round-trips reduced, and workflow-state staleness indexing added |
+| Performance | Admin/list/chart/transition query-path N+1 and over-fetch hardening | Implemented | Admin serializers preloaded, process quick filters now SQL-scoped, chart loading scoped to selected process, transition lookup round-trips reduced, and process-state staleness indexing added |
 | Performance | Bulk process arrival notification fan-out                     | Planned     | Use bulk insert (`insert_all`) for category watcher notifications to reduce per-user insert overhead at high watcher counts |
 | Performance | Cache process chart payloads                                  | Planned     | Add short-lived caching keyed by process and period to reduce repeated chart aggregation for frequent refreshes |
 | Performance | Cache process visualisation payloads                          | Planned     | Cache graph payloads keyed by topic/workflow-state version to avoid rebuilding identical visualisations |

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "Workflow charts", type: :system do
+RSpec.describe "Workflow charts" do
   fab!(:workflow_discovery_page) { PageObjects::Pages::WorkflowDiscovery.new }
   fab!(:admin, :admin)
   fab!(:allowed_group, :group)
@@ -87,10 +87,7 @@ RSpec.describe "Workflow charts", type: :system do
     expect(page).to have_current_path("/workflow/charts", url: false)
     expect(workflow_discovery_page).to have_workflow_burndown_chart
     expect(workflow_discovery_page).to have_workflow_burndown_chart_canvas
-    expect(page).to have_css(
-      ".workflow-burndown__workflow-name",
-      text: "Workflow: #{workflow.name}",
-    )
+    expect(page).to have_css(".workflow-burndown__workflow-name", text: "Process: #{workflow.name}")
     expect(workflow_discovery_page).to have_workflow_view_option("Chart")
     expect(workflow_discovery_page).to have_workflow_chart_weeks_selector
     expect(workflow_discovery_page).to have_no_workflow_view_option("Kanban")

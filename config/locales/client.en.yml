@@ -131,7 +131,7 @@ en:
         workflows:
           title: "Processes"
           short_title: "Processes"
-          instructions: "Create a process by adding a series of workflow steps. When a topic is created in the first step category, it enters the process. Users with the right category permissions can then act on the topic and move it to the next configured step."
+          instructions: "Create a process by adding a series of process steps. When a topic is created in the first step category, it enters the process. Users with the right category permissions can then act on the topic and move it to the next configured step."
           none: "No processes have been created yet."
           new: "Create a new process"
           enabled: "Enabled"
@@ -159,9 +159,9 @@ en:
                 title: "Add a new step"
               option:
                 new:
-                  title: "Add a New Option"
+                  title: "Add a new option"
                 editing:
-                  title: "Editing Option at position: %{position}"
+                  title: "Editing option at position: %{position}"
           steps:
             position: "ID"
             category: "Category"
@@ -170,10 +170,10 @@ en:
             tabs:
               list: "List"
               visual: "Visual"
-            overdue_days: "Step Overdue Days Override"
+            overdue_days: "Step overdue days override"
             overdue_days_help: "Blank uses process/global defaults. 0 disables overdue behavior for this step."
             title: "Steps"
-            new: "Add a New Step"
+            new: "Add a new step"
             none: "No steps have been added yet."
             name: "Name"
             description: "Description"
@@ -183,13 +183,13 @@ en:
             deleted: "Step deleted!"
             options:
               title: "Options"
-              new: "Add a New Option"
-              target_step: "Target Step"
+              new: "Add a new option"
+              target_step: "Target step"
               no_target_step: "No target step selected"
               select_an_option: "Select an option"
               position: "Position"
               name: "Name"
-              target_position: "Target Position"
+              target_position: "Target position"
               actions:
                 submit: "Submit"
                 start: "Start"
