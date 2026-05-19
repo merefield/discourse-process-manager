@@ -15,33 +15,33 @@ import { i18n } from "discourse-i18n";
 import ProcessLinkButton from "./process-link-button";
 import ProcessStepOptionEditor from "./process-step-option-editor";
 
-export default class WorkflowStepOptionsListEditor extends Component {
+export default class ProcessStepOptionsListEditor extends Component {
   @service store;
 
-  @tracked workflowStepOptions = [];
-  @tracked workflowStepOptionsPresent = false;
+  @tracked processStepOptions = [];
+  @tracked processStepOptionsPresent = false;
 
-  get currentWorkflowStepOption() {
-    return this.args.currentWorkflowStepOption;
+  get currentProcessStepOption() {
+    return this.args.currentProcessStepOption;
   }
 
   get newStepOption() {
     return this.store.createRecord("workflow-step-option", {
-      workflow_step_id: this.args.workflowStep.id,
+      workflow_step_id: this.args.processStep.id,
     });
   }
 
   @bind
   loadStepOptions() {
-    if (!this.args.currentWorkflowStepOption && this.args.workflowStep.id) {
+    if (!this.args.currentProcessStepOption && this.args.processStep.id) {
       this.store
         .find("workflow-step-option", {
-          workflow_id: this.args.workflowStep.workflow_id,
-          workflow_step_id: this.args.workflowStep.id,
+          workflow_id: this.args.processStep.workflow_id,
+          workflow_step_id: this.args.processStep.id,
         })
         .then((options) => {
-          this.workflowStepOptions = options.content;
-          this.workflowStepOptionsPresent =
+          this.processStepOptions = options.content;
+          this.processStepOptionsPresent =
             options.content.length > 0 ? true : false;
         });
     }
@@ -53,17 +53,17 @@ export default class WorkflowStepOptionsListEditor extends Component {
     );
   }
 
-  convertStepIdToPosition(workflowSteps, stepOption) {
-    if (!workflowSteps) {
+  convertStepIdToPosition(processSteps, stepOption) {
+    if (!processSteps) {
       return;
     }
-    return workflowSteps.find((step) => step.id === stepOption.target_step_id)
+    return processSteps.find((step) => step.id === stepOption.target_step_id)
       ?.position;
   }
 
   @action
   moveUp(option) {
-    const options = this.workflowStepOptions;
+    const options = this.processStepOptions;
     if (option.position > 1) {
       const filteredOptions = options.filter(
         (s) => s.position < option.position
@@ -94,14 +94,14 @@ export default class WorkflowStepOptionsListEditor extends Component {
         return;
       }
     }
-    this.workflowStepOptions = this.workflowStepOptions.sort(
+    this.processStepOptions = this.processStepOptions.sort(
       (a, b) => a.position - b.position
     );
   }
 
   @action
   moveDown(option) {
-    const options = this.workflowStepOptions;
+    const options = this.processStepOptions;
     if (option.position < options.length) {
       const filteredOptions = options.filter(
         (s) => s.position > option.position
@@ -132,7 +132,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
         return;
       }
     }
-    this.workflowStepOptions = this.workflowStepOptions.sort(
+    this.processStepOptions = this.processStepOptions.sort(
       (a, b) => a.position - b.position
     );
   }
@@ -152,12 +152,12 @@ export default class WorkflowStepOptionsListEditor extends Component {
       class="process-step-list-editor__current admin-detail pull-left"
       {{didInsert this.loadStepOptions}}
     >
-      {{#if this.currentWorkflowStepOption}}
+      {{#if this.currentProcessStepOption}}
         <ProcessStepOptionEditor
-          @currentWorkflowStepOption={{this.currentWorkflowStepOption}}
-          @workflowStep={{@workflowStep}}
-          @workflowSteps={{@workflowSteps}}
-          @workflowOptions={{@workflowOptions}}
+          @currentProcessStepOption={{this.currentProcessStepOption}}
+          @processStep={{@processStep}}
+          @processSteps={{@processSteps}}
+          @processOptions={{@processOptions}}
         />
       {{else}}
         <DPageSubheader
@@ -170,7 +170,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
           @learnMoreUrl="https://meta.discourse.org/t/ai-bot-workflows/306099"
         />
 
-        {{#if this.workflowStepOptionsPresent}}
+        {{#if this.processStepOptionsPresent}}
           <table class="content-list process-step-list-editor d-admin-table">
             <thead>
               <tr>
@@ -187,7 +187,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
               </tr>
             </thead>
             <tbody>
-              {{#each this.workflowStepOptions as |stepOption|}}
+              {{#each this.processStepOptions as |stepOption|}}
                 <tr
                   data-workflow-step-option-id={{stepOption.workflow_step_option_id}}
                   class={{concatClass
@@ -210,7 +210,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
                     <div class="process-step-option-list__target_position">
                       <strong>
                         {{this.convertStepIdToPosition
-                          @workflowSteps
+                          @processSteps
                           stepOption
                         }}
                       </strong>
@@ -224,7 +224,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
                   <td class="d-admin-row__controls">
                     {{#unless
                       (this.isfirstOption
-                        stepOption this.workflowStepOptions.length
+                        stepOption this.processStepOptions.length
                       )
                     }}
                       <DButton
@@ -236,7 +236,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
                     {{/unless}}
                     {{#unless
                       (this.islastOption
-                        stepOption this.workflowStepOptions.length
+                        stepOption this.processStepOptions.length
                       )
                     }}
                       <DButton
@@ -249,8 +249,8 @@ export default class WorkflowStepOptionsListEditor extends Component {
                     <LinkTo
                       @route="adminPlugins.show.processes.steps.options.edit"
                       @models={{array
-                        @workflowStep.workflow_id
-                        @workflowStep.id
+                        @processStep.workflow_id
+                        @processStep.id
                         stepOption
                       }}
                       class="btn btn-text btn-small"
@@ -265,7 +265,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
         <ProcessLinkButton
           @route="adminPlugins.show.processes.steps.options.new"
           @label="admin.discourse_workflow.workflows.steps.options.new"
-          @model={{@workflowStep}}
+          @model={{@processStep}}
         />
       {{/if}}
     </section>

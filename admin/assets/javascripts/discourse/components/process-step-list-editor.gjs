@@ -18,15 +18,15 @@ import { i18n } from "discourse-i18n";
 import ProcessLinkButton from "./process-link-button";
 import ProcessStepEditor from "./process-step-editor";
 
-export default class WorkflowStepsListEditor extends Component {
+export default class ProcessStepsListEditor extends Component {
   @service adminPluginNavManager;
   @service store;
 
-  @tracked workflowSteps = [];
-  @tracked workflowStepsPresent = false;
+  @tracked processSteps = [];
+  @tracked processStepsPresent = false;
 
-  get currentWorkflowStep() {
-    return this.args.currentWorkflowStep;
+  get currentProcessStep() {
+    return this.args.currentProcessStep;
   }
 
   get newStep() {
@@ -51,19 +51,19 @@ export default class WorkflowStepsListEditor extends Component {
 
   @bind
   loadSteps() {
-    if (!this.args.currentWorkflowStep && this.args.workflow.id) {
+    if (!this.args.currentProcessStep && this.args.workflow.id) {
       this.store
         .find("workflow-step", { workflow_id: this.args.workflow.id })
         .then((steps) => {
-          this.workflowSteps = steps.content;
-          this.workflowStepsPresent = steps.content.length > 0 ? true : false;
+          this.processSteps = steps.content;
+          this.processStepsPresent = steps.content.length > 0 ? true : false;
         });
     }
   }
 
   @action
   moveUp(step) {
-    const steps = this.workflowSteps;
+    const steps = this.processSteps;
     if (step.position > 1) {
       const filteredSteps = steps.filter((s) => s.position < step.position);
       const previousStep =
@@ -92,14 +92,14 @@ export default class WorkflowStepsListEditor extends Component {
         return;
       }
     }
-    this.workflowSteps = this.workflowSteps.sort(
+    this.processSteps = this.processSteps.sort(
       (a, b) => a.position - b.position
     );
   }
 
   @action
   moveDown(step) {
-    const steps = this.workflowSteps;
+    const steps = this.processSteps;
     if (step.position < steps.length) {
       const filteredSteps = steps.filter((s) => s.position > step.position);
       const nextStep =
@@ -126,7 +126,7 @@ export default class WorkflowStepsListEditor extends Component {
         return;
       }
     }
-    this.workflowSteps = this.workflowSteps.sort(
+    this.processSteps = this.processSteps.sort(
       (a, b) => a.position - b.position
     );
   }
@@ -149,11 +149,11 @@ export default class WorkflowStepsListEditor extends Component {
       class="process-step-list-editor__current admin-detail pull-left"
       {{didInsert this.loadSteps}}
     >
-      {{#if this.currentWorkflowStep}}
+      {{#if this.currentProcessStep}}
         <ProcessStepEditor
-          @currentWorkflowStep={{this.currentWorkflowStep}}
+          @currentProcessStep={{this.currentProcessStep}}
           @workflow={{@workflow}}
-          @workflowSteps={{@workflowSteps}}
+          @processSteps={{@processSteps}}
         />
       {{else}}
         <DPageSubheader
@@ -164,7 +164,7 @@ export default class WorkflowStepsListEditor extends Component {
           @learnMoreUrl="https://meta.discourse.org/t/ai-bot-workflows/306099"
         />
 
-        {{#if this.workflowStepsPresent}}
+        {{#if this.processStepsPresent}}
           <table class="content-list process-step-list-editor d-admin-table">
             <thead>
               <tr>
@@ -190,7 +190,7 @@ export default class WorkflowStepsListEditor extends Component {
               </tr>
             </thead>
             <tbody>
-              {{#each this.workflowSteps as |step|}}
+              {{#each this.processSteps as |step|}}
                 <tr
                   data-workflow-step-id={{step.position}}
                   class={{concatClass
@@ -235,9 +235,7 @@ export default class WorkflowStepsListEditor extends Component {
                     </div>
                   </td>
                   <td class="d-admin-row__controls">
-                    {{#unless
-                      (this.isfirstStep step this.workflowSteps.length)
-                    }}
+                    {{#unless (this.isfirstStep step this.processSteps.length)}}
                       <DButton
                         class="process-editor__ai_enabled"
                         @icon="arrow-up"
@@ -245,7 +243,7 @@ export default class WorkflowStepsListEditor extends Component {
                         {{on "click" (fn this.moveUp step)}}
                       />
                     {{/unless}}
-                    {{#unless (this.islastStep step this.workflowSteps.length)}}
+                    {{#unless (this.islastStep step this.processSteps.length)}}
                       <DButton
                         class="process-editor__ai_enabled"
                         @icon="arrow-down"

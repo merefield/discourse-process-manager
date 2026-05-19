@@ -2,7 +2,7 @@ import ProcessListEditor from "../../../../components/process-list-editor";
 
 export default <template>
   <ProcessListEditor
-    @workflows={{@controller.allWorkflows}}
+    @workflows={{@controller.allProcesses}}
     @currentWorkflow={{@controller.model}}
   />
 </template>

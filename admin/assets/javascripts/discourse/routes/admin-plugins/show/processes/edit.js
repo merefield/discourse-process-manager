@@ -13,7 +13,7 @@ export default class AdminPluginsShowProcessesEdit extends DiscourseRoute {
   setupController(controller, model) {
     super.setupController(controller, model);
     controller.set(
-      "allWorkflows",
+      "allProcesses",
       this.modelFor("adminPlugins.show.processes")
     );
   }

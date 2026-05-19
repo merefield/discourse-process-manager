@@ -2,30 +2,27 @@ import DiscourseRoute from "discourse/routes/discourse";
 
 export default class AdminPluginsShowProcessesStepsEdit extends DiscourseRoute {
   async model(params) {
-    const allWorkflowSteps = await this.modelFor(
+    const allProcessSteps = await this.modelFor(
       "adminPlugins.show.processes.steps"
     );
     const id = parseInt(params.step_id, 10);
-    const workflowStep = allWorkflowSteps.findBy("id", id);
+    const processStep = allProcessSteps.findBy("id", id);
 
-    const workflowSteps = await this.store.findAll("workflow-step", {
-      workflow_id: workflowStep.workflow_id,
+    const processSteps = await this.store.findAll("workflow-step", {
+      workflow_id: processStep.workflow_id,
     });
-    workflowStep.set("workflowSteps", workflowSteps.content);
-    const workflow = await this.store.find(
-      "workflow",
-      workflowStep.workflow_id
-    );
-    workflowStep.set("workflow", workflow);
-    return workflowStep;
+    processStep.set("processSteps", processSteps.content);
+    const workflow = await this.store.find("workflow", processStep.workflow_id);
+    processStep.set("workflow", workflow);
+    return processStep;
   }
 
   async setupController(controller, model) {
     super.setupController(controller, model);
 
-    const workflowSteps = await this.store.findAll("workflow-step", {
+    const processSteps = await this.store.findAll("workflow-step", {
       workflow_id: this.currentModel.workflow_id,
     });
-    controller.set("workflowSteps", workflowSteps.content);
+    controller.set("processSteps", processSteps.content);
   }
 }

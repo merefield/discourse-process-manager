@@ -19,8 +19,8 @@ export default class ProcessVisualEditor extends Component {
   @service dialog;
   @service router;
 
-  @tracked workflowSteps = [];
-  @tracked workflowOptions = [];
+  @tracked processSteps = [];
+  @tracked processOptions = [];
   @tracked workflowCategories = [];
   @tracked edgeLayouts = [];
   @tracked previewPath = null;
@@ -38,7 +38,7 @@ export default class ProcessVisualEditor extends Component {
   boardElement = null;
 
   get sortedSteps() {
-    return [...this.workflowSteps].sort((a, b) => {
+    return [...this.processSteps].sort((a, b) => {
       return (a.position || 0) - (b.position || 0);
     });
   }
@@ -84,22 +84,22 @@ export default class ProcessVisualEditor extends Component {
   }
 
   get hasSteps() {
-    return this.workflowSteps.length > 0;
+    return this.processSteps.length > 0;
   }
 
   get connectorSides() {
     return ["top", "right", "bottom", "left"];
   }
 
-  get defaultWorkflowOptionId() {
-    return this.workflowOptions[0]?.id;
+  get defaultProcessOptionId() {
+    return this.processOptions[0]?.id;
   }
 
-  get workflowEdges() {
+  get processEdges() {
     return this.sortedSteps.flatMap((step) => {
       return this.stepOptions(step)
         .filter((stepOption) => {
-          return this.workflowSteps.some(
+          return this.processSteps.some(
             (targetStep) => targetStep.id === stepOption.target_step_id
           );
         })
@@ -121,7 +121,7 @@ export default class ProcessVisualEditor extends Component {
 
   get nextStepPosition() {
     return (
-      Math.max(0, ...this.workflowSteps.map((step) => step.position || 0)) + 1
+      Math.max(0, ...this.processSteps.map((step) => step.position || 0)) + 1
     );
   }
 
@@ -133,31 +133,31 @@ export default class ProcessVisualEditor extends Component {
   }
 
   @bind
-  workflowOptionLabel(workflowOptionId) {
-    const workflowOption = this.workflowOptions.find(
-      (option) => option.id === workflowOptionId
+  processOptionLabel(processOptionId) {
+    const processOption = this.processOptions.find(
+      (option) => option.id === processOptionId
     );
 
-    if (!workflowOption) {
+    if (!processOption) {
       return i18n(
         "admin.discourse_workflow.workflows.steps.options.select_an_option"
       );
     }
 
     return i18n(
-      `admin.discourse_workflow.workflows.steps.options.actions.${workflowOption.slug}`,
-      { defaultValue: workflowOption.name }
+      `admin.discourse_workflow.workflows.steps.options.actions.${processOption.slug}`,
+      { defaultValue: processOption.name }
     );
   }
 
   @bind
-  isWorkflowOptionSelected(stepOption, workflowOption) {
-    return stepOption.workflow_option_id === workflowOption.id;
+  isProcessOptionSelected(stepOption, processOption) {
+    return stepOption.workflow_option_id === processOption.id;
   }
 
   @bind
   stepName(stepId) {
-    return this.workflowSteps.find((step) => step.id === stepId)?.name;
+    return this.processSteps.find((step) => step.id === stepId)?.name;
   }
 
   @bind
@@ -238,14 +238,14 @@ export default class ProcessVisualEditor extends Component {
     );
   }
 
-  mergeWorkflowCategories(workflowSteps, allCategories = []) {
+  mergeProcessCategories(processSteps, allCategories = []) {
     const categoriesById = new Map();
     const allCategoriesById = new Map(
       allCategories.map((category) => [category.id, category])
     );
-    const workflowParentCategoryIds = new Set();
+    const processParentCategoryIds = new Set();
 
-    for (const step of workflowSteps) {
+    for (const step of processSteps) {
       const category = step.category || allCategoriesById.get(step.category_id);
       const categoryId = step.category_id || category?.id;
 
@@ -254,9 +254,9 @@ export default class ProcessVisualEditor extends Component {
       }
 
       if (category?.parent_category_id) {
-        workflowParentCategoryIds.add(category.parent_category_id);
+        processParentCategoryIds.add(category.parent_category_id);
       } else {
-        workflowParentCategoryIds.add(categoryId);
+        processParentCategoryIds.add(categoryId);
       }
 
       categoriesById.set(categoryId, {
@@ -271,7 +271,7 @@ export default class ProcessVisualEditor extends Component {
     }
 
     for (const category of allCategories) {
-      if (workflowParentCategoryIds.has(category.parent_category_id)) {
+      if (processParentCategoryIds.has(category.parent_category_id)) {
         categoriesById.set(category.id, {
           id: category.id,
           name: category.name,
@@ -400,25 +400,25 @@ export default class ProcessVisualEditor extends Component {
 
     try {
       const shouldLoadOptions =
-        options.reloadOptions === true || this.workflowOptions.length === 0;
-      const workflowStepsRequest = ajax(
+        options.reloadOptions === true || this.processOptions.length === 0;
+      const processStepsRequest = ajax(
         `/admin/plugins/discourse-workflow/workflows/${this.args.workflow.id}/workflow_steps.json`
       );
-      const workflowOptionsRequest = shouldLoadOptions
+      const processOptionsRequest = shouldLoadOptions
         ? ajax("/admin/plugins/discourse-workflow/workflow_options.json")
         : Promise.resolve(null);
-      const [workflowStepsResult, workflowOptionsResult] = await Promise.all([
-        workflowStepsRequest,
-        workflowOptionsRequest,
+      const [processStepsResult, processOptionsResult] = await Promise.all([
+        processStepsRequest,
+        processOptionsRequest,
       ]);
 
-      this.workflowSteps = workflowStepsResult.workflow_steps || [];
-      if (workflowOptionsResult) {
-        this.workflowOptions = workflowOptionsResult.workflow_options || [];
+      this.processSteps = processStepsResult.workflow_steps || [];
+      if (processOptionsResult) {
+        this.processOptions = processOptionsResult.workflow_options || [];
       }
-      this.mergeWorkflowCategories(
-        this.workflowSteps,
-        workflowStepsResult.workflow_categories || []
+      this.mergeProcessCategories(
+        this.processSteps,
+        processStepsResult.workflow_categories || []
       );
       this.scheduleEdgeLayout();
     } catch (err) {
@@ -518,7 +518,7 @@ export default class ProcessVisualEditor extends Component {
     const stepRectById = new Map();
     const laneStackBounds = this.laneStackBounds(boardRect);
 
-    for (const step of this.workflowSteps) {
+    for (const step of this.processSteps) {
       const element = this.boardElement.querySelector(
         `[data-workflow-step-id="${step.id}"]`
       );
@@ -545,14 +545,14 @@ export default class ProcessVisualEditor extends Component {
     const routedLabels = [];
     const routedArrowheads = [];
 
-    this.edgeLayouts = this.workflowEdges
+    this.edgeLayouts = this.processEdges
       .map((edge, index) => {
         const sourceRect = stepRectById.get(edge.source_step_id);
         const targetRect = stepRectById.get(edge.target_step_id);
-        const sourceStep = this.workflowSteps.find(
+        const sourceStep = this.processSteps.find(
           (step) => step.id === edge.source_step_id
         );
-        const targetStep = this.workflowSteps.find(
+        const targetStep = this.processSteps.find(
           (step) => step.id === edge.target_step_id
         );
 
@@ -1901,7 +1901,7 @@ export default class ProcessVisualEditor extends Component {
     const laneStackBounds = this.laneStackBounds(
       this.boardElement.getBoundingClientRect()
     );
-    for (const step of this.workflowSteps) {
+    for (const step of this.processSteps) {
       const rect = this.stepRect(step.id);
 
       if (rect) {
@@ -2099,8 +2099,8 @@ export default class ProcessVisualEditor extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    const step = this.workflowSteps.find(
-      (workflowStep) => workflowStep.id === this.draggedStepId
+    const step = this.processSteps.find(
+      (processStep) => processStep.id === this.draggedStepId
     );
 
     if (!step || step.category_id === lane.id) {
@@ -2123,8 +2123,8 @@ export default class ProcessVisualEditor extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    const sourceStep = this.workflowSteps.find(
-      (workflowStep) => workflowStep.id === this.draggedStepId
+    const sourceStep = this.processSteps.find(
+      (processStep) => processStep.id === this.draggedStepId
     );
 
     if (
@@ -2149,7 +2149,7 @@ export default class ProcessVisualEditor extends Component {
   }
 
   async reorderStep(targetStep) {
-    const sourceStep = this.workflowSteps.find(
+    const sourceStep = this.processSteps.find(
       (step) => step.id === this.draggedStepId
     );
 
@@ -2192,12 +2192,12 @@ export default class ProcessVisualEditor extends Component {
   }
 
   async createLink(targetStepId) {
-    const sourceStep = this.workflowSteps.find(
+    const sourceStep = this.processSteps.find(
       (step) => step.id === this.linkSourceStepId
     );
-    const workflowOptionId = this.defaultWorkflowOptionId;
+    const processOptionId = this.defaultProcessOptionId;
 
-    if (!sourceStep || !workflowOptionId || sourceStep.id === targetStepId) {
+    if (!sourceStep || !processOptionId || sourceStep.id === targetStepId) {
       return;
     }
 
@@ -2206,7 +2206,7 @@ export default class ProcessVisualEditor extends Component {
       data: {
         workflow_step_option: {
           workflow_step_id: sourceStep.id,
-          workflow_option_id: workflowOptionId,
+          workflow_option_id: processOptionId,
           target_step_id: targetStepId,
           position: this.stepOptions(sourceStep).length + 1,
         },
@@ -2228,7 +2228,7 @@ export default class ProcessVisualEditor extends Component {
   }
 
   async retargetOption(targetStepId) {
-    const stepOption = this.workflowSteps
+    const stepOption = this.processSteps
       .flatMap((step) => step.workflow_step_options || [])
       .find((option) => option.id === this.draggedOptionId);
 
@@ -2241,7 +2241,7 @@ export default class ProcessVisualEditor extends Component {
   }
 
   async retargetOptionSource(sourceStepId) {
-    const stepOption = this.workflowSteps
+    const stepOption = this.processSteps
       .flatMap((step) => step.workflow_step_options || [])
       .find((option) => option.id === this.draggedOptionId);
 
@@ -2249,7 +2249,7 @@ export default class ProcessVisualEditor extends Component {
       return;
     }
 
-    const sourceStep = this.workflowSteps.find(
+    const sourceStep = this.processSteps.find(
       (step) => step.id === sourceStepId
     );
 
@@ -2350,7 +2350,7 @@ export default class ProcessVisualEditor extends Component {
           {{didInsert this.captureBoard}}
           {{didUpdate
             this.scheduleEdgeLayout
-            this.workflowSteps
+            this.processSteps
             this.workflowCategories
           }}
           {{on "dragover" this.dragConnectorOverBoard}}
@@ -2413,15 +2413,15 @@ export default class ProcessVisualEditor extends Component {
                     (fn this.updateStepOptionName edge.step_option)
                   }}
                 >
-                  {{#each this.workflowOptions as |workflowOption|}}
+                  {{#each this.processOptions as |processOption|}}
                     <option
-                      value={{workflowOption.id}}
-                      selected={{this.isWorkflowOptionSelected
+                      value={{processOption.id}}
+                      selected={{this.isProcessOptionSelected
                         edge.step_option
-                        workflowOption
+                        processOption
                       }}
                     >
-                      {{this.workflowOptionLabel workflowOption.id}}
+                      {{this.processOptionLabel processOption.id}}
                     </option>
                   {{/each}}
                 </select>

@@ -23,10 +23,10 @@ export default class ProcessStepOptionEditor extends Component {
 
   @action
   updateModel() {
-    this.editingModel = this.args.currentWorkflowStepOption.workingCopy();
+    this.editingModel = this.args.currentProcessStepOption.workingCopy();
     this.showDelete =
-      !this.args.currentWorkflowStepOption.isNew &&
-      !this.args.currentWorkflowStepOption.system;
+      !this.args.currentProcessStepOption.isNew &&
+      !this.args.currentProcessStepOption.system;
   }
 
   @action
@@ -38,11 +38,11 @@ export default class ProcessStepOptionEditor extends Component {
   async save() {
     this.isSaving = true;
 
-    const backupModel = this.args.currentWorkflowStepOption.workingCopy();
+    const backupModel = this.args.currentProcessStepOption.workingCopy();
 
-    this.args.currentWorkflowStepOption.setProperties(this.editingModel);
+    this.args.currentProcessStepOption.setProperties(this.editingModel);
     try {
-      await this.args.currentWorkflowStepOption.save();
+      await this.args.currentProcessStepOption.save();
       this.isSaving = false;
       this.toasts.success({
         data: {
@@ -52,10 +52,10 @@ export default class ProcessStepOptionEditor extends Component {
       });
       this.router.transitionTo(
         "adminPlugins.show.processes.steps.edit",
-        this.args.currentWorkflowStepOption.workflow_step_id
+        this.args.currentProcessStepOption.workflow_step_id
       );
     } catch (e) {
-      this.args.currentWorkflowStepOption.setProperties(backupModel);
+      this.args.currentProcessStepOption.setProperties(backupModel);
       popupAjaxError(e);
     } finally {
       later(() => {
@@ -69,7 +69,7 @@ export default class ProcessStepOptionEditor extends Component {
     return this.dialog.confirm({
       message: i18n("admin.discourse_workflow.workflows.steps.confirm_delete"),
       didConfirm: () => {
-        return this.args.currentWorkflowStepOption.destroyRecord().then(() => {
+        return this.args.currentProcessStepOption.destroyRecord().then(() => {
           this.toasts.success({
             data: {
               message: i18n("admin.discourse_workflow.workflows.steps.deleted"),
@@ -78,7 +78,7 @@ export default class ProcessStepOptionEditor extends Component {
           });
           this.router.transitionTo(
             "adminPlugins.show.processes.edit",
-            this.args.currentWorkflowStepOption.workflow_id
+            this.args.currentProcessStepOption.workflow_id
           );
         });
       },
@@ -86,22 +86,22 @@ export default class ProcessStepOptionEditor extends Component {
   }
 
   get availableSteps() {
-    const steps = this.args.workflowSteps || [];
+    const steps = this.args.processSteps || [];
     const filteredSteps = steps
       .map(({ id, name, description }) => ({ id, name, description }))
-      .filter((step) => step.id !== this.args.workflowStep.id);
+      .filter((step) => step.id !== this.args.processStep.id);
     return filteredSteps;
   }
 
   <template>
     <ProcessBackButton
       @route="adminPlugins.show.processes.steps.edit"
-      @model={{@currentWorkflowStepOption.workflow_step_id}}
+      @model={{@currentProcessStepOption.workflow_step_id}}
     />
-    {{#if @currentWorkflowStepOption.id}}
+    {{#if @currentProcessStepOption.id}}
       <h2>{{I18n.t
           "admin.discourse_workflow.workflows.workflow.step.option.editing.title"
-          position=@currentWorkflowStepOption.position
+          position=@currentProcessStepOption.position
         }}</h2>
     {{else}}
       <h2>{{I18n.t
@@ -110,14 +110,14 @@ export default class ProcessStepOptionEditor extends Component {
     {{/if}}
     <form
       class="form-horizontal process-step-editor"
-      {{didUpdate this.updateModel @currentWorkflowStepOption.id}}
-      {{didInsert this.updateModel @currentWorkflowStepOption.id}}
+      {{didUpdate this.updateModel @currentProcessStepOption.id}}
+      {{didInsert this.updateModel @currentProcessStepOption.id}}
     >
       <div class="control-group">
         <label>{{I18n.t "admin.discourse_workflow.workflows.name"}}</label>
         <DropdownSelectBox
           @value={{this.editingModel.workflow_option_id}}
-          @content={{@workflowOptions}}
+          @content={{@processOptions}}
           @onChange={{fn (mut this.editingModel.workflow_option_id)}}
           @options={{hash
             disabled=this.editingModel.system

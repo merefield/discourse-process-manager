@@ -2,9 +2,9 @@ import ProcessStepOptionListEditor from "../../../../../../components/process-st
 
 export default <template>
   <ProcessStepOptionListEditor
-    @currentWorkflowStepOption={{@controller.model}}
-    @workflowStep={{@controller.model.workflowStep}}
-    @workflowSteps={{@controller.workflowSteps}}
-    @workflowOptions={{@controller.workflowOptions}}
+    @currentProcessStepOption={{@controller.model}}
+    @processStep={{@controller.model.processStep}}
+    @processSteps={{@controller.processSteps}}
+    @processOptions={{@controller.processOptions}}
   />
 </template>

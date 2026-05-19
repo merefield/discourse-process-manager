@@ -3,10 +3,10 @@ import { i18n } from "discourse-i18n";
 
 export default class AdminPluginsShowProcessesSteps extends DiscourseRoute {
   async model(params) {
-    const allWorkflowSteps = await this.store.findAll("workflow-step", {
+    const allProcessSteps = await this.store.findAll("workflow-step", {
       workflow_id: params.workflow_id,
     }); // this.modelFor("adminPlugins.show.processes");
-    return allWorkflowSteps.content;
+    return allProcessSteps.content;
   }
 
   titleToken() {

@@ -21,7 +21,7 @@ export default class ProcessQuickFiltersConnector extends Component {
   @service router;
 
   @tracked stepPosition = "";
-  @tracked workflowView = null;
+  @tracked processView = null;
   @tracked draggedTopicId = null;
   @tracked draggedFromPosition = null;
   @tracked transitionInFlightTopicId = null;
@@ -176,11 +176,11 @@ export default class ProcessQuickFiltersConnector extends Component {
   }
 
   get isKanbanView() {
-    return this.workflowView === "kanban";
+    return this.processView === "kanban";
   }
 
   get isChartView() {
-    return this.workflowView === "chart" || this.isProcessChartsRoute;
+    return this.processView === "chart" || this.isProcessChartsRoute;
   }
 
   get canUseKanbanView() {
@@ -206,7 +206,7 @@ export default class ProcessQuickFiltersConnector extends Component {
     return this.topicListMetadata?.workflow_kanban_show_tags !== false;
   }
 
-  get currentWorkflowView() {
+  get currentProcessView() {
     if (this.isChartView) {
       return "chart";
     }
@@ -222,7 +222,7 @@ export default class ProcessQuickFiltersConnector extends Component {
     return this.isChartView || this.canUseChartView;
   }
 
-  get showWorkflowViewSelector() {
+  get showProcessViewSelector() {
     return this.canUseKanbanView || this.showChartViewOption;
   }
 
@@ -241,7 +241,7 @@ export default class ProcessQuickFiltersConnector extends Component {
     );
   }
 
-  get kanbanWorkflowName() {
+  get kanbanProcessName() {
     try {
       return this.topicListMetadata?.workflow_kanban_workflow_name;
     } catch {
@@ -405,7 +405,7 @@ export default class ProcessQuickFiltersConnector extends Component {
   initializeFilters() {
     const params = this.currentSearchParams;
     this.stepPosition = params.get("process_step_position") || "";
-    this.workflowView =
+    this.processView =
       params.get("process_view") ||
       (this.isProcessChartsRoute ? "chart" : null);
 
@@ -556,24 +556,24 @@ export default class ProcessQuickFiltersConnector extends Component {
   }
 
   @action
-  changeWorkflowView(event) {
+  changeProcessView(event) {
     const nextView = event.target.value;
     const params = new URLSearchParams(this.currentSearchParams.toString());
 
     if (nextView === "list") {
       params.delete("process_view");
-      this.workflowView = null;
+      this.processView = null;
     } else if (nextView === "kanban") {
       if (!this.canUseKanbanView) {
-        event.target.value = this.currentWorkflowView;
+        event.target.value = this.currentProcessView;
         return;
       }
 
       params.set("process_view", "kanban");
-      this.workflowView = "kanban";
+      this.processView = "kanban";
     } else if (nextView === "chart") {
       if (!this.canUseChartView) {
-        event.target.value = this.currentWorkflowView;
+        event.target.value = this.currentProcessView;
         return;
       }
 
@@ -581,7 +581,7 @@ export default class ProcessQuickFiltersConnector extends Component {
       if (!params.get("chart_weeks")) {
         params.set("chart_weeks", "2");
       }
-      this.workflowView = "chart";
+      this.processView = "chart";
     }
 
     this.syncBodyClass();
@@ -796,7 +796,7 @@ export default class ProcessQuickFiltersConnector extends Component {
   syncStepPositionFromUrl() {
     const params = this.currentSearchParams;
     this.stepPosition = params.get("process_step_position") || "";
-    this.workflowView =
+    this.processView =
       params.get("process_view") ||
       (this.isProcessChartsRoute ? "chart" : null);
 
@@ -804,7 +804,7 @@ export default class ProcessQuickFiltersConnector extends Component {
       const fallback = Object.fromEntries(params.entries());
       delete fallback.process_view;
       delete fallback.chart_weeks;
-      this.workflowView = null;
+      this.processView = null;
       this.navigateWithFilters(fallback);
       return;
     }
@@ -840,12 +840,12 @@ export default class ProcessQuickFiltersConnector extends Component {
         {{didInsert this.syncBodyClass}}
         {{didUpdate this.syncStepPositionFromUrl this.currentLocation}}
       >
-        {{#if this.showWorkflowViewSelector}}
+        {{#if this.showProcessViewSelector}}
           <select
             class="process-quick-filters__view-select"
-            value={{this.currentWorkflowView}}
+            value={{this.currentProcessView}}
             aria-label={{i18n "discourse_workflow.quick_filters.view_label"}}
-            {{on "change" this.changeWorkflowView}}
+            {{on "change" this.changeProcessView}}
           >
             <option value="list">
               {{i18n "discourse_workflow.quick_filters.list_view"}}
@@ -939,11 +939,11 @@ export default class ProcessQuickFiltersConnector extends Component {
               <h3 class="process-kanban__title">
                 {{i18n "discourse_workflow.kanban.title"}}
               </h3>
-              {{#if this.kanbanWorkflowName}}
+              {{#if this.kanbanProcessName}}
                 <p class="process-kanban__process-name">
                   {{i18n
                     "discourse_workflow.kanban.workflow_name"
-                    workflow_name=this.kanbanWorkflowName
+                    workflow_name=this.kanbanProcessName
                   }}
                 </p>
               {{/if}}

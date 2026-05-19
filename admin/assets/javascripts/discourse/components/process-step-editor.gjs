@@ -29,10 +29,10 @@ export default class ProcessStepEditor extends Component {
 
   @action
   updateModel() {
-    this.editingModel = this.args.currentWorkflowStep.workingCopy();
+    this.editingModel = this.args.currentProcessStep.workingCopy();
     this.showDelete =
-      !this.args.currentWorkflowStep.isNew &&
-      !this.args.currentWorkflowStep.system;
+      !this.args.currentProcessStep.isNew &&
+      !this.args.currentProcessStep.system;
   }
 
   @action
@@ -44,10 +44,10 @@ export default class ProcessStepEditor extends Component {
   async save() {
     this.isSaving = true;
 
-    const backupModel = this.args.currentWorkflowStep.workingCopy();
-    this.args.currentWorkflowStep.setProperties(this.editingModel);
+    const backupModel = this.args.currentProcessStep.workingCopy();
+    this.args.currentProcessStep.setProperties(this.editingModel);
     try {
-      await this.args.currentWorkflowStep.save();
+      await this.args.currentProcessStep.save();
       this.isSaving = false;
       this.toasts.success({
         data: {
@@ -57,11 +57,11 @@ export default class ProcessStepEditor extends Component {
       });
       this.router.transitionTo(
         "adminPlugins.show.processes.edit",
-        this.args.currentWorkflowStep.workflow_id,
+        this.args.currentProcessStep.workflow_id,
         { queryParams: { refresh: true } }
       );
     } catch (e) {
-      this.args.currentWorkflowStep.setProperties(backupModel);
+      this.args.currentProcessStep.setProperties(backupModel);
       popupAjaxError(e);
     } finally {
       later(() => {
@@ -75,7 +75,7 @@ export default class ProcessStepEditor extends Component {
     return this.dialog.confirm({
       message: i18n("admin.discourse_workflow.workflows.steps.confirm_delete"),
       didConfirm: () => {
-        return this.args.currentWorkflowStep.destroyRecord().then(() => {
+        return this.args.currentProcessStep.destroyRecord().then(() => {
           this.toasts.success({
             data: {
               message: i18n("admin.discourse_workflow.workflows.steps.deleted"),
@@ -83,10 +83,10 @@ export default class ProcessStepEditor extends Component {
             duration: 2000,
           });
 
-          // this.args.currentWorkflowSteps.removeObject(this.args.currentWorkflowStep);
+          // this.args.currentProcessSteps.removeObject(this.args.currentProcessStep);
           this.router.transitionTo(
             "adminPlugins.show.processes.edit",
-            this.args.currentWorkflowStep.workflow_id,
+            this.args.currentProcessStep.workflow_id,
             { queryParams: { refresh: true } }
           );
         });
@@ -99,20 +99,20 @@ export default class ProcessStepEditor extends Component {
     await this.toggleField("ai_enabled");
   }
 
-  async toggleField(field, sortWorkflowSteps) {
-    this.args.currentWorkflowStep.set(
+  async toggleField(field, sortProcessSteps) {
+    this.args.currentProcessStep.set(
       field,
-      !this.args.currentWorkflowStep[field]
+      !this.args.currentProcessStep[field]
     );
-    this.editingModel.set(field, this.args.currentWorkflowStep[field]);
-    if (!this.args.currentWorkflowStep.isNew) {
+    this.editingModel.set(field, this.args.currentProcessStep[field]);
+    if (!this.args.currentProcessStep.isNew) {
       try {
         const args = {};
-        args[field] = this.args.currentWorkflowStep[field];
+        args[field] = this.args.currentProcessStep[field];
 
-        await this.args.currentWorkflowStep.update(args);
-        if (sortWorkflowSteps) {
-          this.sortWorkflowSteps();
+        await this.args.currentProcessStep.update(args);
+        if (sortProcessSteps) {
+          this.sortProcessSteps();
         }
       } catch (e) {
         popupAjaxError(e);
@@ -121,15 +121,15 @@ export default class ProcessStepEditor extends Component {
   }
 
   get showStepOptions() {
-    return this.args.currentWorkflowStep.id > 0;
+    return this.args.currentProcessStep.id > 0;
   }
 
   <template>
     <ProcessBackButton
       @route="adminPlugins.show.processes.edit"
-      @model={{@currentWorkflowStep.workflow_id}}
+      @model={{@currentProcessStep.workflow_id}}
     />
-    {{#if @currentWorkflowStep.id}}
+    {{#if @currentProcessStep.id}}
       <h2>{{I18n.t
           "admin.discourse_workflow.workflows.workflow.step.editing.title"
           workflow_step_name=this.editingModel.name
@@ -141,8 +141,8 @@ export default class ProcessStepEditor extends Component {
     {{/if}}
     <form
       class="form-horizontal process-step-editor"
-      {{didUpdate this.updateModel @currentWorkflowStep.id}}
-      {{didInsert this.updateModel @currentWorkflowStep.id}}
+      {{didUpdate this.updateModel @currentProcessStep.id}}
+      {{didInsert this.updateModel @currentProcessStep.id}}
     >
       <div class="control-group">
         <label>{{I18n.t "admin.discourse_workflow.workflows.name"}}</label>
@@ -210,8 +210,8 @@ export default class ProcessStepEditor extends Component {
         <div class="control-group">
           <ProcessStepOptionListEditor
             class="process-editor__steps_options"
-            @workflowStep={{@currentWorkflowStep}}
-            @workflowSteps={{@workflowSteps}}
+            @processStep={{@currentProcessStep}}
+            @processSteps={{@processSteps}}
             @disabled={{this.editingModel.system}}
             @onChange={{this.stepOptionsChanged}}
           />

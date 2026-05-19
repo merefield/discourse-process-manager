@@ -2,7 +2,7 @@ import ProcessStepListEditor from "../../../../../components/process-step-list-e
 
 export default <template>
   <ProcessStepListEditor
-    @currentWorkflowStep={{@controller.model}}
+    @currentProcessStep={{@controller.model}}
     @workflow={{@controller.model.workflow}}
   />
 </template>

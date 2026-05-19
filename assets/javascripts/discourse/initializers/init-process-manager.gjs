@@ -6,7 +6,7 @@ import ProcessNameLink from "./../components/process-name-link";
 
 const WORKFLOW_LIST_ROUTES = ["discovery.workflow", "discovery.processCharts"];
 
-const workflowNameHeader = <template>
+const processNameHeader = <template>
   <SortableColumn
     @sortable={{@sortable}}
     @number="false"
@@ -18,7 +18,7 @@ const workflowNameHeader = <template>
   />
 </template>;
 
-const workflowNameCell = <template>
+const processNameCell = <template>
   <td class="process-name">
     <ProcessNameLink
       @topic_id={{@topic.id}}
@@ -28,7 +28,7 @@ const workflowNameCell = <template>
   </td>
 </template>;
 
-const workflowStepPositionHeader = <template>
+const processStepPositionHeader = <template>
   <SortableColumn
     @sortable={{@sortable}}
     @number="true"
@@ -40,7 +40,7 @@ const workflowStepPositionHeader = <template>
   />
 </template>;
 
-const workflowStepPositionCell = <template>
+const processStepPositionCell = <template>
   <td class="process-step-position">
     <ProcessNameLink
       @topic_id={{@topic.id}}
@@ -50,7 +50,7 @@ const workflowStepPositionCell = <template>
   </td>
 </template>;
 
-const workflowStepNameHeader = <template>
+const processStepNameHeader = <template>
   <SortableColumn
     @sortable={{@sortable}}
     @number="false"
@@ -62,7 +62,7 @@ const workflowStepNameHeader = <template>
   />
 </template>;
 
-const workflowStepNameCell = <template>
+const processStepNameCell = <template>
   <td class="process-step-name">
     <ProcessNameLink
       @topic_id={{@topic.id}}
@@ -144,8 +144,8 @@ export default {
         ({ value: columns }) => {
           if (WORKFLOW_LIST_ROUTES.includes(router.currentRouteName)) {
             columns.add("workflow-name", {
-              header: workflowNameHeader,
-              item: workflowNameCell,
+              header: processNameHeader,
+              item: processNameCell,
               after: "activity",
             });
           }
@@ -158,8 +158,8 @@ export default {
         ({ value: columns }) => {
           if (WORKFLOW_LIST_ROUTES.includes(router.currentRouteName)) {
             columns.add("process-step-position", {
-              header: workflowStepPositionHeader,
-              item: workflowStepPositionCell,
+              header: processStepPositionHeader,
+              item: processStepPositionCell,
               after: "workflow-name",
             });
           }
@@ -172,8 +172,8 @@ export default {
         ({ value: columns }) => {
           if (WORKFLOW_LIST_ROUTES.includes(router.currentRouteName)) {
             columns.add("workflow-step-name", {
-              header: workflowStepNameHeader,
-              item: workflowStepNameCell,
+              header: processStepNameHeader,
+              item: processStepNameCell,
               after: "process-step-position",
             });
           }
