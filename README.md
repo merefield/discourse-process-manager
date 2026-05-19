@@ -12,7 +12,7 @@ Using topics as work items gives each process a flexible, native Discourse found
 
 If you are new to the terminology, see:
 
-- Workflow terminology: https://en.wikipedia.org/wiki/Workflow
+- Process terminology: https://en.wikipedia.org/wiki/Process
 - Business process: https://en.wikipedia.org/wiki/Business_process
 
 ## Features

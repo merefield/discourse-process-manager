@@ -2,7 +2,7 @@
 
 require_relative "../../../plugin_helper"
 
-RSpec.describe Jobs::DiscourseWorkflow::TopicArrivalNotifier do
+RSpec.describe Jobs::ProcessManager::TopicArrivalNotifier do
   fab!(:topic)
 
   let(:job) { described_class.new }

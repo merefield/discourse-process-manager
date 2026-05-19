@@ -119,7 +119,7 @@ export default class ProcessQuickFiltersConnector extends Component {
     }
   }
 
-  get hasWorkflowFilter() {
+  get hasProcessFilter() {
     return this.topicList?.filter?.toString() === "workflow";
   }
 
@@ -143,9 +143,9 @@ export default class ProcessQuickFiltersConnector extends Component {
     return new URLSearchParams(queryString);
   }
 
-  get isWorkflowRoute() {
+  get isProcessRoute() {
     return (
-      this.hasWorkflowFilter ||
+      this.hasProcessFilter ||
       this.router.currentRouteName?.startsWith("discovery.workflow") ||
       this.currentPathname.startsWith("/workflow") ||
       this.currentPathname.startsWith("/filter/workflow")
@@ -829,7 +829,7 @@ export default class ProcessQuickFiltersConnector extends Component {
   }
 
   <template>
-    {{#if this.isWorkflowRoute}}
+    {{#if this.isProcessRoute}}
       <div
         class={{if
           this.isKanbanView

@@ -2,9 +2,9 @@
 
 require_relative "../plugin_helper"
 
-describe DiscourseWorkflow::Workflow do
+describe ProcessManager::Process do
   it "keeps slug stable when updating non-name attributes" do
-    workflow = Fabricate(:workflow, name: "Stable Slug Workflow")
+    workflow = Fabricate(:workflow, name: "Stable Slug Process")
     original_slug = workflow.slug
 
     workflow.update!(description: "updated description")

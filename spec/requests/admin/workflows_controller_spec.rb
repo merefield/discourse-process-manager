@@ -2,9 +2,9 @@
 
 require_relative "../../plugin_helper"
 
-describe DiscourseWorkflow::Admin::WorkflowsController do
+describe ProcessManager::Admin::WorkflowsController do
   fab!(:admin)
-  fab!(:workflow) { Fabricate(:workflow, name: "Controller Workflow") }
+  fab!(:workflow) { Fabricate(:workflow, name: "Controller Process") }
   fab!(:category_1, :category)
   fab!(:category_2, :category)
   fab!(:step_1) do
@@ -70,7 +70,7 @@ describe DiscourseWorkflow::Admin::WorkflowsController do
       end.count
 
     5.times do |index|
-      extra_workflow = Fabricate(:workflow, name: "Controller Workflow #{index + 2}")
+      extra_workflow = Fabricate(:workflow, name: "Controller Process #{index + 2}")
       category_3 = Fabricate(:category)
       category_4 = Fabricate(:category)
       extra_step_1 =

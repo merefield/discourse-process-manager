@@ -2,9 +2,9 @@
 
 require_relative "../../plugin_helper"
 
-describe DiscourseWorkflow::Admin::WorkflowStepsController do
+describe ProcessManager::Admin::WorkflowStepsController do
   fab!(:admin)
-  fab!(:workflow) { Fabricate(:workflow, name: "Workflow Steps Controller Workflow") }
+  fab!(:workflow) { Fabricate(:workflow, name: "Process Steps Controller Process") }
   fab!(:category_1, :category)
   fab!(:category_2, :category)
   fab!(:option) { Fabricate(:workflow_option, slug: "next-step") }
@@ -119,10 +119,10 @@ describe DiscourseWorkflow::Admin::WorkflowStepsController do
     delete "/admin/plugins/discourse-workflow/workflow_steps/#{step_1.id}.json"
 
     expect(response.status).to eq(204)
-    expect(DiscourseWorkflow::WorkflowStep.exists?(step_1.id)).to eq(false)
-    expect(DiscourseWorkflow::WorkflowStepOption.exists?(outgoing_step_option_id)).to eq(false)
-    expect(DiscourseWorkflow::WorkflowStepOption.exists?(incoming_step_option_id)).to eq(false)
-    expect(DiscourseWorkflow::WorkflowStepOption.exists?(unrelated_step_option_id)).to eq(true)
+    expect(ProcessManager::ProcessStep.exists?(step_1.id)).to eq(false)
+    expect(ProcessManager::ProcessStepOption.exists?(outgoing_step_option_id)).to eq(false)
+    expect(ProcessManager::ProcessStepOption.exists?(incoming_step_option_id)).to eq(false)
+    expect(ProcessManager::ProcessStepOption.exists?(unrelated_step_option_id)).to eq(true)
   end
 
   it "rolls back step option deletion when workflow step destroy raises" do
@@ -135,7 +135,7 @@ describe DiscourseWorkflow::Admin::WorkflowStepsController do
         position: 2,
       )
 
-    allow_any_instance_of(DiscourseWorkflow::WorkflowStep).to receive(
+    allow_any_instance_of(ProcessManager::ProcessStep).to receive(
       :destroy!,
     ).and_wrap_original do |method, *args|
       method.receiver.errors.add(:base, "forced failure")
@@ -145,9 +145,9 @@ describe DiscourseWorkflow::Admin::WorkflowStepsController do
     delete "/admin/plugins/discourse-workflow/workflow_steps/#{step_1.id}.json"
 
     expect(response.status).to eq(422)
-    expect(DiscourseWorkflow::WorkflowStep.exists?(step_1.id)).to eq(true)
-    expect(DiscourseWorkflow::WorkflowStepOption.exists?(step_option_1.id)).to eq(true)
-    expect(DiscourseWorkflow::WorkflowStepOption.exists?(incoming_step_option.id)).to eq(true)
+    expect(ProcessManager::ProcessStep.exists?(step_1.id)).to eq(true)
+    expect(ProcessManager::ProcessStepOption.exists?(step_option_1.id)).to eq(true)
+    expect(ProcessManager::ProcessStepOption.exists?(incoming_step_option.id)).to eq(true)
   end
 
   it "reorders a workflow step and displaced step atomically" do
@@ -167,7 +167,7 @@ describe DiscourseWorkflow::Admin::WorkflowStepsController do
   end
 
   it "rolls back displaced step position when reorder fails" do
-    allow_any_instance_of(DiscourseWorkflow::WorkflowStep).to receive(
+    allow_any_instance_of(ProcessManager::ProcessStep).to receive(
       :update!,
     ).and_wrap_original do |method, *args|
       if method.receiver.id == step_1.id

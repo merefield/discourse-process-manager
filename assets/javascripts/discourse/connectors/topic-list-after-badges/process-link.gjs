@@ -1,10 +1,8 @@
-/* eslint-disable ember/no-empty-glimmer-component-classes */
-
 import Component from "@glimmer/component";
 import { i18n } from "discourse-i18n";
 import ProcessNameLink from "../../components/process-name-link";
 
-export default class WorkflowLink extends Component {
+export default class ProcessLink extends Component {
   get label() {
     return i18n("discourse_workflow.workflow_link", {
       workflow_name: this.args.outletArgs.topic.workflow_name,

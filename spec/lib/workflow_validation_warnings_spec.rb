@@ -2,9 +2,9 @@
 
 require_relative "../plugin_helper"
 
-RSpec.describe DiscourseWorkflow::WorkflowSerializer do
+RSpec.describe ProcessManager::ProcessSerializer do
   fab!(:admin)
-  fab!(:workflow) { Fabricate(:workflow, name: "Warning Workflow") }
+  fab!(:workflow) { Fabricate(:workflow, name: "Warning Process") }
   fab!(:category_1, :category)
   fab!(:category_2, :category)
   fab!(:step_1) do

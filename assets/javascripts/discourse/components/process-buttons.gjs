@@ -33,7 +33,7 @@ export default class ProcessButtonsComponent extends Component {
   }
 
   @action
-  actOnWorkflow(workflowAction) {
+  actOnProcess(workflowAction) {
     const option = workflowAction.slug;
     if (!option) {
       return;
@@ -73,7 +73,7 @@ export default class ProcessButtonsComponent extends Component {
         <div class="process-action-button">
           <DButton
             class="btn-primary"
-            @action={{fn this.actOnWorkflow workflowAction}}
+            @action={{fn this.actOnProcess workflowAction}}
             @label={{this.workflowActionLabel workflowAction}}
             @disabled={{this.actionsDisabled}}
           />

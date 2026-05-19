@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe "Process quick filters" do
-  fab!(:workflow_discovery_page) { PageObjects::Pages::WorkflowDiscovery.new }
+  fab!(:workflow_discovery_page) { PageObjects::Pages::ProcessDiscovery.new }
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
-  fab!(:workflow) { Fabricate(:workflow, name: "Quick Filter Workflow") }
+  fab!(:workflow) { Fabricate(:workflow, name: "Quick Filter Process") }
   fab!(:kanban_tag) { Fabricate(:tag, name: "kanban-tag") }
   fab!(:category_1, :category)
   fab!(:category_2, :category)
@@ -302,7 +302,7 @@ RSpec.describe "Process quick filters" do
   end
 
   it "does not show kanban toggle when the process list includes multiple processes" do
-    other_workflow = Fabricate(:workflow, name: "Second Workflow")
+    other_workflow = Fabricate(:workflow, name: "Second Process")
     other_step =
       Fabricate(
         :workflow_step,

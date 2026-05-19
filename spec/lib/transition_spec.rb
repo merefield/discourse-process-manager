@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 require_relative "../plugin_helper"
 
-describe ::DiscourseWorkflow::Transition do
+describe ::ProcessManager::Transition do
   fab!(:category_1, :category)
   fab!(:category_2, :category)
 
   fab!(:workflow) do
-    Fabricate(:workflow, name: "Test Workflow", description: "Test Workflow Description")
+    Fabricate(:workflow, name: "Test Process", description: "Test Process Description")
   end
   fab!(:step_1) do
     Fabricate(
@@ -51,11 +51,11 @@ describe ::DiscourseWorkflow::Transition do
 
   fab!(:user)
 
-  fab!(:transition) { DiscourseWorkflow::Transition.new }
+  fab!(:transition) { ProcessManager::Transition.new }
 
   it "creates an audit log entry" do
     expect { transition.transition(user.id, topic, option_1.slug) }.to change {
-      ::DiscourseWorkflow::WorkflowAuditLog.count
+      ::ProcessManager::ProcessAuditLog.count
     }.by(1)
   end
 
@@ -89,7 +89,7 @@ describe ::DiscourseWorkflow::Transition do
   it "writes ending category name from the target step category" do
     transition.transition(user, topic, option_1.slug)
 
-    audit_log = DiscourseWorkflow::WorkflowAuditLog.order(:id).last
+    audit_log = ProcessManager::ProcessAuditLog.order(:id).last
     expect(audit_log.starting_category_name).to eq(category_1.name)
     expect(audit_log.ending_category_name).to eq(category_2.name)
   end

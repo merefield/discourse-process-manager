@@ -2,7 +2,7 @@
 
 module PageObjects
   module Pages
-    class WorkflowTopic < PageObjects::Pages::Base
+    class ProcessTopic < PageObjects::Pages::Base
       def visit_topic(topic, post_number: nil)
         page.visit(topic.relative_url(post_number))
         self

@@ -62,7 +62,7 @@ export default class ProcessEditor extends Component {
     this.args.workflow.setProperties(this.editingModel);
     try {
       await this.args.workflow.save();
-      this.#sortWorkflows();
+      this.#sortProcesses();
       this.toasts.success({
         data: { message: i18n("admin.discourse_workflow.workflows.saved") },
         duration: 2000,
@@ -109,7 +109,7 @@ export default class ProcessEditor extends Component {
     );
   }
 
-  async toggleField(field, sortWorkflows) {
+  async toggleField(field, sortProcesses) {
     this.args.workflow.set(field, !this.args.workflow[field]);
     this.editingModel.set(field, this.args.workflow[field]);
     if (!this.args.workflow.isNew) {
@@ -118,8 +118,8 @@ export default class ProcessEditor extends Component {
         args[field] = this.args.workflow[field];
 
         await this.args.workflow.update(args);
-        if (sortWorkflows) {
-          this.sortWorkflows();
+        if (sortProcesses) {
+          this.#sortProcesses();
         }
       } catch (e) {
         popupAjaxError(e);
@@ -164,7 +164,7 @@ export default class ProcessEditor extends Component {
     return code;
   }
 
-  #sortWorkflows() {
+  #sortProcesses() {
     const sorted = this.args.workflows.toArray().sort((a, b) => {
       return a.name.localeCompare(b.name);
     });

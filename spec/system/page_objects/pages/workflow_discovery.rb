@@ -2,7 +2,7 @@
 
 module PageObjects
   module Pages
-    class WorkflowDiscovery < PageObjects::Pages::Base
+    class ProcessDiscovery < PageObjects::Pages::Base
       def visit_workflow
         page.visit("/workflow")
         self

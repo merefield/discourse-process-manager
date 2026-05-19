@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-Fabricator(:workflow_step_option, class_name: "DiscourseWorkflow::WorkflowStepOption") do
+Fabricator(:workflow_step_option, class_name: "ProcessManager::ProcessStepOption") do
   workflow_option_id { Fabricate(:workflow_option).id }
   workflow_step_id { Fabricate(:workflow_step).id }
   position { sequence(:step_option_position) { |i| i } }

@@ -4,7 +4,7 @@ require_relative "../plugin_helper"
 
 RSpec.describe "Process topic view", type: :request do
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
-  fab!(:workflow) { Fabricate(:workflow, name: "Topic View Workflow") }
+  fab!(:workflow) { Fabricate(:workflow, name: "Topic View Process") }
   fab!(:category, :category)
   fab!(:step_1) do
     Fabricate(

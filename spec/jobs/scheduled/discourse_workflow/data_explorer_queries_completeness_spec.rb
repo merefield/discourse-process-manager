@@ -2,7 +2,7 @@
 
 require_relative "../../../plugin_helper"
 
-RSpec.describe Jobs::DiscourseWorkflow::DataExplorerQueriesCompleteness do
+RSpec.describe Jobs::ProcessManager::DataExplorerQueriesCompleteness do
   let(:job) { described_class.new }
   let(:connection) { instance_double(ActiveRecord::ConnectionAdapters::AbstractAdapter) }
   let(:query_class) do
@@ -15,9 +15,7 @@ RSpec.describe Jobs::DiscourseWorkflow::DataExplorerQueriesCompleteness do
     end
   end
 
-  before do
-    allow(ActiveRecord::Base).to receive(:connection).and_return(connection)
-  end
+  before { allow(ActiveRecord::Base).to receive(:connection).and_return(connection) }
 
   it "skips seeding and logs a warning when the data explorer table is unavailable" do
     allow(connection).to receive(:table_exists?).with(:data_explorer_queries).and_return(false)
@@ -35,7 +33,9 @@ RSpec.describe Jobs::DiscourseWorkflow::DataExplorerQueriesCompleteness do
   it "inserts both default queries when neither query exists" do
     allow(connection).to receive(:table_exists?).with(:data_explorer_queries).and_return(true)
     allow(query_class).to receive(:exists?).with(name: "Workflow Stats (default)").and_return(false)
-    allow(query_class).to receive(:exists?).with(name: "Workflow Audit Log (default)").and_return(false)
+    allow(query_class).to receive(:exists?).with(name: "Workflow Audit Log (default)").and_return(
+      false,
+    )
     allow(DB).to receive(:exec)
 
     job.execute({})
@@ -46,7 +46,9 @@ RSpec.describe Jobs::DiscourseWorkflow::DataExplorerQueriesCompleteness do
   it "inserts only missing default queries when one query is already present" do
     allow(connection).to receive(:table_exists?).with(:data_explorer_queries).and_return(true)
     allow(query_class).to receive(:exists?).with(name: "Workflow Stats (default)").and_return(true)
-    allow(query_class).to receive(:exists?).with(name: "Workflow Audit Log (default)").and_return(false)
+    allow(query_class).to receive(:exists?).with(name: "Workflow Audit Log (default)").and_return(
+      false,
+    )
     allow(DB).to receive(:exec)
 
     job.execute({})

@@ -4,7 +4,7 @@ require_relative "../plugin_helper"
 
 RSpec.describe "Process list filters", type: :request do
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
-  fab!(:workflow) { Fabricate(:workflow, name: "Filtered Workflow") }
+  fab!(:workflow) { Fabricate(:workflow, name: "Filtered Process") }
   fab!(:category_a, :category)
   fab!(:category_b, :category)
   fab!(:step_1) do
@@ -112,7 +112,7 @@ RSpec.describe "Process list filters", type: :request do
   end
 
   it "does not mark kanban compatibility when multiple processes are visible" do
-    other_workflow = Fabricate(:workflow, name: "Secondary Workflow")
+    other_workflow = Fabricate(:workflow, name: "Secondary Process")
     other_step =
       Fabricate(
         :workflow_step,
@@ -158,7 +158,7 @@ RSpec.describe "Process list filters", type: :request do
   end
 
   it "omits process metadata when no process topics are visible" do
-    DiscourseWorkflow::WorkflowState.delete_all
+    ProcessManager::ProcessState.delete_all
 
     get "/workflow.json"
 

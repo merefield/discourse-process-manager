@@ -2,8 +2,8 @@
 
 require_relative "../plugin_helper"
 
-describe DiscourseWorkflow::PostNotificationHandler do
-  fab!(:workflow) { Fabricate(:workflow, name: "Notification Workflow") }
+describe ProcessManager::PostNotificationHandler do
+  fab!(:workflow) { Fabricate(:workflow, name: "Notification Process") }
   fab!(:workflow_category, :category)
   fab!(:other_category, :category)
   fab!(:step_1) do
@@ -31,13 +31,13 @@ describe DiscourseWorkflow::PostNotificationHandler do
     CategoryUser.create!(
       user_id: watching_same_category_user.id,
       category_id: workflow_category.id,
-      notification_level: DiscourseWorkflow::WATCHING_FIRST_POST,
+      notification_level: ProcessManager::WATCHING_FIRST_POST,
     )
 
     CategoryUser.create!(
       user_id: watching_other_category_user.id,
       category_id: other_category.id,
-      notification_level: DiscourseWorkflow::WATCHING_FIRST_POST,
+      notification_level: ProcessManager::WATCHING_FIRST_POST,
     )
   end
 
@@ -86,7 +86,7 @@ describe DiscourseWorkflow::PostNotificationHandler do
       CategoryUser.create!(
         user_id: user.id,
         category_id: workflow_category.id,
-        notification_level: DiscourseWorkflow::WATCHING_FIRST_POST,
+        notification_level: ProcessManager::WATCHING_FIRST_POST,
       )
     end
 

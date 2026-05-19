@@ -34,9 +34,9 @@ export default class ProcessListEditor extends Component {
       @label={{i18n "admin.discourse_workflow.workflows.short_title"}}
     />
     <section class="process-list-editor__current admin-detail pull-left">
-      {{#if @currentWorkflow}}
+      {{#if @currentProcess}}
         <ProcessEditor
-          @workflow={{@currentWorkflow}}
+          @workflow={{@currentProcess}}
           @workflows={{@workflows}}
         />
       {{else}}

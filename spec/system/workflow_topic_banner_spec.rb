@@ -4,7 +4,7 @@ RSpec.describe "Process topic banner" do
   fab!(:actor, :user)
   fab!(:viewer, :user)
   fab!(:actor_group, :group)
-  fab!(:workflow) { Fabricate(:workflow, name: "Topic Banner Workflow") }
+  fab!(:workflow) { Fabricate(:workflow, name: "Topic Banner Process") }
   fab!(:start_category, :category)
   fab!(:next_category, :category)
   fab!(:step_1) do

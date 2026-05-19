@@ -2,7 +2,7 @@
 
 module PageObjects
   module Pages
-    class WorkflowAdminVisual < PageObjects::Pages::Base
+    class ProcessAdminVisual < PageObjects::Pages::Base
       def visit_workflow(workflow)
         page.visit "/admin/plugins/discourse-workflow/workflows/#{workflow.id}/edit"
         self

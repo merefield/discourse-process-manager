@@ -6,9 +6,9 @@ RSpec.describe "Process overdue thresholds", type: :request do
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
 
   fab!(:workflow_global_default) do
-    Fabricate(:workflow, name: "Global Default Workflow", overdue_days: nil)
+    Fabricate(:workflow, name: "Global Default Process", overdue_days: nil)
   end
-  fab!(:workflow_override) { Fabricate(:workflow, name: "Workflow Override", overdue_days: 5) }
+  fab!(:workflow_override) { Fabricate(:workflow, name: "Process Override", overdue_days: 5) }
   fab!(:workflow_step_override) { Fabricate(:workflow, name: "Step Override", overdue_days: 10) }
   fab!(:workflow_disabled) { Fabricate(:workflow, name: "Disabled Overdue", overdue_days: 0) }
 

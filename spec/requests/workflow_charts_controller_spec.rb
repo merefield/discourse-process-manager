@@ -2,14 +2,14 @@
 
 require_relative "../plugin_helper"
 
-RSpec.describe DiscourseWorkflow::WorkflowChartsController, type: :request do
+RSpec.describe ProcessManager::WorkflowChartsController, type: :request do
   fab!(:admin, :admin)
   fab!(:allowed_user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
   fab!(:blocked_user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
   fab!(:allowed_group, :group)
 
-  fab!(:workflow) { Fabricate(:workflow, name: "Burn Down Workflow") }
-  fab!(:other_workflow) { Fabricate(:workflow, name: "Other Workflow") }
+  fab!(:workflow) { Fabricate(:workflow, name: "Burn Down Process") }
+  fab!(:other_workflow) { Fabricate(:workflow, name: "Other Process") }
 
   fab!(:category_1, :category)
   fab!(:category_2, :category)

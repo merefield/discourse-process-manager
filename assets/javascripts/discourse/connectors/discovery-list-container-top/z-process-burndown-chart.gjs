@@ -71,13 +71,13 @@ export default class ProcessBurndownChartConnector extends Component {
     return new URLSearchParams(queryString);
   }
 
-  get hasWorkflowFilter() {
+  get hasProcessFilter() {
     return this.topicList?.filter?.toString() === "workflow";
   }
 
-  get isWorkflowRoute() {
+  get isProcessRoute() {
     return (
-      this.hasWorkflowFilter ||
+      this.hasProcessFilter ||
       this.router.currentRouteName?.startsWith("discovery.workflow") ||
       this.currentPathname.startsWith("/workflow") ||
       this.currentPathname.startsWith("/filter/workflow")
@@ -98,19 +98,19 @@ export default class ProcessBurndownChartConnector extends Component {
     );
   }
 
-  get singleWorkflowId() {
+  get singleProcessId() {
     return Number(this.topicListMetadata?.workflow_single_workflow_id) || null;
   }
 
   get canUseChartView() {
     return (
       this.topicListMetadata?.workflow_can_view_charts === true &&
-      this.singleWorkflowId !== null
+      this.singleProcessId !== null
     );
   }
 
   get shouldRenderChart() {
-    return this.isWorkflowRoute && this.isChartView && this.canUseChartView;
+    return this.isProcessRoute && this.isChartView && this.canUseChartView;
   }
 
   get hasChartData() {
@@ -131,7 +131,7 @@ export default class ProcessBurndownChartConnector extends Component {
     return (this.chartPayload?.labels || []).length;
   }
 
-  get selectedWorkflowName() {
+  get selectedProcessName() {
     return this.chartPayload?.selected_workflow_name || null;
   }
 
@@ -191,7 +191,7 @@ export default class ProcessBurndownChartConnector extends Component {
 
   @action
   syncFromUrl() {
-    if (!this.isWorkflowRoute || !this.isChartView) {
+    if (!this.isProcessRoute || !this.isChartView) {
       return;
     }
 
@@ -230,7 +230,7 @@ export default class ProcessBurndownChartConnector extends Component {
       this.chartPayload = await ajax("/discourse-workflow/charts.json", {
         data: {
           weeks: this.selectedWeeks,
-          workflow_id: this.singleWorkflowId,
+          workflow_id: this.singleProcessId,
         },
       });
 
@@ -347,11 +347,11 @@ export default class ProcessBurndownChartConnector extends Component {
           {{i18n "discourse_workflow.charts.title"}}
         </h3>
 
-        {{#if this.selectedWorkflowName}}
+        {{#if this.selectedProcessName}}
           <p class="process-burndown__process-name">
             {{i18n
               "discourse_workflow.charts.workflow_name"
-              workflow_name=this.selectedWorkflowName
+              workflow_name=this.selectedProcessName
             }}
           </p>
         {{/if}}

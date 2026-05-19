@@ -2,8 +2,8 @@
 
 require_relative "../plugin_helper"
 
-describe DiscourseWorkflow::Stats do
-  fab!(:workflow) { Fabricate(:workflow, name: "Stats Workflow") }
+describe ProcessManager::Stats do
+  fab!(:workflow) { Fabricate(:workflow, name: "Stats Process") }
   fab!(:category_1, :category)
   fab!(:category_2, :category)
   fab!(:step_1) do
@@ -35,7 +35,7 @@ describe DiscourseWorkflow::Stats do
     SiteSetting.process_manager_enabled = true
 
     expect do described_class.new.calculate_daily_stats end.to change {
-      DiscourseWorkflow::WorkflowStat.count
+      ProcessManager::ProcessStat.count
     }.by(2)
   end
 
@@ -55,7 +55,7 @@ describe DiscourseWorkflow::Stats do
 
     described_class.new.calculate_daily_stats
 
-    today_stats = DiscourseWorkflow::WorkflowStat.where(cob_date: Date.current)
+    today_stats = ProcessManager::ProcessStat.where(cob_date: Date.current)
     expect(today_stats.count).to eq(1)
     expect(today_stats.first.workflow_id).to eq(workflow.id)
     expect(today_stats.first.workflow_step_id).to eq(step_1.id)

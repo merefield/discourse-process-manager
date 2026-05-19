@@ -2,7 +2,7 @@
 
 require_relative "../../../plugin_helper"
 
-RSpec.describe Jobs::DiscourseWorkflow::DailyStats do
+RSpec.describe Jobs::ProcessManager::DailyStats do
   fab!(:workflow_a) { Fabricate(:workflow, name: "Change Requests") }
   fab!(:workflow_b) { Fabricate(:workflow, name: "Incident Review") }
 
@@ -171,11 +171,11 @@ RSpec.describe Jobs::DiscourseWorkflow::DailyStats do
   it "does not write stats when workflow is disabled" do
     SiteSetting.process_manager_enabled = false
 
-    expect { job.execute({}) }.not_to change { DiscourseWorkflow::WorkflowStat.count }
+    expect { job.execute({}) }.not_to change { ProcessManager::ProcessStat.count }
   end
 
   def current_day_stats
-    DiscourseWorkflow::WorkflowStat.where(cob_date: Date.current)
+    ProcessManager::ProcessStat.where(cob_date: Date.current)
   end
 
   def create_states_for(workflow:, step:, count:, topic_category_id:)
@@ -191,7 +191,7 @@ RSpec.describe Jobs::DiscourseWorkflow::DailyStats do
   end
 
   def stat_count_for(workflow, step, cob_date: Date.current)
-    DiscourseWorkflow::WorkflowStat.find_by!(
+    ProcessManager::ProcessStat.find_by!(
       cob_date: cob_date,
       workflow_id: workflow.id,
       workflow_step_id: step.id,

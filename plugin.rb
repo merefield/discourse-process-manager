@@ -15,20 +15,20 @@ register_asset "stylesheets/common/workflow_common.scss"
 register_asset "stylesheets/desktop/workflow_desktop.scss", :desktop
 register_asset "stylesheets/mobile/workflow_mobile.scss", :mobile
 
-module ::DiscourseWorkflow
+module ::ProcessManager
   PLUGIN_NAME = "discourse-workflow"
 end
 
-require_relative "lib/discourse_workflow/engine"
+require_relative "lib/process_manager/engine"
 
 register_svg_icon "right-left" if respond_to?(:register_svg_icon)
 
 after_initialize do
   reloadable_patch do
-    ListController.prepend(DiscourseWorkflow::ListControllerExtension)
-    TopicQuery.prepend(DiscourseWorkflow::TopicQueryExtension)
-    Topic.prepend(DiscourseWorkflow::TopicExtension)
-    Notification.singleton_class.prepend(DiscourseWorkflow::NotificationExtension)
+    ListController.prepend(ProcessManager::ListControllerExtension)
+    TopicQuery.prepend(ProcessManager::TopicQueryExtension)
+    Topic.prepend(ProcessManager::TopicExtension)
+    Notification.singleton_class.prepend(ProcessManager::NotificationExtension)
   end
 
   register_topic_preloader_associations({ workflow_state: %i[workflow workflow_step] }) do
@@ -51,11 +51,15 @@ after_initialize do
   )
 
   add_to_class(:category, :workflow_enabled) do
-    WorkflowStep.find_by(category_id: self.id)&.step_id == 1 || false
+    ProcessManager::ProcessStep.find_by(category_id: self.id)&.step_id == 1 || false
   end
 
   add_to_class(:category, :workflow_slug) do
-    Workflow.joins(:workflow_steps).where(workflow_steps: { category_id: self.id }).first&.slug
+    ProcessManager::Process
+      .joins(:workflow_steps)
+      .where(workflow_steps: { category_id: self.id })
+      .first
+      &.slug
   end
 
   # prevent non-staff from changing category on a workflow topic
@@ -64,7 +68,7 @@ after_initialize do
       tc.record_change("category_id", tc.topic.category_id, category_id)
       tc.topic.category_id = category_id
     else
-      if ::DiscourseWorkflow::WorkflowState.find_by(topic_id: tc.topic.id).present?
+      if ::ProcessManager::ProcessState.find_by(topic_id: tc.topic.id).present?
         # TODO get this to work and add a translation
         tc.topic.errors.add(
           :base,
@@ -107,7 +111,7 @@ after_initialize do
     step_options = step.workflow_step_options.includes(:workflow_option).order(:position)
 
     target_steps =
-      DiscourseWorkflow::WorkflowStep.where(
+      ProcessManager::ProcessStep.where(
         id: step_options.map(&:target_step_id).compact.uniq,
       ).index_by(&:id)
 
@@ -159,7 +163,7 @@ after_initialize do
 
     @workflow_kanban_workflow =
       if workflow_ids.length == 1
-        DiscourseWorkflow::Workflow.includes(
+        ProcessManager::Process.includes(
           workflow_steps: [
             { category: :parent_category },
             { workflow_step_options: :workflow_option },
@@ -374,7 +378,7 @@ after_initialize do
     :topic_list,
     :workflow_can_view_charts,
     include_condition: -> { object.has_workflow_topics? },
-  ) { DiscourseWorkflow::ChartsPermissions.can_view?(scope.user) }
+  ) { ProcessManager::ChartsPermissions.can_view?(scope.user) }
 
   add_to_serializer(
     :topic_list,
@@ -399,7 +403,7 @@ after_initialize do
 
     if SiteSetting.process_manager_enabled
       workflow_step =
-        DiscourseWorkflow::WorkflowStep.joins(:workflow).find_by(
+        ProcessManager::ProcessStep.joins(:workflow).find_by(
           category_id: topic.category_id,
           position: 1,
           workflows: {
@@ -407,7 +411,7 @@ after_initialize do
           },
         )
       if workflow_step
-        DiscourseWorkflow::WorkflowState.create!(
+        ProcessManager::ProcessState.create!(
           topic_id: topic.id,
           workflow_id: workflow_step.workflow_id,
           workflow_step_id: workflow_step.id,
@@ -418,6 +422,6 @@ after_initialize do
 
   on(:post_alerter_after_save_post) do |post, new_record, notified|
     next if !new_record
-    DiscourseWorkflow::PostNotificationHandler.new(post, notified).handle
+    ProcessManager::PostNotificationHandler.new(post, notified).handle
   end
 end

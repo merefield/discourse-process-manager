@@ -2,9 +2,9 @@
 
 require_relative "../../plugin_helper"
 
-describe DiscourseWorkflow::Admin::WorkflowStepOptionsController do
+describe ProcessManager::Admin::WorkflowStepOptionsController do
   fab!(:admin)
-  fab!(:workflow) { Fabricate(:workflow, name: "Controller Workflow") }
+  fab!(:workflow) { Fabricate(:workflow, name: "Controller Process") }
   fab!(:category_1, :category)
   fab!(:category_2, :category)
   fab!(:step_1) do
@@ -37,10 +37,10 @@ describe DiscourseWorkflow::Admin::WorkflowStepOptionsController do
                target_step_id: step_2.id,
              },
            }
-    end.to change { DiscourseWorkflow::WorkflowStepOption.count }.by(1)
+    end.to change { ProcessManager::ProcessStepOption.count }.by(1)
 
     expect(response.status).to eq(201)
-    expect(DiscourseWorkflow::WorkflowStepOption.order(:id).last.position).to eq(2)
+    expect(ProcessManager::ProcessStepOption.order(:id).last.position).to eq(2)
   end
 
   it "updates the workflow option used by a step option" do

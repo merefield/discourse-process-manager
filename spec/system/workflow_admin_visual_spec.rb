@@ -3,7 +3,7 @@
 require_relative "../plugin_helper"
 
 RSpec.describe "Process admin visual" do
-  let(:visual_page) { PageObjects::Pages::WorkflowAdminVisual.new }
+  let(:visual_page) { PageObjects::Pages::ProcessAdminVisual.new }
 
   fab!(:admin)
   fab!(:workflow) { Fabricate(:workflow, name: "Visual workflow") }
@@ -119,7 +119,7 @@ RSpec.describe "Process admin visual" do
 
     expect(visual_page).to have_any_option_control
     step_option =
-      DiscourseWorkflow::WorkflowStepOption.find_by!(
+      ProcessManager::ProcessStepOption.find_by!(
         workflow_step_id: queue_step.id,
         target_step_id: review_step.id,
       )
@@ -144,7 +144,7 @@ RSpec.describe "Process admin visual" do
     visual_page.click_connector_handle(queue_step, "left")
 
     step_option =
-      DiscourseWorkflow::WorkflowStepOption.find_by!(
+      ProcessManager::ProcessStepOption.find_by!(
         workflow_step_id: review_step.id,
         target_step_id: queue_step.id,
       )
@@ -198,7 +198,7 @@ RSpec.describe "Process admin visual" do
 
     visual_page.confirm_delete_connector
 
-    expect(DiscourseWorkflow::WorkflowStepOption.exists?(queue_to_done_option.id)).to eq(false)
+    expect(ProcessManager::ProcessStepOption.exists?(queue_to_done_option.id)).to eq(false)
     expect(visual_page).to have_no_css(
       ".process-visual-editor__edge-path[data-workflow-step-option-id='#{queue_to_done_option.id}']",
     )
@@ -233,10 +233,10 @@ RSpec.describe "Process admin visual" do
 
     visual_page.confirm_delete_step
 
-    expect(DiscourseWorkflow::WorkflowStep.exists?(review_step.id)).to eq(false)
-    expect(DiscourseWorkflow::WorkflowStepOption.exists?(incoming_option.id)).to eq(false)
-    expect(DiscourseWorkflow::WorkflowStepOption.exists?(outgoing_option.id)).to eq(false)
-    expect(DiscourseWorkflow::WorkflowStepOption.exists?(queue_to_done_option.id)).to eq(true)
+    expect(ProcessManager::ProcessStep.exists?(review_step.id)).to eq(false)
+    expect(ProcessManager::ProcessStepOption.exists?(incoming_option.id)).to eq(false)
+    expect(ProcessManager::ProcessStepOption.exists?(outgoing_option.id)).to eq(false)
+    expect(ProcessManager::ProcessStepOption.exists?(queue_to_done_option.id)).to eq(true)
     expect(visual_page).to have_no_step(review_step)
     expect(visual_page).to have_no_css(
       ".process-visual-editor__edge-path[data-workflow-step-option-id='#{incoming_option.id}']",
@@ -296,7 +296,7 @@ RSpec.describe "Process admin visual" do
 
     visual_page.fill_new_step_name("QA").choose_new_step_category(review_category).add_step
 
-    step = DiscourseWorkflow::WorkflowStep.find_by!(workflow_id: workflow.id, name: "QA")
+    step = ProcessManager::ProcessStep.find_by!(workflow_id: workflow.id, name: "QA")
     expect(step.category_id).to eq(review_category.id)
     expect(step.position).to eq(4)
     expect(visual_page).to have_step(step, text: "QA")
@@ -307,7 +307,7 @@ RSpec.describe "Process admin visual" do
 
     visual_page.choose_new_step_category(review_category).add_step
 
-    step = DiscourseWorkflow::WorkflowStep.find_by!(workflow_id: workflow.id, name: "New step")
+    step = ProcessManager::ProcessStep.find_by!(workflow_id: workflow.id, name: "New step")
     expect(step.position).to eq(4)
     expect(visual_page).to have_step(step, text: "New step")
   end

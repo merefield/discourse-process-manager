@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe "Process charts" do
-  fab!(:workflow_discovery_page) { PageObjects::Pages::WorkflowDiscovery.new }
+  fab!(:workflow_discovery_page) { PageObjects::Pages::ProcessDiscovery.new }
   fab!(:admin, :admin)
   fab!(:allowed_group, :group)
 
-  fab!(:workflow) { Fabricate(:workflow, name: "Primary Burn Down Workflow") }
-  fab!(:other_workflow) { Fabricate(:workflow, name: "Secondary Burn Down Workflow") }
+  fab!(:workflow) { Fabricate(:workflow, name: "Primary Burn Down Process") }
+  fab!(:other_workflow) { Fabricate(:workflow, name: "Secondary Burn Down Process") }
 
   fab!(:category_1, :category)
   fab!(:category_2, :category)
