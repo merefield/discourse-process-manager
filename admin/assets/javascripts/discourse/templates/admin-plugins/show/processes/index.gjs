@@ -24,7 +24,7 @@ export default <template>
 
     <div class="workflows-list">
       {{#if @controller.model.content.length}}
-        <ProcessListEditor @workflows={{@controller.model.content}} />
+        <ProcessListEditor @processes={{@controller.model.content}} />
       {{else}}
         {{i18n "admin.discourse_workflow.workflows.none"}}
       {{/if}}

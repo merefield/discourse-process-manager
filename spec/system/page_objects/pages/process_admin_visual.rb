@@ -154,9 +154,9 @@ module PageObjects
 
       def has_native_drag_payloads_for?(step)
         has_css?(step_selector(step)) &&
-          drag_start_payload(step_selector(step)) == "workflow-step:#{step.id}" &&
+          drag_start_payload(step_selector(step)) == "process-step:#{step.id}" &&
           drag_start_payload(connector_handle_selector(step, "right")) ==
-            "workflow-connector:#{step.id}:right"
+            "process-connector:#{step.id}:right"
       end
 
       def has_selected_connector_handle?(step, side)

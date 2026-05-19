@@ -13,7 +13,7 @@ export default class AdminPluginsShowProcessesStepsEdit extends DiscourseRoute {
     });
     processStep.set("processSteps", processSteps.content);
     const process = await this.store.find("process", processStep.process_id);
-    processStep.set("workflow", process);
+    processStep.set("process", process);
     return processStep;
   }
 

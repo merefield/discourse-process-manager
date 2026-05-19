@@ -31,7 +31,7 @@ export default class ProcessStepsListEditor extends Component {
 
   get newStep() {
     return this.store.createRecord("process-step", {
-      process_id: this.args.workflow.id,
+      process_id: this.args.process.id,
     });
   }
 
@@ -51,9 +51,9 @@ export default class ProcessStepsListEditor extends Component {
 
   @bind
   loadSteps() {
-    if (!this.args.currentProcessStep && this.args.workflow.id) {
+    if (!this.args.currentProcessStep && this.args.process.id) {
       this.store
-        .find("process-step", { process_id: this.args.workflow.id })
+        .find("process-step", { process_id: this.args.process.id })
         .then((steps) => {
           this.processSteps = steps.content;
           this.processStepsPresent = steps.content.length > 0 ? true : false;
@@ -152,7 +152,7 @@ export default class ProcessStepsListEditor extends Component {
       {{#if this.currentProcessStep}}
         <ProcessStepEditor
           @currentProcessStep={{this.currentProcessStep}}
-          @workflow={{@workflow}}
+          @process={{@process}}
           @processSteps={{@processSteps}}
         />
       {{else}}
@@ -253,7 +253,7 @@ export default class ProcessStepsListEditor extends Component {
                     {{/unless}}
                     <LinkTo
                       @route="adminPlugins.show.processes.steps.edit"
-                      @models={{array @workflow.id step}}
+                      @models={{array @process.id step}}
                       class="btn btn-text btn-small"
                     >{{i18n "admin.discourse_workflow.workflows.edit"}}
                     </LinkTo>
@@ -266,7 +266,7 @@ export default class ProcessStepsListEditor extends Component {
         <ProcessLinkButton
           @route="adminPlugins.show.processes.steps.new"
           @label="admin.discourse_workflow.workflows.steps.new"
-          @model={{@workflow}}
+          @model={{@process}}
         />
       {{/if}}
     </section>

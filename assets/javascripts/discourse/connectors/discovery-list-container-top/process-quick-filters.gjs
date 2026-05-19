@@ -369,7 +369,7 @@ export default class ProcessQuickFiltersConnector extends Component {
           process_overdue: !!get(topic, "process_overdue"),
           process_can_act: !!get(topic, "process_can_act"),
           tags: get(topic, "tags") || [],
-          workflow_topic_url:
+          process_topic_url:
             get(topic, "url") ||
             (get(topic, "slug")
               ? `/t/${get(topic, "slug")}/${get(topic, "id")}`
@@ -649,11 +649,11 @@ export default class ProcessQuickFiltersConnector extends Component {
     }
 
     if (event.metaKey || event.ctrlKey) {
-      window.open(topic.workflow_topic_url, "_blank", "noopener,noreferrer");
+      window.open(topic.process_topic_url, "_blank", "noopener,noreferrer");
       return;
     }
 
-    this.router.transitionTo(topic.workflow_topic_url);
+    this.router.transitionTo(topic.process_topic_url);
   }
 
   @action

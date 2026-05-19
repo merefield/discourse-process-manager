@@ -15,15 +15,15 @@ export default class ProcessListEditor extends Component {
   @service adminPluginNavManager;
 
   @action
-  async toggleEnabled(workflow) {
-    const oldValue = workflow.enabled;
+  async toggleEnabled(process) {
+    const oldValue = process.enabled;
     const newValue = !oldValue;
 
     try {
-      workflow.set("enabled", newValue);
-      await workflow.save();
+      process.set("enabled", newValue);
+      await process.save();
     } catch (err) {
-      workflow.set("enabled", oldValue);
+      process.set("enabled", oldValue);
       popupAjaxError(err);
     }
   }
@@ -35,12 +35,9 @@ export default class ProcessListEditor extends Component {
     />
     <section class="process-list-editor__current admin-detail pull-left">
       {{#if @currentProcess}}
-        <ProcessEditor
-          @workflow={{@currentProcess}}
-          @workflows={{@workflows}}
-        />
+        <ProcessEditor @process={{@currentProcess}} @processes={{@processes}} />
       {{else}}
-        {{#if @workflows}}
+        {{#if @processes}}
           <table class="content-list process-list-editor d-admin-table">
             <thead>
               <tr>
@@ -53,36 +50,36 @@ export default class ProcessListEditor extends Component {
               </tr>
             </thead>
             <tbody>
-              {{#each @workflows as |workflow|}}
+              {{#each @processes as |process|}}
                 <tr
-                  data-workflow-id={{workflow.id}}
+                  data-workflow-id={{process.id}}
                   class={{concatClass
                     "process-list__row d-admin-row__content"
-                    (if workflow.priority "priority")
+                    (if process.priority "priority")
                   }}
                 >
                   <td class="d-admin-row__detail">
                     <DToggleSwitch
-                      @state={{workflow.enabled}}
-                      {{on "click" (fn this.toggleEnabled workflow)}}
+                      @state={{process.enabled}}
+                      {{on "click" (fn this.toggleEnabled process)}}
                     />
                   </td>
                   <td class="d-admin-row__overview">
                     <div class="process-list__name">
                       <strong>
-                        {{workflow.name}}
+                        {{process.name}}
                       </strong>
                     </div>
                   </td>
                   <td class="d-admin-row__overview">
                     <div class="process-list__description">
-                      {{workflow.description}}
+                      {{process.description}}
                     </div>
                   </td>
                   <td class="d-admin-row__controls">
                     <LinkTo
                       @route="adminPlugins.show.processes.edit"
-                      @model={{workflow}}
+                      @model={{process}}
                       class="btn btn-text btn-small"
                     >{{i18n "admin.discourse_workflow.workflows.edit"}}
                     </LinkTo>

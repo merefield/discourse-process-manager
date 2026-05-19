@@ -392,7 +392,7 @@ export default class ProcessVisualEditor extends Component {
 
   @action
   async loadGraph(options = {}) {
-    if (!this.args.workflow?.id) {
+    if (!this.args.process?.id) {
       return;
     }
 
@@ -402,7 +402,7 @@ export default class ProcessVisualEditor extends Component {
       const shouldLoadOptions =
         options.reloadOptions === true || this.processOptions.length === 0;
       const processStepsRequest = ajax(
-        `/admin/plugins/discourse-workflow/processes/${this.args.workflow.id}/process_steps.json`
+        `/admin/plugins/discourse-workflow/processes/${this.args.process.id}/process_steps.json`
       );
       const processOptionsRequest = shouldLoadOptions
         ? ajax("/admin/plugins/discourse-workflow/process_options.json")
@@ -1828,7 +1828,7 @@ export default class ProcessVisualEditor extends Component {
 
   @action
   dragStepStart(step, event) {
-    this.setDragPayload(event, `workflow-step:${step.id}`);
+    this.setDragPayload(event, `process-step:${step.id}`);
     this.draggedStepId = step.id;
   }
 
@@ -1964,7 +1964,7 @@ export default class ProcessVisualEditor extends Component {
   @action
   dragConnectorHandleStart(step, side, event) {
     event.stopPropagation();
-    this.setDragPayload(event, `workflow-connector:${step.id}:${side}`);
+    this.setDragPayload(event, `process-connector:${step.id}:${side}`);
     this.startConnectorHandleInteraction(step, side);
     this.updateConnectorPreview(this.boardPointForEvent(event));
   }
@@ -2218,7 +2218,7 @@ export default class ProcessVisualEditor extends Component {
   @action
   dragOptionStart(stepOption, event) {
     event.stopPropagation();
-    this.setDragPayload(event, `workflow-step-option:${stepOption.id}`);
+    this.setDragPayload(event, `process-step-option:${stepOption.id}`);
     this.draggedOptionId = stepOption.id;
   }
 
@@ -2281,7 +2281,7 @@ export default class ProcessVisualEditor extends Component {
   addStepToLane(lane) {
     this.router.transitionTo(
       "adminPlugins.show.processes.steps.new",
-      this.args.workflow,
+      this.args.process,
       {
         queryParams: {
           category_id: lane.id,
@@ -2301,7 +2301,7 @@ export default class ProcessVisualEditor extends Component {
         type: "POST",
         data: {
           process_step: {
-            process_id: this.args.workflow.id,
+            process_id: this.args.process.id,
             name:
               this.newStepName ||
               i18n(

@@ -49,19 +49,19 @@ export default class ProcessEditor extends Component {
 
   @action
   updateModel() {
-    this.editingModel = this.args.workflow.workingCopy();
-    this.showDelete = !this.args.workflow.isNew && !this.args.workflow.system;
+    this.editingModel = this.args.process.workingCopy();
+    this.showDelete = !this.args.process.isNew && !this.args.process.system;
   }
 
   @action
   async save() {
     this.isSaving = true;
 
-    const backupModel = this.args.workflow.workingCopy();
+    const backupModel = this.args.process.workingCopy();
 
-    this.args.workflow.setProperties(this.editingModel);
+    this.args.process.setProperties(this.editingModel);
     try {
-      await this.args.workflow.save();
+      await this.args.process.save();
       this.#sortProcesses();
       this.toasts.success({
         data: { message: i18n("admin.discourse_workflow.workflows.saved") },
@@ -72,7 +72,7 @@ export default class ProcessEditor extends Component {
         this.store.findAll("process")
       );
     } catch (e) {
-      this.args.workflow.setProperties(backupModel);
+      this.args.process.setProperties(backupModel);
       popupAjaxError(e);
     } finally {
       later(() => {
@@ -86,7 +86,7 @@ export default class ProcessEditor extends Component {
     return this.dialog.confirm({
       message: i18n("admin.discourse_workflow.workflows.confirm_delete"),
       didConfirm: () => {
-        return this.args.workflow.destroyRecord().then(() => {
+        return this.args.process.destroyRecord().then(() => {
           this.router.transitionTo(
             "adminPlugins.show.processes",
             this.store.findAll("process")
@@ -110,14 +110,14 @@ export default class ProcessEditor extends Component {
   }
 
   async toggleField(field, sortProcesses) {
-    this.args.workflow.set(field, !this.args.workflow[field]);
-    this.editingModel.set(field, this.args.workflow[field]);
-    if (!this.args.workflow.isNew) {
+    this.args.process.set(field, !this.args.process[field]);
+    this.editingModel.set(field, this.args.process[field]);
+    if (!this.args.process.isNew) {
       try {
         const args = {};
-        args[field] = this.args.workflow[field];
+        args[field] = this.args.process[field];
 
-        await this.args.workflow.update(args);
+        await this.args.process.update(args);
         if (sortProcesses) {
           this.#sortProcesses();
         }
@@ -128,7 +128,7 @@ export default class ProcessEditor extends Component {
   }
 
   get showSteps() {
-    return this.args.workflow.id > 0;
+    return this.args.process.id > 0;
   }
 
   validationWarningMessage(warning) {
@@ -165,11 +165,11 @@ export default class ProcessEditor extends Component {
   }
 
   #sortProcesses() {
-    const sorted = this.args.workflows.toArray().sort((a, b) => {
+    const sorted = this.args.processes.toArray().sort((a, b) => {
       return a.name.localeCompare(b.name);
     });
-    this.args.workflows.clear();
-    this.args.workflows.setObjects(sorted);
+    this.args.processes.clear();
+    this.args.processes.setObjects(sorted);
   }
 
   <template>
@@ -181,10 +181,10 @@ export default class ProcessEditor extends Component {
       @route="adminPlugins.show.processes"
       @label="admin.discourse_workflow.workflows.back"
     />
-    {{#if @workflow.name}}
+    {{#if @process.name}}
       <h2>{{I18n.t
           "admin.discourse_workflow.workflows.workflow.editing.title"
-          process_name=@workflow.name
+          process_name=@process.name
         }}</h2>
     {{else}}
       <h2>{{I18n.t
@@ -196,13 +196,13 @@ export default class ProcessEditor extends Component {
       {{didUpdate this.updateModel @model.id}}
       {{didInsert this.updateModel @model.id}}
     >
-      {{#if @workflow.validation_warnings.length}}
+      {{#if @process.validation_warnings.length}}
         <div class="control-group process-editor__validation-warnings">
           <label>{{i18n
               "admin.discourse_workflow.workflows.validation.title"
             }}</label>
           <ul>
-            {{#each @workflow.validation_warnings as |warning|}}
+            {{#each @process.validation_warnings as |warning|}}
               <li>{{this.validationWarningMessage warning}}</li>
             {{/each}}
           </ul>
@@ -211,7 +211,7 @@ export default class ProcessEditor extends Component {
       <div class="control-group">
         <DToggleSwitch
           class="process-editor__enabled"
-          @state={{@workflow.enabled}}
+          @state={{@process.enabled}}
           @label="admin.discourse_workflow.workflows.enabled"
           {{on "click" this.toggleEnabled}}
         />
@@ -260,13 +260,13 @@ export default class ProcessEditor extends Component {
             "admin.discourse_workflow.workflows.show_kanban_tags_help"
           }}</p>
       </div>
-      {{#if @workflow.id}}
+      {{#if @process.id}}
         <div class="control-group">
           <label>{{i18n
               "admin.discourse_workflow.workflows.kanban_compatibility.label"
             }}</label>
           <p>
-            {{#if @workflow.kanban_compatible}}
+            {{#if @process.kanban_compatible}}
               <span class="process-editor__kanban-compatible">
                 {{i18n
                   "admin.discourse_workflow.workflows.kanban_compatibility.compatible"
@@ -315,13 +315,13 @@ export default class ProcessEditor extends Component {
           {{#if this.showingStepsList}}
             <ProcessStepListEditor
               class="process-editor__steps"
-              @workflow={{@workflow}}
+              @process={{@process}}
               @disabled={{this.editingModel.system}}
               @onChange={{this.stepsChanged}}
             />
           {{else}}
             <ProcessVisualEditor
-              @workflow={{@workflow}}
+              @process={{@process}}
               @disabled={{this.editingModel.system}}
             />
           {{/if}}
