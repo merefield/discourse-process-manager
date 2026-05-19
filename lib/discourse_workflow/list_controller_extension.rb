@@ -27,7 +27,7 @@ module DiscourseWorkflow
       end
 
       if params[:overdue] == "1"
-        default_overdue_days = SiteSetting.workflow_overdue_days_default.to_i
+        default_overdue_days = SiteSetting.process_manager_overdue_days_default.to_i
         workflow_topic_ids_scope =
           workflow_topic_ids_scope
             .joins(:workflow_step, :workflow)
@@ -89,7 +89,7 @@ module DiscourseWorkflow
     end
 
     def ensure_discourse_workflow
-      raise Discourse::NotFound if !SiteSetting.workflow_enabled
+      raise Discourse::NotFound if !SiteSetting.process_manager_enabled
     end
   end
 end

@@ -26,7 +26,7 @@ describe "Workflow topic lifecycle behavior" do
   end
 
   it "does not initialize workflow_state for topics when workflow is disabled" do
-    SiteSetting.workflow_enabled = true
+    SiteSetting.process_manager_enabled = true
     topic = Fabricate(:topic, category: start_category)
     DiscourseWorkflow::WorkflowState.where(topic_id: topic.id).delete_all
 

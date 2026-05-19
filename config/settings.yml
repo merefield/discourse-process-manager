@@ -1,20 +1,20 @@
 plugins:
-  workflow_enabled:
+  process_manager_enabled:
     client: true
     default: true
-  workflow_openai_api_key:
+  process_manager_openai_api_key:
     client: false
     default: ''
-  workflow_overdue_days_default:
+  process_manager_overdue_days_default:
     client: true
     type: integer
     default: 3
     min: 0
-  workflow_ai_prompt_system:
+  process_manager_ai_prompt_system:
     client: false
     default: ""
     type: string
-  workflow_ai_model:
+  process_manager_ai_model:
     client: false
     type: enum
     default: gpt-4o-mini
@@ -24,7 +24,7 @@ plugins:
       - gpt-4o-mini
       - gpt-4-turbo
       - gpt-4
-  workflow_charts_allowed_groups:
+  process_manager_charts_allowed_groups:
     client: false
     type: group_list
     default: ""

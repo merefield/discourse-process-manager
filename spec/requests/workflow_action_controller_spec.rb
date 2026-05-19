@@ -56,7 +56,7 @@ RSpec.describe DiscourseWorkflow::WorkflowActionController, type: :request do
   end
 
   before do
-    SiteSetting.workflow_enabled = true
+    SiteSetting.process_manager_enabled = true
     category_1.set_permissions(everyone: :full, staff: :full)
     category_2.set_permissions(everyone: :full, staff: :full)
     category_1.save!

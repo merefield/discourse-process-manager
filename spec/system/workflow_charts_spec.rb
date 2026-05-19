@@ -62,8 +62,8 @@ RSpec.describe "Workflow charts", type: :system do
 
   before do
     enable_current_plugin
-    SiteSetting.workflow_enabled = true
-    SiteSetting.workflow_charts_allowed_groups = allowed_group.id.to_s
+    SiteSetting.process_manager_enabled = true
+    SiteSetting.process_manager_charts_allowed_groups = allowed_group.id.to_s
 
     10.times do
       topic = Fabricate(:topic, category: category_1)

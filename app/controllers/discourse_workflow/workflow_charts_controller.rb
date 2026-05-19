@@ -5,7 +5,7 @@ module DiscourseWorkflow
     requires_plugin ::DiscourseWorkflow::PLUGIN_NAME
 
     before_action :ensure_logged_in
-    before_action :ensure_workflow_enabled
+    before_action :ensure_process_manager_enabled
     before_action :ensure_can_view_charts
 
     def index
@@ -28,8 +28,8 @@ module DiscourseWorkflow
 
     private
 
-    def ensure_workflow_enabled
-      raise Discourse::NotFound if !SiteSetting.workflow_enabled
+    def ensure_process_manager_enabled
+      raise Discourse::NotFound if !SiteSetting.process_manager_enabled
     end
 
     def ensure_can_view_charts

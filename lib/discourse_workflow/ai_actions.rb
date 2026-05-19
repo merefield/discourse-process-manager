@@ -4,12 +4,7 @@ module DiscourseWorkflow
   class AiActions
     def transition_all
       DiscourseWorkflow::WorkflowState
-        .includes(
-          topic: :first_post,
-          workflow_step: {
-            workflow_step_options: :workflow_option
-          }
-        )
+        .includes(topic: :first_post, workflow_step: { workflow_step_options: :workflow_option })
         .find_each do |workflow_state|
           step = workflow_state.workflow_step
           next unless step
@@ -27,17 +22,15 @@ module DiscourseWorkflow
       topic = workflow_state.topic
       return unless step && topic
 
-      client =
-        OpenAI::Client.new(access_token: SiteSetting.workflow_openai_api_key)
-      model_name = SiteSetting.workflow_ai_model
-      system_prompt = SiteSetting.workflow_ai_prompt_system
+      client = OpenAI::Client.new(access_token: SiteSetting.process_manager_openai_api_key)
+      model_name = SiteSetting.process_manager_ai_model
+      system_prompt = SiteSetting.process_manager_ai_prompt_system
       base_user_prompt = step.ai_prompt
 
       return if base_user_prompt.blank?
 
       # get option slugs for this step
-      options =
-        step.workflow_step_options.map { |o| o.workflow_option&.slug }.compact
+      options = step.workflow_step_options.map { |o| o.workflow_option&.slug }.compact
 
       return if options.empty?
 
@@ -46,7 +39,7 @@ module DiscourseWorkflow
 
       messages = [
         { role: "system", content: system_prompt },
-        { role: "user", content: user_prompt }
+        { role: "user", content: user_prompt },
       ]
 
       response =
@@ -55,8 +48,8 @@ module DiscourseWorkflow
             model: model_name,
             messages: messages,
             max_tokens: 8,
-            temperature: 0.1
-          }
+            temperature: 0.1,
+          },
         )
 
       if response["error"]
@@ -71,9 +64,7 @@ module DiscourseWorkflow
       result = response.dig("choices", 0, "message", "content")
       result = result.strip.chomp(".").downcase if result.present?
 
-      if result.present? && options.include?(result)
-        Transition.new.transition(nil, topic, result)
-      end
+      Transition.new.transition(nil, topic, result) if result.present? && options.include?(result)
     end
   end
 end

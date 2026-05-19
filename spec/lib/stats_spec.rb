@@ -32,7 +32,7 @@ describe DiscourseWorkflow::Stats do
   end
 
   it "calculates daily counts per workflow step from workflow states" do
-    SiteSetting.workflow_enabled = true
+    SiteSetting.process_manager_enabled = true
 
     expect do described_class.new.calculate_daily_stats end.to change {
       DiscourseWorkflow::WorkflowStat.count
@@ -40,7 +40,7 @@ describe DiscourseWorkflow::Stats do
   end
 
   it "ignores corrupted states with null workflow_id or workflow_step_id" do
-    SiteSetting.workflow_enabled = true
+    SiteSetting.process_manager_enabled = true
 
     state_1.update_columns(workflow_id: nil)
     state_2.update_columns(workflow_step_id: nil)

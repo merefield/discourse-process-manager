@@ -2,7 +2,7 @@
 module DiscourseWorkflow
   class Stats
     def calculate_daily_stats
-      return unless SiteSetting.workflow_enabled
+      return unless SiteSetting.process_manager_enabled
 
       current_date = Date.current
       now = Time.zone.now

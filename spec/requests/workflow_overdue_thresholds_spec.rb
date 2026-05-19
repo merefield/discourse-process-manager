@@ -8,15 +8,9 @@ RSpec.describe "Workflow overdue thresholds", type: :request do
   fab!(:workflow_global_default) do
     Fabricate(:workflow, name: "Global Default Workflow", overdue_days: nil)
   end
-  fab!(:workflow_override) do
-    Fabricate(:workflow, name: "Workflow Override", overdue_days: 5)
-  end
-  fab!(:workflow_step_override) do
-    Fabricate(:workflow, name: "Step Override", overdue_days: 10)
-  end
-  fab!(:workflow_disabled) do
-    Fabricate(:workflow, name: "Disabled Overdue", overdue_days: 0)
-  end
+  fab!(:workflow_override) { Fabricate(:workflow, name: "Workflow Override", overdue_days: 5) }
+  fab!(:workflow_step_override) { Fabricate(:workflow, name: "Step Override", overdue_days: 10) }
+  fab!(:workflow_disabled) { Fabricate(:workflow, name: "Disabled Overdue", overdue_days: 0) }
 
   fab!(:category_global_default, :category)
   fab!(:category_workflow_override, :category)
@@ -60,9 +54,15 @@ RSpec.describe "Workflow overdue thresholds", type: :request do
     )
   end
 
-  fab!(:topic_global_default) { Fabricate(:topic_with_op, category: category_global_default, user: user) }
-  fab!(:topic_workflow_override) { Fabricate(:topic_with_op, category: category_workflow_override, user: user) }
-  fab!(:topic_step_override) { Fabricate(:topic_with_op, category: category_step_override, user: user) }
+  fab!(:topic_global_default) do
+    Fabricate(:topic_with_op, category: category_global_default, user: user)
+  end
+  fab!(:topic_workflow_override) do
+    Fabricate(:topic_with_op, category: category_workflow_override, user: user)
+  end
+  fab!(:topic_step_override) do
+    Fabricate(:topic_with_op, category: category_step_override, user: user)
+  end
   fab!(:topic_disabled) { Fabricate(:topic_with_op, category: category_disabled, user: user) }
 
   fab!(:state_global_default) do
@@ -99,14 +99,16 @@ RSpec.describe "Workflow overdue thresholds", type: :request do
   end
 
   before do
-    SiteSetting.workflow_enabled = true
-    SiteSetting.workflow_overdue_days_default = 3
+    SiteSetting.process_manager_enabled = true
+    SiteSetting.process_manager_overdue_days_default = 3
     sign_in(user)
 
-    [category_global_default,
-     category_workflow_override,
-     category_step_override,
-     category_disabled].each do |category|
+    [
+      category_global_default,
+      category_workflow_override,
+      category_step_override,
+      category_disabled,
+    ].each do |category|
       category.set_permissions(everyone: :full, staff: :full)
       category.save!
     end

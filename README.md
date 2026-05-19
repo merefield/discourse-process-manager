@@ -31,7 +31,7 @@ If you are new to the terminology, see:
 - Built-in process burn-down chart view (`/workflow/charts` and chart mode in `/workflow`) for single-process context
 - Chart period selector (`1` to `12` weeks), complete-week windows (Sunday to Saturday), per-step colored series
 - Overdue behavior with hierarchy:
-  - global default (`workflow_overdue_days_default`)
+  - global default (`process_manager_overdue_days_default`)
   - workflow override
   - step override
   - `0` disables overdue behavior at that scope
@@ -45,7 +45,7 @@ If you are new to the terminology, see:
 
 ## Quickstart
 
-1. Enable the plugin in Site Settings (`workflow_enabled`).
+1. Enable the plugin in Site Settings (`process_manager_enabled`).
 2. Go to `Admin -> Plugins -> Process Manager`, create a process, then save it.
 3. Add workflow steps (Categories in journey order), then add step options (actions/transitions).
 4. Create a topic in the first step Category and transition it through actions from the topic banner.
@@ -57,12 +57,12 @@ If you are new to the terminology, see:
 
 ### Core plugin settings
 
-- `workflow_enabled`: enables/disables Process Manager behavior.
-- `workflow_overdue_days_default`: default overdue threshold in days; `0` disables overdue by default.
-- `workflow_openai_api_key`: API key for AI actions.
-- `workflow_ai_model`: model used for AI actions.
-- `workflow_ai_prompt_system`: system prompt support for AI transitions.
-- `workflow_charts_allowed_groups`: non-admin groups allowed to view process charts.
+- `process_manager_enabled`: enables/disables Process Manager behavior.
+- `process_manager_overdue_days_default`: default overdue threshold in days; `0` disables overdue by default.
+- `process_manager_openai_api_key`: API key for AI actions.
+- `process_manager_ai_model`: model used for AI actions.
+- `process_manager_ai_prompt_system`: system prompt support for AI transitions.
+- `process_manager_charts_allowed_groups`: non-admin groups allowed to view process charts.
 
 ### Process definition setup
 
@@ -82,7 +82,7 @@ Process-level Kanban controls:
 
 ### Overdue setup hierarchy
 
-- Global default: `workflow_overdue_days_default`
+- Global default: `process_manager_overdue_days_default`
 - Optional process-level override: `Workflow.overdue_days`
 - Optional step-level override: `WorkflowStep.overdue_days`
 
@@ -117,11 +117,11 @@ Chart view is shown when the current process discovery context resolves to a sin
 Access model for charts is intentionally separate from topic-level category access:
 
 - Admins can always view charts
-- Users in `workflow_charts_allowed_groups` can view charts
+- Users in `process_manager_charts_allowed_groups` can view charts
 - Chart access is aggregate and process-level; it is intentionally not constrained to per-topic visibility rules
 - This allows operational/reporting audiences to monitor process throughput without granting direct access to every underlying topic
 
-If you want stricter chart data visibility, keep `workflow_charts_allowed_groups` empty and rely on admin-only access.
+If you want stricter chart data visibility, keep `process_manager_charts_allowed_groups` empty and rely on admin-only access.
 
 ### Background jobs
 
@@ -134,7 +134,7 @@ The plugin schedules and runs the following jobs:
 
 ### AI actions
 
-You can leverage AI to handle a step. You need `workflow_openai_api_key`, AI enabled on the step, and a prompt including both `{{options}}` and `{{topic}}`. You can also tune behavior with `workflow_ai_model` and `workflow_ai_prompt_system`.
+You can leverage AI to handle a step. You need `process_manager_openai_api_key`, AI enabled on the step, and a prompt including both `{{options}}` and `{{topic}}`. You can also tune behavior with `process_manager_ai_model` and `process_manager_ai_prompt_system`.
 
 Example prompt:
 

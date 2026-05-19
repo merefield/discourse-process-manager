@@ -49,7 +49,7 @@ RSpec.describe "Workflow topic banner", type: :system do
 
   before do
     enable_current_plugin
-    SiteSetting.workflow_enabled = true
+    SiteSetting.process_manager_enabled = true
     GroupUser.create!(group_id: actor_group.id, user_id: actor.id)
 
     start_category.set_permissions(everyone: :readonly, actor_group.id => :full, staff: :full)

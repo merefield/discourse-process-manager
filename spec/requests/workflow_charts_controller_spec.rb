@@ -64,8 +64,8 @@ RSpec.describe DiscourseWorkflow::WorkflowChartsController, type: :request do
   end
 
   before do
-    SiteSetting.workflow_enabled = true
-    SiteSetting.workflow_charts_allowed_groups = allowed_group.id.to_s
+    SiteSetting.process_manager_enabled = true
+    SiteSetting.process_manager_charts_allowed_groups = allowed_group.id.to_s
     GroupUser.create!(group: allowed_group, user: allowed_user)
 
     category_1.update_columns(color: "112233")

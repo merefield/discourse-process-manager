@@ -9,7 +9,7 @@
 gem "event_stream_parser", "1.0.0", { require: false }
 gem "ruby-openai", "8.1.0", { require: false }
 
-enabled_site_setting :workflow_enabled
+enabled_site_setting :process_manager_enabled
 
 register_asset "stylesheets/common/workflow_common.scss"
 register_asset "stylesheets/desktop/workflow_desktop.scss", :desktop
@@ -32,7 +32,7 @@ after_initialize do
   end
 
   register_topic_preloader_associations({ workflow_state: %i[workflow workflow_step] }) do
-    SiteSetting.workflow_enabled
+    SiteSetting.process_manager_enabled
   end
 
   Discourse::Application.routes.prepend { get "/workflow/charts" => "list#workflow_charts" }
@@ -138,7 +138,7 @@ after_initialize do
     elsif !workflow_overdue_days.nil?
       workflow_overdue_days.to_i
     else
-      SiteSetting.workflow_overdue_days_default.to_i
+      SiteSetting.process_manager_overdue_days_default.to_i
     end
   end
 
@@ -397,7 +397,7 @@ after_initialize do
   on(:topic_created) do |*params|
     topic, opts = params
 
-    if SiteSetting.workflow_enabled
+    if SiteSetting.process_manager_enabled
       workflow_step =
         DiscourseWorkflow::WorkflowStep.joins(:workflow).find_by(
           category_id: topic.category_id,

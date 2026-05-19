@@ -1,8 +1,8 @@
 en:
   site_settings:
-    workflow_enabled: "Enable Process Manager"
-    workflow_overdue_days_default: "Default overdue threshold in days for process topics. Use 0 to disable overdue behavior by default."
-    workflow_charts_allowed_groups: "Groups allowed to view process burn-down charts in addition to admins."
+    process_manager_enabled: "Enable Process Manager"
+    process_manager_overdue_days_default: "Default overdue threshold in days for process topics. Use 0 to disable overdue behavior by default."
+    process_manager_charts_allowed_groups: "Groups allowed to view process burn-down charts in addition to admins."
   discourse_workflow:
     topic_transition_action_description: 'Moved from "%{starting_step_name}" to "%{ending_step_name}" with action: "%{step_option_name}" by @%{username}'
     errors:

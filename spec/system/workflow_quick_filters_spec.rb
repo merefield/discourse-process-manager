@@ -56,7 +56,7 @@ RSpec.describe "Workflow quick filters", type: :system do
 
   before do
     enable_current_plugin
-    SiteSetting.workflow_enabled = true
+    SiteSetting.process_manager_enabled = true
     SiteSetting.tagging_enabled = true
     category_1.set_permissions(everyone: :full, staff: :full)
     category_2.set_permissions(everyone: :readonly, staff: :full)

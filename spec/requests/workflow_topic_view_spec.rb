@@ -35,7 +35,7 @@ RSpec.describe "Workflow topic view", type: :request do
   end
 
   before do
-    SiteSetting.workflow_enabled = true
+    SiteSetting.process_manager_enabled = true
     category.set_permissions(everyone: :full, staff: :full)
     category.save!
     sign_in(user)

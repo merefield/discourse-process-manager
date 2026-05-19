@@ -41,7 +41,7 @@ RSpec.describe "Workflow list filters", type: :request do
     )
   end
   before do
-    SiteSetting.workflow_enabled = true
+    SiteSetting.process_manager_enabled = true
     sign_in(user)
 
     category_a.set_permissions(everyone: :full, staff: :full)
