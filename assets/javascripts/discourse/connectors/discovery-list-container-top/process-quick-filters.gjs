@@ -933,7 +933,7 @@ export default class ProcessQuickFiltersConnector extends Component {
               )
               "process-kanban"
             }}
-            data-workflow-kanban-view={{if this.isKanbanView "active"}}
+            data-process-kanban-view={{if this.isKanbanView "active"}}
           >
             <div class="process-kanban__header">
               <h3 class="process-kanban__title">
@@ -954,7 +954,7 @@ export default class ProcessQuickFiltersConnector extends Component {
                 <section
                   class={{column.column_class}}
                   style={{column.column_style}}
-                  data-workflow-step-position={{column.position}}
+                  data-process-step-position={{column.position}}
                   {{on "dragover" (fn this.columnDragOver column)}}
                   {{on "drop" (fn this.columnDrop column)}}
                 >

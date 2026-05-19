@@ -520,7 +520,7 @@ export default class ProcessVisualEditor extends Component {
 
     for (const step of this.processSteps) {
       const element = this.boardElement.querySelector(
-        `[data-workflow-step-id="${step.id}"]`
+        `[data-process-step-id="${step.id}"]`
       );
 
       if (!element) {
@@ -1855,7 +1855,7 @@ export default class ProcessVisualEditor extends Component {
   stepRect(stepId) {
     const boardRect = this.boardElement.getBoundingClientRect();
     const element = this.boardElement.querySelector(
-      `[data-workflow-step-id="${stepId}"]`
+      `[data-process-step-id="${stepId}"]`
     );
 
     if (!element) {
@@ -2372,11 +2372,11 @@ export default class ProcessVisualEditor extends Component {
             {{#each this.edgeLayouts as |edge|}}
               <path
                 class="process-visual-editor__edge-path"
-                data-workflow-step-option-id={{edge.step_option.id}}
-                data-workflow-source-step-id={{edge.source_step_id}}
-                data-workflow-target-step-id={{edge.target_step_id}}
-                data-workflow-source-side={{edge.source_side}}
-                data-workflow-target-side={{edge.target_side}}
+                data-process-step-option-id={{edge.step_option.id}}
+                data-process-source-step-id={{edge.source_step_id}}
+                data-process-target-step-id={{edge.target_step_id}}
+                data-process-source-side={{edge.source_side}}
+                data-process-target-side={{edge.target_side}}
                 d={{edge.path}}
               ></path>
             {{/each}}
@@ -2392,7 +2392,7 @@ export default class ProcessVisualEditor extends Component {
             {{#each this.edgeLayouts as |edge|}}
               <div
                 class="process-visual-editor__option"
-                data-workflow-step-option-id={{edge.step_option.id}}
+                data-process-step-option-id={{edge.step_option.id}}
                 style={{this.edgeOptionStyle edge}}
               >
                 <DButton
@@ -2403,7 +2403,7 @@ export default class ProcessVisualEditor extends Component {
                   @disabled={{@disabled}}
                 />
                 <select
-                  data-workflow-step-option-id={{edge.step_option.id}}
+                  data-process-step-option-id={{edge.step_option.id}}
                   title={{i18n
                     "admin.discourse_workflow.workflows.visual.change_connector_option"
                   }}
@@ -2433,7 +2433,7 @@ export default class ProcessVisualEditor extends Component {
             {{#each this.lanes as |lane|}}
               <section
                 class="process-visual-editor__lane"
-                data-workflow-category-id={{lane.id}}
+                data-process-category-id={{lane.id}}
                 style={{this.laneStyle lane}}
                 {{on "dragover" this.allowDrop}}
                 {{on "drop" (fn this.dropStepOnLane lane)}}
@@ -2455,8 +2455,8 @@ export default class ProcessVisualEditor extends Component {
                   {{#each this.positionSlots as |position|}}
                     <div
                       class="process-visual-editor__position-slot"
-                      data-workflow-category-id={{lane.id}}
-                      data-workflow-position={{position}}
+                      data-process-category-id={{lane.id}}
+                      data-process-position={{position}}
                       {{on "dragover" this.allowDrop}}
                       {{on
                         "drop"
@@ -2469,7 +2469,7 @@ export default class ProcessVisualEditor extends Component {
                       }}
                         <article
                           class="process-visual-editor__step"
-                          data-workflow-step-id={{step.id}}
+                          data-process-step-id={{step.id}}
                           draggable={{if @disabled false true}}
                           {{on "dragstart" (fn this.dragStepStart step)}}
                           {{on "dragend" this.dragStepEnd}}
@@ -2495,7 +2495,7 @@ export default class ProcessVisualEditor extends Component {
                                 "false"
                               }}
                               title={{this.connectorHandleLabel step side}}
-                              data-workflow-connector-side={{side}}
+                              data-process-connector-side={{side}}
                               draggable={{if @disabled false true}}
                               {{on
                                 "click"

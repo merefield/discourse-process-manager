@@ -52,7 +52,7 @@ export default class ProcessListEditor extends Component {
             <tbody>
               {{#each @processes as |process|}}
                 <tr
-                  data-workflow-id={{process.id}}
+                  data-process-id={{process.id}}
                   class={{concatClass
                     "process-list__row d-admin-row__content"
                     (if process.priority "priority")

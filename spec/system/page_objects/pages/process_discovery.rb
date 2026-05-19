@@ -131,14 +131,14 @@ module PageObjects
       end
 
       def has_kanban_column_for_step?(position)
-        has_css?(".process-kanban__column[data-workflow-step-position='#{position}']")
+        has_css?(".process-kanban__column[data-process-step-position='#{position}']")
       end
 
       def kanban_column_border_color(position)
         page.evaluate_script(<<~JS)
             (() => {
               const column = document.querySelector(
-                '.process-kanban__column[data-workflow-step-position="#{position}"]'
+                '.process-kanban__column[data-process-step-position="#{position}"]'
               );
               if (!column) {
                 return null;
@@ -159,13 +159,13 @@ module PageObjects
 
       def has_kanban_card_for_topic_in_step?(topic_id, position)
         has_css?(
-          ".process-kanban__column[data-workflow-step-position='#{position}'] .process-kanban__card[data-topic-id='#{topic_id}']",
+          ".process-kanban__column[data-process-step-position='#{position}'] .process-kanban__card[data-topic-id='#{topic_id}']",
         )
       end
 
       def has_no_kanban_card_for_topic_in_step?(topic_id, position)
         has_no_css?(
-          ".process-kanban__column[data-workflow-step-position='#{position}'] .process-kanban__card[data-topic-id='#{topic_id}']",
+          ".process-kanban__column[data-process-step-position='#{position}'] .process-kanban__card[data-topic-id='#{topic_id}']",
         )
       end
 
@@ -182,11 +182,11 @@ module PageObjects
       end
 
       def has_kanban_legal_drop_target_for_step?(position)
-        has_css?(".process-kanban__column--legal[data-workflow-step-position='#{position}']")
+        has_css?(".process-kanban__column--legal[data-process-step-position='#{position}']")
       end
 
       def has_kanban_illegal_drop_target_for_step?(position)
-        has_css?(".process-kanban__column--illegal[data-workflow-step-position='#{position}']")
+        has_css?(".process-kanban__column--illegal[data-process-step-position='#{position}']")
       end
 
       def drag_kanban_card_to_step(topic_id, position)
@@ -197,7 +197,7 @@ module PageObjects
               `.process-kanban__card[data-topic-id="${topicId}"]`
             );
             const target = document.querySelector(
-              `.process-kanban__column[data-workflow-step-position="${stepPosition}"] .process-kanban__cards`
+              `.process-kanban__column[data-process-step-position="${stepPosition}"] .process-kanban__cards`
             );
 
             if (!card || !target) {

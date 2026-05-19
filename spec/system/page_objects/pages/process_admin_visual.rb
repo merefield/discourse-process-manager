@@ -67,7 +67,7 @@ module PageObjects
           (() => {
             const stepId = arguments[0];
             const expectedRatio = arguments[1];
-            const step = document.querySelector(`.process-visual-editor__step[data-workflow-step-id="${stepId}"]`);
+            const step = document.querySelector(`.process-visual-editor__step[data-process-step-id="${stepId}"]`);
             const slot = step.closest(".process-visual-editor__position-slot");
             const stepRect = step.getBoundingClientRect();
             const slotRect = slot.getBoundingClientRect();
@@ -82,7 +82,7 @@ module PageObjects
         has_css?(step_selector(step)) && page.evaluate_script(<<~JS, step.id)
           (() => {
             const stepId = arguments[0];
-            const step = document.querySelector(`.process-visual-editor__step[data-workflow-step-id="${stepId}"]`);
+            const step = document.querySelector(`.process-visual-editor__step[data-process-step-id="${stepId}"]`);
             const number = step.querySelector(".process-visual-editor__step-number");
             const label = step.querySelector(".process-visual-editor__step-label");
             const stepRect = step.getBoundingClientRect();
@@ -99,7 +99,7 @@ module PageObjects
         has_css?(step_selector(step)) && page.evaluate_script(<<~JS, step.id)
           (() => {
             const stepId = arguments[0];
-            const step = document.querySelector(`.process-visual-editor__step[data-workflow-step-id="${stepId}"]`);
+            const step = document.querySelector(`.process-visual-editor__step[data-process-step-id="${stepId}"]`);
             const laneContent = step.closest(".process-visual-editor__lane-steps");
             const stepRect = step.getBoundingClientRect();
             const laneContentRect = laneContent.getBoundingClientRect();
@@ -128,7 +128,7 @@ module PageObjects
               const stepOptionId = arguments[0];
               const expectedText = arguments[1];
               const select = document.querySelector(
-                `.process-visual-editor__option[data-workflow-step-option-id="${stepOptionId}"] select`
+                `.process-visual-editor__option[data-process-step-option-id="${stepOptionId}"] select`
               );
 
               return select?.selectedOptions?.[0]?.textContent.trim() === expectedText;
@@ -399,8 +399,8 @@ module PageObjects
             #{path_geometry_helpers}
 
             const stepOptionId = arguments[0];
-            const path = document.querySelector(`.process-visual-editor__edge-path[data-workflow-step-option-id="${stepOptionId}"]`);
-            const option = document.querySelector(`.process-visual-editor__option[data-workflow-step-option-id="${stepOptionId}"]`);
+            const path = document.querySelector(`.process-visual-editor__edge-path[data-process-step-option-id="${stepOptionId}"]`);
+            const option = document.querySelector(`.process-visual-editor__option[data-process-step-option-id="${stepOptionId}"]`);
             const boardRect = document.querySelector(".process-visual-editor__board").getBoundingClientRect();
             const optionRect = option.getBoundingClientRect();
             const optionCenter = {
@@ -479,7 +479,7 @@ module PageObjects
               return Math.max(rect.left, otherRect.left) < Math.min(rect.right, otherRect.right) &&
                 Math.max(rect.top, otherRect.top) < Math.min(rect.bottom, otherRect.bottom);
             };
-            const option = document.querySelector(`.process-visual-editor__option[data-workflow-step-option-id="${stepOptionId}"]`);
+            const option = document.querySelector(`.process-visual-editor__option[data-process-step-option-id="${stepOptionId}"]`);
             const optionRect = option.getBoundingClientRect();
             const stepRects = Array.from(document.querySelectorAll(".process-visual-editor__step")).map((step) => {
               return step.getBoundingClientRect();
@@ -492,7 +492,7 @@ module PageObjects
 
       def has_forward_arrow_from_right_edge?(step_option)
         has_css?(
-          ".process-visual-editor__edge-path[data-workflow-step-option-id='#{step_option.id}'][data-workflow-source-side='right']",
+          ".process-visual-editor__edge-path[data-process-step-option-id='#{step_option.id}'][data-process-source-side='right']",
         )
       end
 
@@ -538,7 +538,7 @@ module PageObjects
 
       def select_option(step_option, workflow_option)
         find(
-          "#{option_selector(step_option)} select[data-workflow-step-option-id='#{step_option.id}']",
+          "#{option_selector(step_option)} select[data-process-step-option-id='#{step_option.id}']",
         ).find("option[value='#{workflow_option.id}']").select_option
         self
       end
@@ -645,19 +645,19 @@ module PageObjects
       private
 
       def step_selector(step)
-        ".process-visual-editor__step[data-workflow-step-id='#{step.id}']"
+        ".process-visual-editor__step[data-process-step-id='#{step.id}']"
       end
 
       def lane_selector(category)
-        ".process-visual-editor__lane[data-workflow-category-id='#{category.id}']"
+        ".process-visual-editor__lane[data-process-category-id='#{category.id}']"
       end
 
       def position_selector(category, position)
-        ".process-visual-editor__position-slot[data-workflow-category-id='#{category.id}'][data-workflow-position='#{position}']"
+        ".process-visual-editor__position-slot[data-process-category-id='#{category.id}'][data-process-position='#{position}']"
       end
 
       def option_selector(step_option)
-        ".process-visual-editor__option[data-workflow-step-option-id='#{step_option.id}']"
+        ".process-visual-editor__option[data-process-step-option-id='#{step_option.id}']"
       end
 
       def connector_handle_selector(step, side)

@@ -192,7 +192,7 @@ export default class ProcessStepsListEditor extends Component {
             <tbody>
               {{#each this.processSteps as |step|}}
                 <tr
-                  data-workflow-step-id={{step.position}}
+                  data-process-step-id={{step.position}}
                   class={{concatClass
                     "process-step-list__row d-admin-row__content"
                   }}

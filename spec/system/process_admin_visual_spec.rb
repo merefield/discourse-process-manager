@@ -200,10 +200,10 @@ RSpec.describe "Process admin visual" do
 
     expect(ProcessManager::ProcessStepOption.exists?(queue_to_done_option.id)).to eq(false)
     expect(visual_page).to have_no_css(
-      ".process-visual-editor__edge-path[data-workflow-step-option-id='#{queue_to_done_option.id}']",
+      ".process-visual-editor__edge-path[data-process-step-option-id='#{queue_to_done_option.id}']",
     )
     expect(visual_page).to have_no_css(
-      ".process-visual-editor__option[data-workflow-step-option-id='#{queue_to_done_option.id}']",
+      ".process-visual-editor__option[data-process-step-option-id='#{queue_to_done_option.id}']",
     )
   end
 
@@ -239,10 +239,10 @@ RSpec.describe "Process admin visual" do
     expect(ProcessManager::ProcessStepOption.exists?(queue_to_done_option.id)).to eq(true)
     expect(visual_page).to have_no_step(review_step)
     expect(visual_page).to have_no_css(
-      ".process-visual-editor__edge-path[data-workflow-step-option-id='#{incoming_option.id}']",
+      ".process-visual-editor__edge-path[data-process-step-option-id='#{incoming_option.id}']",
     )
     expect(visual_page).to have_no_css(
-      ".process-visual-editor__edge-path[data-workflow-step-option-id='#{outgoing_option.id}']",
+      ".process-visual-editor__edge-path[data-process-step-option-id='#{outgoing_option.id}']",
     )
   end
 
