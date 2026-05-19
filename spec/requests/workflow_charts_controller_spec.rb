@@ -97,7 +97,7 @@ RSpec.describe DiscourseWorkflow::WorkflowChartsController, type: :request do
     )
   end
 
-  it "returns the localized access denied message on workflow discovery charts route when unauthorized" do
+  it "returns the localized access denied message on process discovery charts route when unauthorized" do
     sign_in(blocked_user)
 
     get "/workflow/charts.json"
@@ -108,7 +108,7 @@ RSpec.describe DiscourseWorkflow::WorkflowChartsController, type: :request do
     )
   end
 
-  it "allows configured group members to query workflow chart data" do
+  it "allows configured group members to query process chart data" do
     sign_in(allowed_user)
 
     get "/discourse-workflow/charts.json"
@@ -117,7 +117,7 @@ RSpec.describe DiscourseWorkflow::WorkflowChartsController, type: :request do
     expect(response.parsed_body["selected_workflow_id"]).to eq(workflow.id)
   end
 
-  it "allows admins to query workflow chart data" do
+  it "allows admins to query process chart data" do
     sign_in(admin)
 
     get "/discourse-workflow/charts.json"
@@ -126,7 +126,7 @@ RSpec.describe DiscourseWorkflow::WorkflowChartsController, type: :request do
     expect(response.parsed_body["selected_workflow_id"]).to eq(workflow.id)
   end
 
-  it "serves the workflow charts discovery route for authorized users" do
+  it "serves the process charts discovery route for authorized users" do
     sign_in(admin)
 
     get "/workflow/charts.json"
@@ -168,7 +168,7 @@ RSpec.describe DiscourseWorkflow::WorkflowChartsController, type: :request do
     expect(step_series["Done"]["data"].length).to eq(labels.length)
   end
 
-  it "supports up to 12 weeks and returns selected workflow metadata only" do
+  it "supports up to 12 weeks and returns selected process metadata only" do
     sign_in(admin)
 
     get "/discourse-workflow/charts.json", params: { workflow_id: other_workflow.id, weeks: 12 }
@@ -183,7 +183,7 @@ RSpec.describe DiscourseWorkflow::WorkflowChartsController, type: :request do
     expect(payload).not_to have_key("workflows")
   end
 
-  it "loads chart workflow step data only for the selected workflow" do
+  it "loads chart process step data only for the selected process" do
     sign_in(admin)
 
     workflow_queries, workflow_steps_queries =

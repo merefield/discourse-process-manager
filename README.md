@@ -83,8 +83,8 @@ Process-level Kanban controls:
 ### Overdue setup hierarchy
 
 - Global default: `process_manager_overdue_days_default`
-- Optional process-level override: `Workflow.overdue_days`
-- Optional step-level override: `WorkflowStep.overdue_days`
+- Optional process-level override: the process `overdue_days` field
+- Optional step-level override: the step `overdue_days` field
 
 Resolution order is `step -> process -> global`. A value of `0` means overdue behavior is disabled at that level.
 
@@ -112,7 +112,7 @@ Chart view is shown when the current process discovery context resolves to a sin
 - Period selection: `1` to `12` weeks
 - Time windows: complete weeks (Sunday through Saturday)
 - Series: one line per step, color derived from step category color (or parent category color fallback)
-- Response scope: chart payload includes selected process metadata (`selected_workflow_id`, `selected_workflow_name`) plus series data for that selected process context
+- Response scope: chart payload includes selected process metadata plus series data for that selected process context
 
 Access model for charts is intentionally separate from topic-level category access:
 
@@ -127,10 +127,10 @@ If you want stricter chart data visibility, keep `process_manager_charts_allowed
 
 The plugin schedules and runs the following jobs:
 
-- `Jobs::DiscourseWorkflow::DailyStats`: records daily process step counts
-- `Jobs::DiscourseWorkflow::AiTransitions`: runs AI-enabled transitions
-- `Jobs::DiscourseWorkflow::DataExplorerQueriesCompleteness`: ensures default Process Manager Data Explorer queries exist
-- `Jobs::DiscourseWorkflow::TopicArrivalNotifier`: sends first-post arrival notifications on process transitions
+- Daily stats: records daily process step counts
+- AI transitions: runs AI-enabled transitions
+- Data Explorer query completeness: ensures default Process Manager Data Explorer queries exist
+- Topic arrival notifier: sends first-post arrival notifications on process transitions
 
 ### AI actions
 
@@ -232,7 +232,7 @@ Permissioning principle:
 | Performance | Admin/list/chart/transition query-path N+1 and over-fetch hardening | Implemented | Admin serializers preloaded, process quick filters now SQL-scoped, chart loading scoped to selected process, transition lookup round-trips reduced, and process-state staleness indexing added |
 | Performance | Bulk process arrival notification fan-out                     | Planned     | Use bulk insert (`insert_all`) for category watcher notifications to reduce per-user insert overhead at high watcher counts |
 | Performance | Cache process chart payloads                                  | Planned     | Add short-lived caching keyed by process and period to reduce repeated chart aggregation for frequent refreshes |
-| Performance | Cache process visualisation payloads                          | Planned     | Cache graph payloads keyed by topic/workflow-state version to avoid rebuilding identical visualisations |
+| Performance | Cache process visualisation payloads                          | Planned     | Cache graph payloads keyed by topic/process-state version to avoid rebuilding identical visualisations |
 | Performance | Production query-plan validation for process filters          | Partial     | Query shape is now SQL-driven; continue with `EXPLAIN`/index tuning against large production-like datasets |
 | Reporting   | Built-in process analytics dashboards                         | Partial     | Data Explorer support exists; admin-native reporting is next               |
 | Lifecycle   | Import/export/version process definitions                     | Missing     | Useful for staging->production promotion and rollback                      |

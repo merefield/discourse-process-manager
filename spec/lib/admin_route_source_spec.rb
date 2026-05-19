@@ -15,7 +15,7 @@ describe "Admin workflow route source contracts" do
     expect(source).not_to include('"admin.plugins.show.discourse-workflow.workflows.steps"')
   end
 
-  it "derives workflow id in setupController without nested router path traversal" do
+  it "derives process id in setupController without nested router path traversal" do
     route_path =
       File.expand_path(
         "../../admin/assets/javascripts/discourse/routes/admin-plugins/show/processes/steps/options/edit.js",

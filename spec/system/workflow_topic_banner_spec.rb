@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "Workflow topic banner", type: :system do
+RSpec.describe "Process topic banner" do
   fab!(:actor, :user)
   fab!(:viewer, :user)
   fab!(:actor_group, :group)
@@ -25,9 +25,7 @@ RSpec.describe "Workflow topic banner", type: :system do
       name: "Review",
     )
   end
-  fab!(:option_accept) do
-    Fabricate(:workflow_option, slug: "accept", name: "Accept")
-  end
+  fab!(:option_accept) { Fabricate(:workflow_option, slug: "accept", name: "Accept") }
   fab!(:step_option) do
     Fabricate(
       :workflow_step_option,
@@ -52,8 +50,8 @@ RSpec.describe "Workflow topic banner", type: :system do
     SiteSetting.process_manager_enabled = true
     GroupUser.create!(group_id: actor_group.id, user_id: actor.id)
 
-    start_category.set_permissions(everyone: :readonly, actor_group.id => :full, staff: :full)
-    next_category.set_permissions(everyone: :readonly, actor_group.id => :full, staff: :full)
+    start_category.set_permissions(:everyone => :readonly, actor_group.id => :full, :staff => :full)
+    next_category.set_permissions(:everyone => :readonly, actor_group.id => :full, :staff => :full)
     start_category.save!
     next_category.save!
   end
@@ -82,7 +80,7 @@ RSpec.describe "Workflow topic banner", type: :system do
     expect(can_act).to eq(false)
   end
 
-  it "exposes when the current workflow step was entered" do
+  it "exposes when the current process step was entered" do
     workflow_state.update_columns(updated_at: 3.days.ago)
     sign_in(actor)
     page.visit(topic.relative_url)

@@ -12,7 +12,7 @@ describe DiscourseWorkflow::Workflow do
     expect(workflow.reload.slug).to eq(original_slug)
   end
 
-  it "is kanban compatible for a connected workflow" do
+  it "is kanban compatible for a connected process" do
     workflow = Fabricate(:workflow, name: "Kanban Compatible")
     step_1 = Fabricate(:workflow_step, workflow_id: workflow.id, position: 1)
     step_2 = Fabricate(:workflow_step, workflow_id: workflow.id, position: 2)

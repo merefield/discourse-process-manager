@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "Workflow quick filters" do
+RSpec.describe "Process quick filters" do
   fab!(:workflow_discovery_page) { PageObjects::Pages::WorkflowDiscovery.new }
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
   fab!(:workflow) { Fabricate(:workflow, name: "Quick Filter Workflow") }
@@ -69,21 +69,21 @@ RSpec.describe "Workflow quick filters" do
     sign_in(user)
   end
 
-  it "filters workflow topics by step position via workflow query params" do
+  it "filters process topics by step position via process query params" do
     page.visit("/workflow?process_step_position=2")
 
     expect(page).to have_content(topic_2.title)
     expect(page).to have_no_content(topic_1.title)
   end
 
-  it "filters workflow topics by overdue days via workflow query params" do
+  it "filters process topics by overdue days via process query params" do
     page.visit("/workflow?overdue_days=3")
 
     expect(page).to have_content(topic_1.title)
     expect(page).to have_no_content(topic_2.title)
   end
 
-  it "filters workflow topics to categories where the user can create topics" do
+  it "filters process topics to categories where the user can create topics" do
     page.visit("/workflow?my_categories=1")
 
     expect(page).to have_content(topic_1.title)
@@ -172,7 +172,7 @@ RSpec.describe "Workflow quick filters" do
     expect(page).to have_css(".process-quick-filters__my-categories.btn-default")
   end
 
-  it "shows overdue state in a dedicated workflow list column" do
+  it "shows overdue state in a dedicated process list column" do
     workflow_discovery_page.visit_workflow
 
     expect(page).to have_css("th.process-overdue-column")
@@ -180,14 +180,14 @@ RSpec.describe "Workflow quick filters" do
     expect(page).to have_no_css("tr[data-topic-id='#{topic_2.id}'] .process-overdue-indicator")
   end
 
-  it "shows kanban toggle only when the current list is a single compatible workflow" do
+  it "shows kanban toggle only when the current list is a single compatible process" do
     workflow_discovery_page.visit_workflow
 
     expect(workflow_discovery_page).to have_process_view_toggle
     expect(workflow_discovery_page).to have_no_process_view_option("Chart")
   end
 
-  it "toggles between workflow list and kanban board view" do
+  it "toggles between process list and kanban board view" do
     workflow_discovery_page.visit_workflow
     expect(page).to have_css(".topic-list")
     expect(page).to have_no_css(".process-kanban")
@@ -288,7 +288,7 @@ RSpec.describe "Workflow quick filters" do
     expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 2)
   end
 
-  it "shows kanban card tags when enabled on the workflow and hides them when disabled" do
+  it "shows kanban card tags when enabled on the process and hides them when disabled" do
     workflow_discovery_page.visit_workflow
     workflow_discovery_page.toggle_process_view
 
@@ -301,7 +301,7 @@ RSpec.describe "Workflow quick filters" do
     expect(workflow_discovery_page).to have_no_kanban_tag_for_topic(topic_1.id, "kanban-tag")
   end
 
-  it "does not show kanban toggle when the workflow list includes multiple workflows" do
+  it "does not show kanban toggle when the process list includes multiple processes" do
     other_workflow = Fabricate(:workflow, name: "Second Workflow")
     other_step =
       Fabricate(

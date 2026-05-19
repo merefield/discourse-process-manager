@@ -2,7 +2,7 @@
 
 require_relative "../plugin_helper"
 
-RSpec.describe "Workflow topic view", type: :request do
+RSpec.describe "Process topic view", type: :request do
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
   fab!(:workflow) { Fabricate(:workflow, name: "Topic View Workflow") }
   fab!(:category, :category)
@@ -41,7 +41,7 @@ RSpec.describe "Workflow topic view", type: :request do
     sign_in(user)
   end
 
-  it "returns workflow metadata in topic view json" do
+  it "returns process metadata in topic view json" do
     get "#{topic.relative_url}.json"
 
     expect(response.status).to eq(200)

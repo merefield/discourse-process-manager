@@ -2,40 +2,28 @@
 
 require_relative "../plugin_helper"
 
-describe "Workflow topic lifecycle behavior" do
-  fab!(:workflow) do
-    Fabricate(:workflow, name: "Disabled Workflow", enabled: false)
-  end
+describe "Process topic lifecycle behavior" do
+  fab!(:workflow) { Fabricate(:workflow, name: "Disabled Workflow", enabled: false) }
   fab!(:start_category, :category)
   fab!(:mid_category, :category)
   fab!(:step_1) do
-    Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
-      category_id: start_category.id,
-      position: 1,
-    )
+    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: start_category.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
-      category_id: mid_category.id,
-      position: 2,
-    )
+    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: mid_category.id, position: 2)
   end
 
-  it "does not initialize workflow_state for topics when workflow is disabled" do
+  it "does not initialize workflow_state for topics when process is disabled" do
     SiteSetting.process_manager_enabled = true
     topic = Fabricate(:topic, category: start_category)
     DiscourseWorkflow::WorkflowState.where(topic_id: topic.id).delete_all
 
-    expect do
-      DiscourseEvent.trigger(:topic_created, topic, {})
-    end.not_to change { DiscourseWorkflow::WorkflowState.count }
+    expect do DiscourseEvent.trigger(:topic_created, topic, {}) end.not_to change {
+      DiscourseWorkflow::WorkflowState.count
+    }
   end
 
-  it "allows creating a topic in a later step category when workflow is disabled" do
+  it "allows creating a topic in a later step category when process is disabled" do
     topic = Fabricate.build(:topic, category: mid_category)
 
     expect(topic).to be_valid

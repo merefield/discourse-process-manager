@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "Workflow charts" do
+RSpec.describe "Process charts" do
   fab!(:workflow_discovery_page) { PageObjects::Pages::WorkflowDiscovery.new }
   fab!(:admin, :admin)
   fab!(:allowed_group, :group)
@@ -119,7 +119,7 @@ RSpec.describe "Workflow charts" do
     expect(workflow_discovery_page.workflow_chart_point_count).to eq(7)
   end
 
-  it "supports switching chart mode from workflow discovery view dropdown" do
+  it "supports switching chart mode from process discovery view dropdown" do
     workflow_discovery_page.visit_workflow
     workflow_discovery_page.select_process_view("Chart")
 

@@ -8,23 +8,13 @@ describe DiscourseWorkflow::WorkflowSerializer do
   fab!(:category_1, :category)
   fab!(:category_2, :category)
   fab!(:step_1) do
-    Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
-      category_id: category_1.id,
-      position: 1,
-    )
+    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: category_1.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
-      category_id: category_2.id,
-      position: 2,
-    )
+    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: category_2.id, position: 2)
   end
 
-  it "serializes workflow step count and boundary categories from workflow_steps" do
+  it "serializes process step count and boundary categories from workflow_steps" do
     serializer = described_class.new(workflow, scope: Guardian.new(admin))
 
     expect(serializer.workflow_steps_count).to eq(2)
@@ -34,7 +24,7 @@ describe DiscourseWorkflow::WorkflowSerializer do
     expect(serializer.show_kanban_tags).to eq(true)
   end
 
-  it "serializes kanban compatibility when the workflow graph is compatible" do
+  it "serializes kanban compatibility when the process graph is compatible" do
     option = Fabricate(:workflow_option, slug: "next", name: "Next")
     Fabricate(
       :workflow_step_option,

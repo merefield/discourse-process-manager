@@ -64,7 +64,7 @@ describe DiscourseWorkflow::PostNotificationHandler do
     ).to eq(other_notifications_before)
   end
 
-  it "does not send workflow arrival notifications for ordinary replies" do
+  it "does not send process arrival notifications for ordinary replies" do
     Fabricate(:post, topic: topic, user: topic_owner)
     post = Fabricate(:post, topic: topic, user: topic_owner, post_number: 2)
 

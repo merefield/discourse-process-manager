@@ -2,7 +2,7 @@
 
 require_relative "../plugin_helper"
 
-RSpec.describe "Workflow overdue thresholds", type: :request do
+RSpec.describe "Process overdue thresholds", type: :request do
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
 
   fab!(:workflow_global_default) do
@@ -119,7 +119,7 @@ RSpec.describe "Workflow overdue thresholds", type: :request do
     state_disabled.update_columns(updated_at: 30.days.ago)
   end
 
-  it "uses step then workflow then global overdue thresholds when overdue=1 filter is enabled" do
+  it "uses step then process then global overdue thresholds when overdue=1 filter is enabled" do
     get "/workflow.json", params: { overdue: "1" }
 
     topic_ids = response.parsed_body.dig("topic_list", "topics").map { |t| t["id"] }
@@ -130,7 +130,7 @@ RSpec.describe "Workflow overdue thresholds", type: :request do
     expect(topic_ids).not_to include(topic_disabled.id)
   end
 
-  it "marks overdue state per topic in workflow list payload" do
+  it "marks overdue state per topic in process list payload" do
     get "/workflow.json"
 
     topics = response.parsed_body.dig("topic_list", "topics")

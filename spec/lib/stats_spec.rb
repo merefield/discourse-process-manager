@@ -31,7 +31,7 @@ describe DiscourseWorkflow::Stats do
     )
   end
 
-  it "calculates daily counts per workflow step from workflow states" do
+  it "calculates daily counts per process step from process states" do
     SiteSetting.process_manager_enabled = true
 
     expect do described_class.new.calculate_daily_stats end.to change {

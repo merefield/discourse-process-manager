@@ -2,7 +2,7 @@
 
 require_relative "../plugin_helper"
 
-RSpec.describe "Workflow admin visual" do
+RSpec.describe "Process admin visual" do
   let(:visual_page) { PageObjects::Pages::WorkflowAdminVisual.new }
 
   fab!(:admin)
@@ -52,7 +52,7 @@ RSpec.describe "Workflow admin visual" do
 
   before { sign_in(admin) }
 
-  it "shows a list and visual tab for workflow step editing" do
+  it "shows a list and visual tab for process step editing" do
     visual_page.visit_workflow(workflow)
 
     expect(visual_page).to have_steps_tab("List")
@@ -164,7 +164,7 @@ RSpec.describe "Workflow admin visual" do
     expect(visual_page.tracked_request_count("/workflow_options.json")).to eq(0)
   end
 
-  it "falls back to workflow option names for untranslated action slugs" do
+  it "falls back to process option names for untranslated action slugs" do
     custom_option = Fabricate(:workflow_option, slug: "custom-action", name: "Custom action")
 
     visual_page.visit_workflow(workflow).switch_to_visual
@@ -177,7 +177,7 @@ RSpec.describe "Workflow admin visual" do
     expect(visual_page).to have_selected_option_label(queue_to_done_option, "Custom action")
   end
 
-  it "preserves scroll position after visual workflow changes" do
+  it "preserves scroll position after visual process changes" do
     visual_page.visit_workflow(workflow).switch_to_visual
     visual_page.make_page_scrollable.scroll_window_to(500)
 

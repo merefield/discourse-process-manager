@@ -2,7 +2,7 @@
 
 require_relative "../plugin_helper"
 
-RSpec.describe "Workflow list filters", type: :request do
+RSpec.describe "Process list filters", type: :request do
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
   fab!(:workflow) { Fabricate(:workflow, name: "Filtered Workflow") }
   fab!(:category_a, :category)
@@ -60,7 +60,7 @@ RSpec.describe "Workflow list filters", type: :request do
     expect(topic_ids).not_to include(topic_b.id)
   end
 
-  it "filters workflow topics by overdue days in step" do
+  it "filters process topics by overdue days in step" do
     state_a.update_columns(updated_at: 5.days.ago)
 
     get "/workflow.json", params: { overdue_days: "3" }
@@ -70,7 +70,7 @@ RSpec.describe "Workflow list filters", type: :request do
     expect(topic_ids).not_to include(topic_b.id)
   end
 
-  it "filters workflow topics by workflow step position" do
+  it "filters process topics by process step position" do
     get "/workflow.json", params: { process_step_position: "2" }
 
     topic_ids = response.parsed_body.dig("topic_list", "topics").map { |t| t["id"] }
@@ -78,7 +78,7 @@ RSpec.describe "Workflow list filters", type: :request do
     expect(topic_ids).not_to include(topic_a.id)
   end
 
-  it "serializes kanban metadata when the visible list is a single compatible workflow" do
+  it "serializes kanban metadata when the visible list is a single compatible process" do
     get "/workflow.json"
 
     topic_list = response.parsed_body["topic_list"]
@@ -102,7 +102,7 @@ RSpec.describe "Workflow list filters", type: :request do
     expect(topics_by_id[topic_b.id]["workflow_can_act"]).to eq(false)
   end
 
-  it "serializes workflow_kanban_show_tags false when disabled on the workflow" do
+  it "serializes workflow_kanban_show_tags false when disabled on the process" do
     workflow.update!(show_kanban_tags: false)
 
     get "/workflow.json"
@@ -111,7 +111,7 @@ RSpec.describe "Workflow list filters", type: :request do
     expect(topic_list["workflow_kanban_show_tags"]).to eq(false)
   end
 
-  it "does not mark kanban compatibility when multiple workflows are visible" do
+  it "does not mark kanban compatibility when multiple processes are visible" do
     other_workflow = Fabricate(:workflow, name: "Secondary Workflow")
     other_step =
       Fabricate(
@@ -137,7 +137,7 @@ RSpec.describe "Workflow list filters", type: :request do
     expect(topic_list["workflow_kanban_transitions"]).to eq([])
   end
 
-  it "does not materialize workflow topic ids when combining quick filters" do
+  it "does not materialize process topic ids when combining quick filters" do
     state_a.update_columns(updated_at: 5.days.ago)
 
     workflow_state_topic_id_plucks =
@@ -157,7 +157,7 @@ RSpec.describe "Workflow list filters", type: :request do
     expect(workflow_state_topic_id_plucks).to eq([])
   end
 
-  it "omits workflow metadata when no workflow topics are visible" do
+  it "omits process metadata when no process topics are visible" do
     DiscourseWorkflow::WorkflowState.delete_all
 
     get "/workflow.json"
