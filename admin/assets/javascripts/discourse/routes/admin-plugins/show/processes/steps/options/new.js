@@ -7,7 +7,7 @@ export default class AdminPluginsShowProcessesStepOptionsNew extends DiscourseRo
       "adminPlugins.show.processes.steps.options"
     );
     // Create a new workflow step record
-    const record = this.store.createRecord("workflow-step-option", {
+    const record = this.store.createRecord("process-step-option", {
       workflow_step_id: processStep.id,
       position:
         processStep.workflow_step_options.length > 0
@@ -26,9 +26,9 @@ export default class AdminPluginsShowProcessesStepOptionsNew extends DiscourseRo
   async setupController(controller, model) {
     super.setupController(controller, model);
 
-    const processOptions = await this.store.findAll("workflow-option");
+    const processOptions = await this.store.findAll("process-option");
     controller.set("processOptions", processOptions.content);
-    const processSteps = await this.store.findAll("workflow-step", {
+    const processSteps = await this.store.findAll("process-step", {
       workflow_id: this.currentModel.processStep.workflow_id,
     });
     controller.set("processSteps", processSteps.content);

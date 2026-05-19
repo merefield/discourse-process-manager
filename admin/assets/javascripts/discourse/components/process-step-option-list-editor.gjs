@@ -26,7 +26,7 @@ export default class ProcessStepOptionsListEditor extends Component {
   }
 
   get newStepOption() {
-    return this.store.createRecord("workflow-step-option", {
+    return this.store.createRecord("process-step-option", {
       workflow_step_id: this.args.processStep.id,
     });
   }
@@ -35,7 +35,7 @@ export default class ProcessStepOptionsListEditor extends Component {
   loadStepOptions() {
     if (!this.args.currentProcessStepOption && this.args.processStep.id) {
       this.store
-        .find("workflow-step-option", {
+        .find("process-step-option", {
           workflow_id: this.args.processStep.workflow_id,
           workflow_step_id: this.args.processStep.id,
         })

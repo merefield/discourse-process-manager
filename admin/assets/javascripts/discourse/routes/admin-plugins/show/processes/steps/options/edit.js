@@ -13,11 +13,11 @@ export default class AdminPluginsShowProcessesStepOptionsEdit extends DiscourseR
   async setupController(controller, model) {
     super.setupController(controller, model);
 
-    const processOptions = await this.store.findAll("workflow-option");
+    const processOptions = await this.store.findAll("process-option");
     controller.set("processOptions", processOptions.content);
 
     const workflow_id = model.workflow_id;
-    const processSteps = await this.store.findAll("workflow-step", {
+    const processSteps = await this.store.findAll("process-step", {
       workflow_id,
     });
     const stepCollection = processSteps.content || processSteps;

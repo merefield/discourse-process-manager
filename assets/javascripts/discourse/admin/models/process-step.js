@@ -12,10 +12,10 @@ const CREATE_ATTRIBUTES = [
   "ai_prompt",
 ];
 
-export default class WorkflowStep extends RestModel {
-  static async findAllForWorkflow(workflowId) {
+export default class ProcessStep extends RestModel {
+  static async findAllForProcess(processId) {
     const result = await ajax(
-      `discourse_workflow/workflow/${workflowId}/workflow_step.json`
+      `discourse_workflow/workflow/${processId}/workflow_step.json`
     );
     return result.workflow_steps;
   }
@@ -33,7 +33,7 @@ export default class WorkflowStep extends RestModel {
 
   workingCopy() {
     let attrs = this.getProperties(CREATE_ATTRIBUTES);
-    const workflowStep = WorkflowStep.create(attrs);
-    return workflowStep;
+    const processStep = ProcessStep.create(attrs);
+    return processStep;
   }
 }

@@ -1,14 +1,13 @@
 import RestModel from "discourse/models/rest";
 
 const CREATE_ATTRIBUTES = [
-  "name",
-  "description",
-  "enabled",
-  "overdue_days",
-  "show_kanban_tags",
+  "workflow_step_id",
+  "workflow_option_id",
+  "position",
+  "target_step_id",
 ];
 
-export default class Workflow extends RestModel {
+export default class ProcessStepOption extends RestModel {
   updateProperties() {
     let attrs = this.getProperties(CREATE_ATTRIBUTES);
     attrs.id = this.id;
@@ -22,8 +21,7 @@ export default class Workflow extends RestModel {
 
   workingCopy() {
     let attrs = this.getProperties(CREATE_ATTRIBUTES);
-
-    const workflow = Workflow.create(attrs);
-    return workflow;
+    const processStepOption = ProcessStepOption.create(attrs);
+    return processStepOption;
   }
 }

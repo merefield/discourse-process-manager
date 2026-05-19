@@ -69,7 +69,7 @@ export default class ProcessEditor extends Component {
       });
       this.router.transitionTo(
         "adminPlugins.show.processes",
-        this.store.findAll("workflow")
+        this.store.findAll("process")
       );
     } catch (e) {
       this.args.workflow.setProperties(backupModel);
@@ -89,7 +89,7 @@ export default class ProcessEditor extends Component {
         return this.args.workflow.destroyRecord().then(() => {
           this.router.transitionTo(
             "adminPlugins.show.processes",
-            this.store.findAll("workflow")
+            this.store.findAll("process")
           );
         });
       },

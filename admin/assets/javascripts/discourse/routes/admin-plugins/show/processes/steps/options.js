@@ -8,7 +8,7 @@ export default class AdminPluginsShowProcessesStepOptions extends DiscourseRoute
     const processStep = processSteps.findBy("id", id);
     const workflow_id = processStep.workflow_id;
     const allProcessStepOptions = await this.store.findAll(
-      "workflow-step-option",
+      "process-step-option",
       { workflow_step_id: processStep.id, workflow_id }
     ); // this.modelFor("adminPlugins.show.processes");
     return allProcessStepOptions.content;

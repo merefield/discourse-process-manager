@@ -17,7 +17,7 @@ export default class AdminPluginsShowProcessesStepsNew extends DiscourseRoute {
 
     // Create a new workflow step record
     // Asign a default position to be the last existing step + 1
-    const record = this.store.createRecord("workflow-step", {
+    const record = this.store.createRecord("process-step", {
       workflow_id: workflow.id,
       category_id: params.category_id ? parseInt(params.category_id, 10) : null,
       position:

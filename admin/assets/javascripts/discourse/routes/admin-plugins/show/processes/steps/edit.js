@@ -8,19 +8,19 @@ export default class AdminPluginsShowProcessesStepsEdit extends DiscourseRoute {
     const id = parseInt(params.step_id, 10);
     const processStep = allProcessSteps.findBy("id", id);
 
-    const processSteps = await this.store.findAll("workflow-step", {
+    const processSteps = await this.store.findAll("process-step", {
       workflow_id: processStep.workflow_id,
     });
     processStep.set("processSteps", processSteps.content);
-    const workflow = await this.store.find("workflow", processStep.workflow_id);
-    processStep.set("workflow", workflow);
+    const process = await this.store.find("process", processStep.workflow_id);
+    processStep.set("workflow", process);
     return processStep;
   }
 
   async setupController(controller, model) {
     super.setupController(controller, model);
 
-    const processSteps = await this.store.findAll("workflow-step", {
+    const processSteps = await this.store.findAll("process-step", {
       workflow_id: this.currentModel.workflow_id,
     });
     controller.set("processSteps", processSteps.content);
