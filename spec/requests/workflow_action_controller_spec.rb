@@ -2,7 +2,7 @@
 
 require_relative "../plugin_helper"
 
-RSpec.describe ProcessManager::WorkflowActionController, type: :request do
+RSpec.describe ProcessManager::ProcessActionController, type: :request do
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
   fab!(:workflow) { Fabricate(:workflow, name: "Transition Process") }
   fab!(:category_1, :category)

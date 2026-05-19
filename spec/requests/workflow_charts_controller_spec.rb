@@ -2,7 +2,7 @@
 
 require_relative "../plugin_helper"
 
-RSpec.describe ProcessManager::WorkflowChartsController, type: :request do
+RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   fab!(:admin, :admin)
   fab!(:allowed_user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
   fab!(:blocked_user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
@@ -100,7 +100,7 @@ RSpec.describe ProcessManager::WorkflowChartsController, type: :request do
   it "returns the localized access denied message on process discovery charts route when unauthorized" do
     sign_in(blocked_user)
 
-    get "/workflow/charts.json"
+    get "/processes/charts.json"
 
     expect(response.status).to eq(403)
     expect(response.parsed_body["errors"]).to include(
@@ -129,17 +129,17 @@ RSpec.describe ProcessManager::WorkflowChartsController, type: :request do
   it "serves the process charts discovery route for authorized users" do
     sign_in(admin)
 
-    get "/workflow/charts.json"
+    get "/processes/charts.json"
 
     expect(response.status).to eq(200)
     expect(response.parsed_body.dig("topic_list", "topics")).to be_present
   end
 
-  it "registers /workflow/charts as a list route" do
-    recognized = Rails.application.routes.recognize_path("/workflow/charts", method: :get)
+  it "registers /processes/charts as a list route" do
+    recognized = Rails.application.routes.recognize_path("/processes/charts", method: :get)
 
     expect(recognized[:controller]).to eq("list")
-    expect(recognized[:action]).to eq("workflow_charts")
+    expect(recognized[:action]).to eq("process_charts")
   end
 
   it "returns full-week daily labels and per-step series for 2 weeks by default" do

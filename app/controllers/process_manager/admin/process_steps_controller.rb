@@ -2,7 +2,7 @@
 
 module ProcessManager
   module Admin
-    class WorkflowStepsController < ::Admin::AdminController
+    class ProcessStepsController < ::Admin::AdminController
       requires_plugin ::ProcessManager::PLUGIN_NAME
 
       before_action :set_process, only: %i[index new create]
@@ -126,7 +126,7 @@ module ProcessManager
       private
 
       def set_process
-        workflow_id = params.dig(:workflow_id)
+        workflow_id = params.dig(:process_id)
         if workflow_id.present?
           @process = Process.find(workflow_id)
         else

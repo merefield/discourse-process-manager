@@ -160,8 +160,8 @@ RSpec.describe "Process admin visual" do
     visual_page.select_option(queue_to_done_option, back_option)
 
     expect(queue_to_done_option.reload.workflow_option_id).to eq(back_option.id)
-    expect(visual_page).to have_tracked_request("/workflow_steps.json")
-    expect(visual_page.tracked_request_count("/workflow_options.json")).to eq(0)
+    expect(visual_page).to have_tracked_request("/process_steps.json")
+    expect(visual_page.tracked_request_count("/process_options.json")).to eq(0)
   end
 
   it "falls back to process option names for untranslated action slugs" do

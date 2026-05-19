@@ -2,7 +2,7 @@
 
 module ProcessManager
   module Admin
-    class WorkflowsController < ::Admin::AdminController
+    class ProcessesController < ::Admin::AdminController
       requires_plugin ::ProcessManager::PLUGIN_NAME
 
       before_action :find_process, only: %i[edit show update destroy]

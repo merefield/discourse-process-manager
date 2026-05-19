@@ -53,7 +53,7 @@ RSpec.describe "Process list filters", type: :request do
   end
 
   it "filters to categories where the current user can create topics" do
-    get "/workflow.json", params: { my_categories: "1" }
+    get "/processes.json", params: { my_categories: "1" }
 
     topic_ids = response.parsed_body.dig("topic_list", "topics").map { |t| t["id"] }
     expect(topic_ids).to include(topic_a.id)
@@ -63,7 +63,7 @@ RSpec.describe "Process list filters", type: :request do
   it "filters process topics by overdue days in step" do
     state_a.update_columns(updated_at: 5.days.ago)
 
-    get "/workflow.json", params: { overdue_days: "3" }
+    get "/processes.json", params: { overdue_days: "3" }
 
     topic_ids = response.parsed_body.dig("topic_list", "topics").map { |t| t["id"] }
     expect(topic_ids).to include(topic_a.id)
@@ -71,7 +71,7 @@ RSpec.describe "Process list filters", type: :request do
   end
 
   it "filters process topics by process step position" do
-    get "/workflow.json", params: { process_step_position: "2" }
+    get "/processes.json", params: { process_step_position: "2" }
 
     topic_ids = response.parsed_body.dig("topic_list", "topics").map { |t| t["id"] }
     expect(topic_ids).to include(topic_b.id)
@@ -79,7 +79,7 @@ RSpec.describe "Process list filters", type: :request do
   end
 
   it "serializes kanban metadata when the visible list is a single compatible process" do
-    get "/workflow.json"
+    get "/processes.json"
 
     topic_list = response.parsed_body["topic_list"]
     steps = topic_list["workflow_kanban_steps"]
@@ -105,7 +105,7 @@ RSpec.describe "Process list filters", type: :request do
   it "serializes workflow_kanban_show_tags false when disabled on the process" do
     workflow.update!(show_kanban_tags: false)
 
-    get "/workflow.json"
+    get "/processes.json"
 
     topic_list = response.parsed_body["topic_list"]
     expect(topic_list["workflow_kanban_show_tags"]).to eq(false)
@@ -128,7 +128,7 @@ RSpec.describe "Process list filters", type: :request do
       workflow_step_id: other_step.id,
     )
 
-    get "/workflow.json"
+    get "/processes.json"
 
     topic_list = response.parsed_body["topic_list"]
     expect(topic_list["workflow_kanban_compatible"]).to eq(false)
@@ -142,7 +142,7 @@ RSpec.describe "Process list filters", type: :request do
 
     workflow_state_topic_id_plucks =
       track_sql_queries do
-        get "/workflow.json",
+        get "/processes.json",
             params: {
               my_categories: "1",
               overdue: "1",
@@ -160,7 +160,7 @@ RSpec.describe "Process list filters", type: :request do
   it "omits process metadata when no process topics are visible" do
     ProcessManager::ProcessState.delete_all
 
-    get "/workflow.json"
+    get "/processes.json"
 
     topic_list = response.parsed_body["topic_list"]
 

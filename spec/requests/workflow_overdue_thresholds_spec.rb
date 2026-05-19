@@ -120,7 +120,7 @@ RSpec.describe "Process overdue thresholds", type: :request do
   end
 
   it "uses step then process then global overdue thresholds when overdue=1 filter is enabled" do
-    get "/workflow.json", params: { overdue: "1" }
+    get "/processes.json", params: { overdue: "1" }
 
     topic_ids = response.parsed_body.dig("topic_list", "topics").map { |t| t["id"] }
 
@@ -131,7 +131,7 @@ RSpec.describe "Process overdue thresholds", type: :request do
   end
 
   it "marks overdue state per topic in process list payload" do
-    get "/workflow.json"
+    get "/processes.json"
 
     topics = response.parsed_body.dig("topic_list", "topics")
     topic_by_id = topics.index_by { |topic| topic["id"] }

@@ -2,7 +2,7 @@
 
 module ProcessManager
   module Admin
-    class WorkflowOptionsController < ::Admin::AdminController
+    class ProcessOptionsController < ::Admin::AdminController
       requires_plugin ::ProcessManager::PLUGIN_NAME
 
       def index

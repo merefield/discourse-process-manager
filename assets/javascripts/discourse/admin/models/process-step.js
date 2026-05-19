@@ -15,7 +15,7 @@ const CREATE_ATTRIBUTES = [
 export default class ProcessStep extends RestModel {
   static async findAllForProcess(processId) {
     const result = await ajax(
-      `discourse_workflow/workflow/${processId}/workflow_step.json`
+      `/admin/plugins/discourse-workflow/processes/${processId}/process_steps.json`
     );
     return result.workflow_steps;
   }

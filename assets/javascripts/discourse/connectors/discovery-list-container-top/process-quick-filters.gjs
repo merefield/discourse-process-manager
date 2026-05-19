@@ -120,7 +120,7 @@ export default class ProcessQuickFiltersConnector extends Component {
   }
 
   get hasProcessFilter() {
-    return this.topicList?.filter?.toString() === "workflow";
+    return this.topicList?.filter?.toString() === "processes";
   }
 
   get currentLocation() {
@@ -146,16 +146,16 @@ export default class ProcessQuickFiltersConnector extends Component {
   get isProcessRoute() {
     return (
       this.hasProcessFilter ||
-      this.router.currentRouteName?.startsWith("discovery.workflow") ||
-      this.currentPathname.startsWith("/workflow") ||
-      this.currentPathname.startsWith("/filter/workflow")
+      this.router.currentRouteName?.startsWith("discovery.processes") ||
+      this.currentPathname.startsWith("/processes") ||
+      this.currentPathname.startsWith("/filter/processes")
     );
   }
 
   get isProcessChartsRoute() {
     return (
       this.router.currentRouteName === "discovery.processCharts" ||
-      this.currentPathname.startsWith("/workflow/charts")
+      this.currentPathname.startsWith("/processes/charts")
     );
   }
 
@@ -477,7 +477,7 @@ export default class ProcessQuickFiltersConnector extends Component {
       return;
     }
 
-    this.router.transitionTo("discovery.workflow", { queryParams });
+    this.router.transitionTo("discovery.processes", { queryParams });
   }
 
   @action
@@ -588,7 +588,7 @@ export default class ProcessQuickFiltersConnector extends Component {
     const nextFilters = Object.fromEntries(params.entries());
 
     if (this.isProcessChartsRoute) {
-      this.router.transitionTo("discovery.workflow", {
+      this.router.transitionTo("discovery.processes", {
         queryParams: {
           my_categories: nextFilters.my_categories || null,
           overdue: nextFilters.overdue || null,

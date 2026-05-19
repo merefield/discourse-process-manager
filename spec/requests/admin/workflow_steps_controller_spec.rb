@@ -2,7 +2,7 @@
 
 require_relative "../../plugin_helper"
 
-describe ProcessManager::Admin::WorkflowStepsController do
+describe ProcessManager::Admin::ProcessStepsController do
   fab!(:admin)
   fab!(:workflow) { Fabricate(:workflow, name: "Process Steps Controller Process") }
   fab!(:category_1, :category)
@@ -27,10 +27,10 @@ describe ProcessManager::Admin::WorkflowStepsController do
   before { sign_in(admin) }
 
   it "does not add per-step queries when listing workflow steps" do
-    get "/admin/plugins/discourse-workflow/workflows/#{workflow.id}/workflow_steps.json"
+    get "/admin/plugins/discourse-workflow/processes/#{workflow.id}/process_steps.json"
     base_query_count =
       track_sql_queries do
-        get "/admin/plugins/discourse-workflow/workflows/#{workflow.id}/workflow_steps.json"
+        get "/admin/plugins/discourse-workflow/processes/#{workflow.id}/process_steps.json"
         expect(response.status).to eq(200)
       end.count
 
@@ -52,10 +52,10 @@ describe ProcessManager::Admin::WorkflowStepsController do
       )
     end
 
-    get "/admin/plugins/discourse-workflow/workflows/#{workflow.id}/workflow_steps.json"
+    get "/admin/plugins/discourse-workflow/processes/#{workflow.id}/process_steps.json"
     expanded_query_count =
       track_sql_queries do
-        get "/admin/plugins/discourse-workflow/workflows/#{workflow.id}/workflow_steps.json"
+        get "/admin/plugins/discourse-workflow/processes/#{workflow.id}/process_steps.json"
         expect(response.status).to eq(200)
       end.count
 
@@ -66,7 +66,7 @@ describe ProcessManager::Admin::WorkflowStepsController do
     unrelated_root_category = Fabricate(:category)
     child_of_workflow_category = Fabricate(:category, parent_category_id: category_1.id)
 
-    get "/admin/plugins/discourse-workflow/workflows/#{workflow.id}/workflow_steps.json"
+    get "/admin/plugins/discourse-workflow/processes/#{workflow.id}/process_steps.json"
 
     category_ids = response.parsed_body["workflow_categories"].map { |category| category["id"] }
 
@@ -84,7 +84,7 @@ describe ProcessManager::Admin::WorkflowStepsController do
     step_1.update!(category_id: subcategory_1.id)
     step_2.update!(category_id: subcategory_2.id)
 
-    get "/admin/plugins/discourse-workflow/workflows/#{workflow.id}/workflow_steps.json"
+    get "/admin/plugins/discourse-workflow/processes/#{workflow.id}/process_steps.json"
 
     category_ids = response.parsed_body["workflow_categories"].map { |category| category["id"] }
 
@@ -116,7 +116,7 @@ describe ProcessManager::Admin::WorkflowStepsController do
     incoming_step_option_id = incoming_step_option.id
     unrelated_step_option_id = unrelated_step_option.id
 
-    delete "/admin/plugins/discourse-workflow/workflow_steps/#{step_1.id}.json"
+    delete "/admin/plugins/discourse-workflow/process_steps/#{step_1.id}.json"
 
     expect(response.status).to eq(204)
     expect(ProcessManager::ProcessStep.exists?(step_1.id)).to eq(false)
@@ -142,7 +142,7 @@ describe ProcessManager::Admin::WorkflowStepsController do
       raise ActiveRecord::RecordNotDestroyed.new("forced failure", method.receiver)
     end
 
-    delete "/admin/plugins/discourse-workflow/workflow_steps/#{step_1.id}.json"
+    delete "/admin/plugins/discourse-workflow/process_steps/#{step_1.id}.json"
 
     expect(response.status).to eq(422)
     expect(ProcessManager::ProcessStep.exists?(step_1.id)).to eq(true)
@@ -151,7 +151,7 @@ describe ProcessManager::Admin::WorkflowStepsController do
   end
 
   it "reorders a workflow step and displaced step atomically" do
-    put "/admin/plugins/discourse-workflow/workflow_steps/#{step_1.id}/reorder.json",
+    put "/admin/plugins/discourse-workflow/process_steps/#{step_1.id}/reorder.json",
         params: {
           workflow_step: {
             category_id: category_2.id,
@@ -178,7 +178,7 @@ describe ProcessManager::Admin::WorkflowStepsController do
       method.call(*args)
     end
 
-    put "/admin/plugins/discourse-workflow/workflow_steps/#{step_1.id}/reorder.json",
+    put "/admin/plugins/discourse-workflow/process_steps/#{step_1.id}/reorder.json",
         params: {
           workflow_step: {
             category_id: category_2.id,

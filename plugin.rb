@@ -35,12 +35,14 @@ after_initialize do
     SiteSetting.process_manager_enabled
   end
 
-  Discourse::Application.routes.prepend { get "/workflow/charts" => "list#workflow_charts" }
+  Discourse::Application.routes.prepend do
+    get "/processes/charts" => "list#process_charts", :as => :process_charts
+  end
 
-  Discourse.top_menu_items.push(:workflow)
-  Discourse.anonymous_top_menu_items.push(:workflow)
-  Discourse.filters.push(:workflow)
-  Discourse.anonymous_filters.push(:workflow)
+  Discourse.top_menu_items.push(:processes)
+  Discourse.anonymous_top_menu_items.push(:processes)
+  Discourse.filters.push(:processes)
+  Discourse.anonymous_filters.push(:processes)
 
   SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-workflow", "db", "fixtures").to_s
 

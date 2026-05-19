@@ -2,8 +2,8 @@
 
 module ProcessManager
   module TopicQueryExtension
-    def list_workflow
-      create_list(:workflow) do |topics|
+    def list_processes
+      create_list(:processes) do |topics|
         topics.joins(
           "INNER JOIN workflow_states
                               ON workflow_states.topic_id = topics.id

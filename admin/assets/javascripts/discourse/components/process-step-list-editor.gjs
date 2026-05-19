@@ -142,7 +142,7 @@ export default class ProcessStepsListEditor extends Component {
 
   <template>
     <DBreadcrumbsItem
-      @path="/admin/plugins/{{this.adminPluginNavManager.currentPlugin.name}}/workflows/steps"
+      @path="/admin/plugins/{{this.adminPluginNavManager.currentPlugin.name}}/processes/steps"
       @label={{i18n "admin.discourse_workflow.workflows.steps.short_title"}}
     />
     <section

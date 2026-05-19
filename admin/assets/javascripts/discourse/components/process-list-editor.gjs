@@ -30,7 +30,7 @@ export default class ProcessListEditor extends Component {
 
   <template>
     <DBreadcrumbsItem
-      @path="/admin/plugins/{{this.adminPluginNavManager.currentPlugin.name}}/workflows"
+      @path="/admin/plugins/{{this.adminPluginNavManager.currentPlugin.name}}/processes"
       @label={{i18n "admin.discourse_workflow.workflows.short_title"}}
     />
     <section class="process-list-editor__current admin-detail pull-left">

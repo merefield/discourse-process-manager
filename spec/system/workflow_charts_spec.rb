@@ -81,10 +81,10 @@ RSpec.describe "Process charts" do
     sign_in(admin)
   end
 
-  it "renders a burn down chart on /workflow/charts with weeks selector" do
-    workflow_discovery_page.visit_workflow_charts
+  it "renders a burn down chart on /processes/charts with weeks selector" do
+    workflow_discovery_page.visit_process_charts
 
-    expect(page).to have_current_path("/workflow/charts", url: false)
+    expect(page).to have_current_path("/processes/charts", url: false)
     expect(workflow_discovery_page).to have_workflow_burndown_chart
     expect(workflow_discovery_page).to have_workflow_burndown_chart_canvas
     expect(page).to have_css(".process-burndown__process-name", text: "Process: #{workflow.name}")
@@ -101,21 +101,21 @@ RSpec.describe "Process charts" do
   end
 
   it "updates chart horizon when weeks filter changes up to 12 weeks" do
-    workflow_discovery_page.visit_workflow_charts
+    workflow_discovery_page.visit_process_charts
 
     workflow_discovery_page.select_chart_weeks(12)
 
-    expect(page).to have_current_path(%r{/workflow\?.*chart_weeks=12}, url: true)
-    expect(page).to have_current_path(%r{/workflow\?.*process_view=chart}, url: true)
+    expect(page).to have_current_path(%r{/processes\?.*chart_weeks=12}, url: true)
+    expect(page).to have_current_path(%r{/processes\?.*process_view=chart}, url: true)
     expect(workflow_discovery_page.workflow_chart_point_count).to eq(84)
   end
 
   it "supports a one-week period in chart mode" do
-    workflow_discovery_page.visit_workflow_charts
+    workflow_discovery_page.visit_process_charts
 
     workflow_discovery_page.select_chart_weeks(1)
 
-    expect(page).to have_current_path(%r{/workflow\?.*chart_weeks=1}, url: true)
+    expect(page).to have_current_path(%r{/processes\?.*chart_weeks=1}, url: true)
     expect(workflow_discovery_page.workflow_chart_point_count).to eq(7)
   end
 
@@ -123,7 +123,7 @@ RSpec.describe "Process charts" do
     workflow_discovery_page.visit_workflow
     workflow_discovery_page.select_process_view("Chart")
 
-    expect(page).to have_current_path(%r{/workflow\?.*process_view=chart}, url: true)
+    expect(page).to have_current_path(%r{/processes\?.*process_view=chart}, url: true)
     expect(workflow_discovery_page).to have_workflow_burndown_chart
   end
 

@@ -174,7 +174,7 @@ export default class ProcessEditor extends Component {
 
   <template>
     <DBreadcrumbsItem
-      @path="/admin/plugins/{{this.adminPluginNavManager.currentPlugin.name}}/workflows/{{@model.id}}"
+      @path="/admin/plugins/{{this.adminPluginNavManager.currentPlugin.name}}/processes/{{@model.id}}"
       @label={{i18n "admin.discourse_workflow.workflows.workflow.short_title"}}
     />
     <BackButton

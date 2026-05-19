@@ -2,7 +2,7 @@
 
 require_relative "../../plugin_helper"
 
-describe ProcessManager::Admin::WorkflowsController do
+describe ProcessManager::Admin::ProcessesController do
   fab!(:admin)
   fab!(:workflow) { Fabricate(:workflow, name: "Controller Process") }
   fab!(:category_1, :category)
@@ -17,7 +17,7 @@ describe ProcessManager::Admin::WorkflowsController do
   before { sign_in(admin) }
 
   it "serializes kanban compatibility for incompatible workflows" do
-    get "/admin/plugins/discourse-workflow/workflows.json"
+    get "/admin/plugins/discourse-workflow/processes.json"
 
     expect(response.status).to eq(200)
     payload = response.parsed_body["workflows"].find { |w| w["id"] == workflow.id }
@@ -34,7 +34,7 @@ describe ProcessManager::Admin::WorkflowsController do
       target_step_id: step_2.id,
     )
 
-    get "/admin/plugins/discourse-workflow/workflows.json"
+    get "/admin/plugins/discourse-workflow/processes.json"
 
     expect(response.status).to eq(200)
     payload = response.parsed_body["workflows"].find { |w| w["id"] == workflow.id }
@@ -42,7 +42,7 @@ describe ProcessManager::Admin::WorkflowsController do
   end
 
   it "updates show_kanban_tags on a workflow" do
-    put "/admin/plugins/discourse-workflow/workflows/#{workflow.id}.json",
+    put "/admin/plugins/discourse-workflow/processes/#{workflow.id}.json",
         params: {
           workflow: {
             show_kanban_tags: false,
@@ -62,10 +62,10 @@ describe ProcessManager::Admin::WorkflowsController do
       target_step_id: step_2.id,
     )
 
-    get "/admin/plugins/discourse-workflow/workflows.json"
+    get "/admin/plugins/discourse-workflow/processes.json"
     base_query_count =
       track_sql_queries do
-        get "/admin/plugins/discourse-workflow/workflows.json"
+        get "/admin/plugins/discourse-workflow/processes.json"
         expect(response.status).to eq(200)
       end.count
 
@@ -95,10 +95,10 @@ describe ProcessManager::Admin::WorkflowsController do
       )
     end
 
-    get "/admin/plugins/discourse-workflow/workflows.json"
+    get "/admin/plugins/discourse-workflow/processes.json"
     expanded_query_count =
       track_sql_queries do
-        get "/admin/plugins/discourse-workflow/workflows.json"
+        get "/admin/plugins/discourse-workflow/processes.json"
         expect(response.status).to eq(200)
       end.count
 

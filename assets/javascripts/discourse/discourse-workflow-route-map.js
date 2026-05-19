@@ -2,6 +2,6 @@ export default {
   resource: "discovery",
 
   map() {
-    this.route("processCharts", { path: "/workflow/charts" });
+    this.route("processCharts", { path: "/processes/charts" });
   },
 };

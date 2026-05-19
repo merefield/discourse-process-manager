@@ -4,12 +4,12 @@ module PageObjects
   module Pages
     class ProcessDiscovery < PageObjects::Pages::Base
       def visit_workflow
-        page.visit("/workflow")
+        page.visit("/processes")
         self
       end
 
-      def visit_workflow_charts
-        page.visit("/workflow/charts")
+      def visit_process_charts
+        page.visit("/processes/charts")
         self
       end
 

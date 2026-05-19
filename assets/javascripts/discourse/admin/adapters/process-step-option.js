@@ -4,23 +4,18 @@ export default class Adapter extends RestAdapter {
   jsonMode = true;
 
   basePath(store, type, findArgs) {
-    if (findArgs) {
-      if (typeof findArgs === "object") {
-        return `/admin/plugins/discourse-workflow/workflows/${findArgs.workflow_id}/workflow_steps/${findArgs.workflow_step_id}/`;
-      } else {
-        return `/admin/plugins/discourse-workflow/`;
-      }
-    } else {
-      return "/admin/plugins/discourse-workflow/";
+    if (findArgs && typeof findArgs === "object") {
+      return `/admin/plugins/discourse-workflow/processes/${findArgs.workflow_id}/process_steps/${findArgs.workflow_step_id}/`;
     }
+
+    return "/admin/plugins/discourse-workflow/";
   }
 
   pathFor(store, type, findArgs) {
-    // removes underscores which are implemented in base
-    let path =
-      this.basePath(store, type, findArgs) +
-      store.pluralize(this.apiNameFor(type));
-    return this.appendQueryParams(path, findArgs);
+    return this.appendQueryParams(
+      `${this.basePath(store, type, findArgs)}process_step_options`,
+      findArgs
+    );
   }
 
   apiNameFor() {

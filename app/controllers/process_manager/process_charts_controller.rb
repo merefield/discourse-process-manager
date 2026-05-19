@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ProcessManager
-  class WorkflowChartsController < ApplicationController
+  class ProcessChartsController < ApplicationController
     requires_plugin ::ProcessManager::PLUGIN_NAME
 
     before_action :ensure_logged_in

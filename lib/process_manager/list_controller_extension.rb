@@ -5,11 +5,11 @@ module ProcessManager
     extend ActiveSupport::Concern
 
     prepended do
-      before_action :ensure_process_manager_enabled, only: %i[workflow workflow_charts]
-      skip_before_action :ensure_logged_in, only: %i[workflow]
+      before_action :ensure_process_manager_enabled, only: %i[processes process_charts]
+      skip_before_action :ensure_logged_in, only: %i[processes]
     end
 
-    def workflow
+    def processes
       list_opts = build_topic_list_options
       user = process_list_user
       process_topic_ids_scope = ProcessManager::ProcessState.all.select(:topic_id).distinct
@@ -55,14 +55,14 @@ module ProcessManager
 
       list_opts[:topic_ids] = process_topic_ids_scope if process_filters_applied
 
-      list = TopicQuery.new(user, list_opts).public_send("list_workflow")
+      list = TopicQuery.new(user, list_opts).public_send("list_processes")
       list_query_opts = list_opts.except(:topic_ids)
       list.more_topics_url = url_for(construct_url_with(:next, list_query_opts))
       list.prev_topics_url = url_for(construct_url_with(:prev, list_query_opts))
       respond_with_list(list)
     end
 
-    def workflow_charts
+    def process_charts
       if !ProcessManager::ChartsPermissions.can_view?(current_user)
         raise Discourse::InvalidAccess.new(
                 nil,
@@ -71,7 +71,7 @@ module ProcessManager
               )
       end
 
-      workflow
+      processes
     end
 
     protected

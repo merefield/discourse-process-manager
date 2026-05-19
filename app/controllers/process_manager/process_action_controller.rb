@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ProcessManager
-  class WorkflowActionController < ApplicationController
+  class ProcessActionController < ApplicationController
     requires_plugin ::ProcessManager::PLUGIN_NAME
 
     def act

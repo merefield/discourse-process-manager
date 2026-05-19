@@ -22,13 +22,13 @@ If you are new to the terminology, see:
 - Visual process editor for arranging steps, swim lanes, and transition connectors
 - Transition actions presented as buttons per step option
 - Permission model aligned to native Discourse category permissions
-- Process discovery list (`/workflow`) with quick filters
+- Process discovery list (`/processes`) with quick filters
 - Process view selector in discovery (`List`, `Kanban`, `Chart`) when applicable
 - Kanban view for compatible single-process lists
 - Drag/drop transitions in Kanban with legal/illegal drop-zone highlighting
 - Keyboard Kanban transitions on focused cards (`ArrowLeft` / `ArrowRight`) when legal
 - Process-level Kanban tags toggle (`show_kanban_tags`, default `true`)
-- Built-in process burn-down chart view (`/workflow/charts` and chart mode in `/workflow`) for single-process context
+- Built-in process burn-down chart view (`/processes/charts` and chart mode in `/processes`) for single-process context
 - Chart period selector (`1` to `12` weeks), complete-week windows (Sunday to Saturday), per-step colored series
 - Overdue behavior with hierarchy:
   - global default (`process_manager_overdue_days_default`)
@@ -49,9 +49,9 @@ If you are new to the terminology, see:
 2. Go to `Admin -> Plugins -> Process Manager`, create a process, then save it.
 3. Add process steps (Categories in journey order), then add step options (actions/transitions).
 4. Create a topic in the first step Category and transition it through actions from the topic banner.
-5. Use `/workflow` to view queue state, apply quick filters, and switch between `List` / `Kanban` / `Chart` views when available.
+5. Use `/processes` to view queue state, apply quick filters, and switch between `List` / `Kanban` / `Chart` views when available.
 6. In Kanban, click a card to open the topic, drag cards to legal target steps, or use keyboard arrows on focused cards.
-7. Use `/workflow/charts` (or `Chart` view in `/workflow`) to see step counts over time for the currently scoped single process.
+7. Use `/processes/charts` (or `Chart` view in `/processes`) to see step counts over time for the currently scoped single process.
 
 ## Setup
 
@@ -90,7 +90,7 @@ Resolution order is `step -> process -> global`. A value of `0` means overdue be
 
 ### Kanban compatibility and behavior
 
-Kanban view is shown when the current `/workflow` list is scoped to a single compatible process.
+Kanban view is shown when the current `/processes` list is scoped to a single compatible process.
 
 Compatibility requires:
 
@@ -107,7 +107,7 @@ For each directed edge, Kanban drag/keyboard transitions are option-agnostic and
 
 Chart view is shown when the current process discovery context resolves to a single process.
 
-- Route support: `/workflow/charts` and chart mode in `/workflow` via `process_view=chart`
+- Route support: `/processes/charts` and chart mode in `/processes` via `process_view=chart`
 - View selector behavior: `Chart` is only shown when the user can view charts and the current discovery context is a single process
 - Period selection: `1` to `12` weeks
 - Time windows: complete weeks (Sunday through Saturday)
@@ -219,8 +219,8 @@ Permissioning principle:
 | ----------- | ------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------- |
 | Definition  | Process definitions (steps/options mapped to categories)      | Implemented | Core admin CRUD plus process-level display controls (for example `show_kanban_tags`) |
 | Runtime     | Topic transitions with audit posts                            | Implemented | Transition actions are logged in-topic                                     |
-| Discovery   | Process list with quick filters, list/kanban toggle, and step filtering | Implemented | `/workflow` supports SPA quick filters plus list/kanban switching          |
-| Discovery   | Real-time process state-change notifier with refresh CTA      | Planned     | Wire MessageBus updates into `/workflow` with a core-style “press to refresh” flow |
+| Discovery   | Process list with quick filters, list/kanban toggle, and step filtering | Implemented | `/processes` supports SPA quick filters plus list/kanban switching          |
+| Discovery   | Real-time process state-change notifier with refresh CTA      | Planned     | Wire MessageBus updates into `/processes` with a core-style “press to refresh” flow |
 | Kanban      | Card transitions (drag/drop and keyboard arrows)              | Implemented | Legal transitions only; deterministic directed edge mapping                |
 | SLA         | Overdue thresholds (step -> process -> global, `0` disables) | Implemented | Includes overdue list indicator                                            |
 | Permissions | Native Discourse category permissions for acting/commenting   | Implemented | Transition authority still aligns with category create access              |
@@ -241,7 +241,7 @@ Permissioning principle:
 
 ### Priority Roadmap
 
-1. Add MessageBus-driven process state-change notifications with a core-style refresh CTA in `/workflow`.
+1. Add MessageBus-driven process state-change notifications with a core-style refresh CTA in `/processes`.
 2. Add transition preconditions and clearer per-action validation feedback.
 3. Add escalation automation (reminders/alerts) on top of existing overdue thresholds.
 4. Add first-class reporting and assignment integration for operational processes.

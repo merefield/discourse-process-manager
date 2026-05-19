@@ -70,21 +70,21 @@ RSpec.describe "Process quick filters" do
   end
 
   it "filters process topics by step position via process query params" do
-    page.visit("/workflow?process_step_position=2")
+    page.visit("/processes?process_step_position=2")
 
     expect(page).to have_content(topic_2.title)
     expect(page).to have_no_content(topic_1.title)
   end
 
   it "filters process topics by overdue days via process query params" do
-    page.visit("/workflow?overdue_days=3")
+    page.visit("/processes?overdue_days=3")
 
     expect(page).to have_content(topic_1.title)
     expect(page).to have_no_content(topic_2.title)
   end
 
   it "filters process topics to categories where the user can create topics" do
-    page.visit("/workflow?my_categories=1")
+    page.visit("/processes?my_categories=1")
 
     expect(page).to have_content(topic_1.title)
     expect(page).to have_no_content(topic_2.title)
@@ -96,7 +96,7 @@ RSpec.describe "Process quick filters" do
 
     workflow_discovery_page.toggle_my_categories
 
-    expect(page).to have_current_path(%r{/workflow\?.*my_categories=1}, url: true)
+    expect(page).to have_current_path(%r{/processes\?.*my_categories=1}, url: true)
     expect(page).to have_content(topic_1.title)
     expect(page).to have_no_content(topic_2.title)
   end
@@ -106,7 +106,7 @@ RSpec.describe "Process quick filters" do
     expect(workflow_discovery_page).to have_quick_filters
 
     workflow_discovery_page.toggle_overdue
-    expect(page).to have_current_path(%r{/workflow\?.*overdue=1}, url: true)
+    expect(page).to have_current_path(%r{/processes\?.*overdue=1}, url: true)
     expect(page).to have_content(topic_1.title)
     expect(page).to have_no_content(topic_2.title)
   end
@@ -116,7 +116,7 @@ RSpec.describe "Process quick filters" do
     expect(workflow_discovery_page).to have_quick_filters
 
     workflow_discovery_page.set_step_filter(2)
-    expect(page).to have_current_path(%r{/workflow\?.*process_step_position=2}, url: true)
+    expect(page).to have_current_path(%r{/processes\?.*process_step_position=2}, url: true)
     expect(page).to have_content(topic_2.title)
     expect(page).to have_no_content(topic_1.title)
     expect(page).to have_css(".process-quick-filters__apply-step.btn-primary")
@@ -128,11 +128,11 @@ RSpec.describe "Process quick filters" do
     expect(page).to have_css(".process-quick-filters__apply-step.btn-default")
 
     workflow_discovery_page.set_step_filter(2)
-    expect(page).to have_current_path(%r{/workflow\?.*process_step_position=2}, url: true)
+    expect(page).to have_current_path(%r{/processes\?.*process_step_position=2}, url: true)
     expect(page).to have_css(".process-quick-filters__apply-step.btn-primary")
 
     workflow_discovery_page.set_step_filter(2)
-    expect(page).to have_current_path("/workflow", url: false)
+    expect(page).to have_current_path("/processes", url: false)
     expect(page).to have_css(".process-quick-filters__apply-step.btn-default")
   end
 
@@ -144,7 +144,7 @@ RSpec.describe "Process quick filters" do
 
     workflow_discovery_page.visit_workflow
 
-    expect(page).to have_current_path("/workflow", url: false)
+    expect(page).to have_current_path("/processes", url: false)
     expect(workflow_discovery_page).to have_quick_filters
   end
 
@@ -154,7 +154,7 @@ RSpec.describe "Process quick filters" do
 
     workflow_discovery_page.toggle_my_categories
 
-    expect(page).to have_current_path(%r{/workflow\?.*my_categories=1}, url: true)
+    expect(page).to have_current_path(%r{/processes\?.*my_categories=1}, url: true)
     expect(page.evaluate_script("window.__workflowNoReloadMarker")).to eq("alive")
   end
 
@@ -164,11 +164,11 @@ RSpec.describe "Process quick filters" do
     expect(page).to have_css(".process-quick-filters__my-categories.btn-default")
 
     workflow_discovery_page.toggle_my_categories
-    expect(page).to have_current_path(%r{/workflow\?.*my_categories=1}, url: true)
+    expect(page).to have_current_path(%r{/processes\?.*my_categories=1}, url: true)
     expect(page).to have_css(".process-quick-filters__my-categories.btn-primary")
 
     workflow_discovery_page.toggle_my_categories
-    expect(page).to have_current_path("/workflow", url: false)
+    expect(page).to have_current_path("/processes", url: false)
     expect(page).to have_css(".process-quick-filters__my-categories.btn-default")
   end
 
@@ -194,7 +194,7 @@ RSpec.describe "Process quick filters" do
 
     workflow_discovery_page.toggle_process_view
 
-    expect(page).to have_current_path(%r{/workflow\?.*process_view=kanban}, url: true)
+    expect(page).to have_current_path(%r{/processes\?.*process_view=kanban}, url: true)
     expect(workflow_discovery_page).to have_kanban_board
     expect(workflow_discovery_page).to have_kanban_column_for_step(1)
     expect(workflow_discovery_page).to have_kanban_column_for_step(2)
@@ -206,7 +206,7 @@ RSpec.describe "Process quick filters" do
 
     workflow_discovery_page.toggle_process_view
 
-    expect(page).to have_current_path("/workflow", url: false)
+    expect(page).to have_current_path("/processes", url: false)
     expect(page).to have_css(".topic-list")
     expect(page).to have_no_css(".process-kanban")
     expect(workflow_discovery_page.process_view_value).to eq("list")

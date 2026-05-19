@@ -4,7 +4,7 @@ import { withPluginApi } from "discourse/lib/plugin-api";
 import { i18n } from "discourse-i18n";
 import ProcessNameLink from "./../components/process-name-link";
 
-const WORKFLOW_LIST_ROUTES = ["discovery.workflow", "discovery.processCharts"];
+const WORKFLOW_LIST_ROUTES = ["discovery.processes", "discovery.processCharts"];
 
 const processNameHeader = <template>
   <SortableColumn
@@ -128,8 +128,8 @@ export default {
       ]);
 
       api.addNavigationBarItem({
-        name: "workflow",
-        href: "/workflow",
+        name: "processes",
+        href: "/processes",
       });
 
       api.registerValueTransformer("topic-list-item-class", ({ value }) => {

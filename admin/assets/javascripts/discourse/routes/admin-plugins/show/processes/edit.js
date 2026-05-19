@@ -6,7 +6,7 @@ export default class AdminPluginsShowProcessesEdit extends DiscourseRoute {
   };
 
   async model(params) {
-    const id = parseInt(params.workflow_id, 10);
+    const id = parseInt(params.process_id, 10);
     return this.store.find("process", id, { reload: true });
   }
 

@@ -286,7 +286,7 @@ export default class ProcessVisualEditor extends Component {
 
   updateStep(step, attributes) {
     return ajax(
-      `/admin/plugins/discourse-workflow/workflow_steps/${step.id}.json`,
+      `/admin/plugins/discourse-workflow/process_steps/${step.id}.json`,
       {
         type: "PUT",
         data: {
@@ -308,7 +308,7 @@ export default class ProcessVisualEditor extends Component {
 
   reorderStepPosition(step, attributes) {
     return ajax(
-      `/admin/plugins/discourse-workflow/workflow_steps/${step.id}/reorder.json`,
+      `/admin/plugins/discourse-workflow/process_steps/${step.id}/reorder.json`,
       {
         type: "PUT",
         data: {
@@ -334,7 +334,7 @@ export default class ProcessVisualEditor extends Component {
       didConfirm: async () => {
         try {
           await ajax(
-            `/admin/plugins/discourse-workflow/workflow_steps/${step.id}.json`,
+            `/admin/plugins/discourse-workflow/process_steps/${step.id}.json`,
             { type: "DELETE" }
           );
           await this.reloadGraphInPlace();
@@ -347,7 +347,7 @@ export default class ProcessVisualEditor extends Component {
 
   updateStepOption(stepOption, attributes) {
     return ajax(
-      `/admin/plugins/discourse-workflow/workflow_step_options/${stepOption.id}.json`,
+      `/admin/plugins/discourse-workflow/process_step_options/${stepOption.id}.json`,
       {
         type: "PUT",
         data: {
@@ -379,7 +379,7 @@ export default class ProcessVisualEditor extends Component {
       didConfirm: async () => {
         try {
           await ajax(
-            `/admin/plugins/discourse-workflow/workflow_step_options/${stepOption.id}.json`,
+            `/admin/plugins/discourse-workflow/process_step_options/${stepOption.id}.json`,
             { type: "DELETE" }
           );
           await this.reloadGraphInPlace();
@@ -402,10 +402,10 @@ export default class ProcessVisualEditor extends Component {
       const shouldLoadOptions =
         options.reloadOptions === true || this.processOptions.length === 0;
       const processStepsRequest = ajax(
-        `/admin/plugins/discourse-workflow/workflows/${this.args.workflow.id}/workflow_steps.json`
+        `/admin/plugins/discourse-workflow/processes/${this.args.workflow.id}/process_steps.json`
       );
       const processOptionsRequest = shouldLoadOptions
-        ? ajax("/admin/plugins/discourse-workflow/workflow_options.json")
+        ? ajax("/admin/plugins/discourse-workflow/process_options.json")
         : Promise.resolve(null);
       const [processStepsResult, processOptionsResult] = await Promise.all([
         processStepsRequest,
@@ -2201,7 +2201,7 @@ export default class ProcessVisualEditor extends Component {
       return;
     }
 
-    await ajax("/admin/plugins/discourse-workflow/workflow_step_options.json", {
+    await ajax("/admin/plugins/discourse-workflow/process_step_options.json", {
       type: "POST",
       data: {
         workflow_step_option: {
@@ -2297,7 +2297,7 @@ export default class ProcessVisualEditor extends Component {
     }
 
     try {
-      await ajax("/admin/plugins/discourse-workflow/workflow_steps.json", {
+      await ajax("/admin/plugins/discourse-workflow/process_steps.json", {
         type: "POST",
         data: {
           workflow_step: {

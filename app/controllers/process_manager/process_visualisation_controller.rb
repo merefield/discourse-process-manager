@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ProcessManager
-  class WorkflowVisualisationController < ApplicationController
+  class ProcessVisualisationController < ApplicationController
     requires_plugin ::ProcessManager::PLUGIN_NAME
 
     def network

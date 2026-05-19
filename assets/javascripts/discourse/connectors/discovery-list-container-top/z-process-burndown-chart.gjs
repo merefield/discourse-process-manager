@@ -72,22 +72,22 @@ export default class ProcessBurndownChartConnector extends Component {
   }
 
   get hasProcessFilter() {
-    return this.topicList?.filter?.toString() === "workflow";
+    return this.topicList?.filter?.toString() === "processes";
   }
 
   get isProcessRoute() {
     return (
       this.hasProcessFilter ||
-      this.router.currentRouteName?.startsWith("discovery.workflow") ||
-      this.currentPathname.startsWith("/workflow") ||
-      this.currentPathname.startsWith("/filter/workflow")
+      this.router.currentRouteName?.startsWith("discovery.processes") ||
+      this.currentPathname.startsWith("/processes") ||
+      this.currentPathname.startsWith("/filter/processes")
     );
   }
 
   get isProcessChartsRoute() {
     return (
       this.router.currentRouteName === "discovery.processCharts" ||
-      this.currentPathname.startsWith("/workflow/charts")
+      this.currentPathname.startsWith("/processes/charts")
     );
   }
 
@@ -198,7 +198,7 @@ export default class ProcessBurndownChartConnector extends Component {
     if (!this.canUseChartView) {
       const params = Object.fromEntries(this.currentSearchParams.entries());
       delete params.process_view;
-      this.router.transitionTo("discovery.workflow", {
+      this.router.transitionTo("discovery.processes", {
         queryParams: {
           my_categories: params.my_categories || null,
           overdue: params.overdue || null,
