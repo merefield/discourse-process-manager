@@ -5,25 +5,25 @@ module DiscourseWorkflow
     class WorkflowStepOptionsController < ::Admin::AdminController
       requires_plugin ::DiscourseWorkflow::PLUGIN_NAME
 
-      before_action :set_workflow_step, only: %i[index new create]
-      before_action :set_workflow_step_option, only: %i[show edit update destroy]
+      before_action :set_process_step, only: %i[index new create]
+      before_action :set_process_step_option, only: %i[show edit update destroy]
 
       def index
-        @workflow_step_options =
-          if @workflow_step.present?
-            WorkflowStepOption.where(workflow_step_id: @workflow_step.id).order(:position).to_a
+        @process_step_options =
+          if @process_step.present?
+            WorkflowStepOption.where(workflow_step_id: @process_step.id).order(:position).to_a
           else
             WorkflowStepOption.all.order(:position).to_a
           end
         ActiveRecord::Associations::Preloader.new(
-          records: @workflow_step_options,
+          records: @process_step_options,
           associations: %i[workflow_option workflow_step],
         ).call
         render_json_dump(
           {
             workflow_step_options:
               ActiveModel::ArraySerializer.new(
-                @workflow_step_options,
+                @process_step_options,
                 each_serializer: DiscourseWorkflow::WorkflowStepOptionSerializer,
               ),
           },
@@ -34,7 +34,7 @@ module DiscourseWorkflow
       end
 
       def new
-        workflow_step_option = WorkflowStepOption.new(workflow_step_option_params)
+        workflow_step_option = WorkflowStepOption.new(process_step_option_params)
         if workflow_step_option.save
           render json: {
                    workflow_step_option:
@@ -47,7 +47,7 @@ module DiscourseWorkflow
       end
 
       def create
-        workflow_step_option = WorkflowStepOption.new(workflow_step_option_params)
+        workflow_step_option = WorkflowStepOption.new(process_step_option_params)
         if !workflow_step_option.position.present?
           if WorkflowStepOption.count == 0 ||
                WorkflowStepOption.where(
@@ -77,41 +77,41 @@ module DiscourseWorkflow
       end
 
       def update
-        if @workflow_step_option.update(workflow_step_option_params)
+        if @process_step_option.update(process_step_option_params)
           render json: {
                    workflow_step_option:
-                     WorkflowStepOptionSerializer.new(@workflow_step_option, root: false),
+                     WorkflowStepOptionSerializer.new(@process_step_option, root: false),
                  },
                  status: :ok
         else
-          render_json_error @workflow_step_option
+          render_json_error @process_step_option
         end
       end
 
       def destroy
-        if @workflow_step_option.destroy
+        if @process_step_option.destroy
           head :no_content
         else
-          render_json_error @workflow_step_option
+          render_json_error @process_step_option
         end
       end
 
       private
 
-      def set_workflow_step
+      def set_process_step
         id = params.dig(:workflow_step_id)
         if id.present?
-          @workflow_step = WorkflowStep.find(id)
+          @process_step = WorkflowStep.find(id)
         else
-          @workflow_step = nil
+          @process_step = nil
         end
       end
 
-      def set_workflow_step_option
-        @workflow_step_option = WorkflowStepOption.find(params[:id])
+      def set_process_step_option
+        @process_step_option = WorkflowStepOption.find(params[:id])
       end
 
-      def workflow_step_option_params
+      def process_step_option_params
         params.require(:workflow_step_option).permit(
           :position,
           :workflow_step_id,

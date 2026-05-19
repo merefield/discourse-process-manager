@@ -10,7 +10,7 @@ module DiscourseWorkflow
 
     def index
       weeks = normalized_weeks
-      selected_workflow = selected_chart_workflow
+      selected_process = selected_chart_process
       date_range = chart_date_range(weeks)
 
       render_json_dump(
@@ -19,9 +19,9 @@ module DiscourseWorkflow
           labels: date_range.map(&:iso8601),
           range_start: date_range.first.iso8601,
           range_end: date_range.last.iso8601,
-          selected_workflow_id: selected_workflow&.id,
-          selected_workflow_name: selected_workflow&.name,
-          series: build_series(selected_workflow, date_range),
+          selected_workflow_id: selected_process&.id,
+          selected_workflow_name: selected_process&.name,
+          series: build_series(selected_process, date_range),
         },
       )
     end
@@ -50,19 +50,19 @@ module DiscourseWorkflow
       [requested, 12].min
     end
 
-    def selected_chart_workflow
+    def selected_chart_process
       workflow_scope = ::DiscourseWorkflow::Workflow.where(enabled: true).ordered
       selected_id = params[:workflow_id].to_i
 
       if selected_id > 0
-        selected_workflow = load_chart_workflow(workflow_scope.where(id: selected_id))
-        return selected_workflow if selected_workflow.present?
+        selected_process = load_chart_process(workflow_scope.where(id: selected_id))
+        return selected_process if selected_process.present?
       end
 
-      load_chart_workflow(workflow_scope)
+      load_chart_process(workflow_scope)
     end
 
-    def load_chart_workflow(scope)
+    def load_chart_process(scope)
       scope.includes(workflow_steps: { category: :parent_category }).first
     end
 

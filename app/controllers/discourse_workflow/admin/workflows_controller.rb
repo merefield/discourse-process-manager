@@ -5,12 +5,12 @@ module DiscourseWorkflow
     class WorkflowsController < ::Admin::AdminController
       requires_plugin ::DiscourseWorkflow::PLUGIN_NAME
 
-      before_action :find_workflow, only: %i[edit show update destroy]
+      before_action :find_process, only: %i[edit show update destroy]
 
       def index
-        @workflows = Workflow.order(:enabled).order(:name).order(:id).to_a
+        @processes = Workflow.order(:enabled).order(:name).order(:id).to_a
         ActiveRecord::Associations::Preloader.new(
-          records: @workflows,
+          records: @processes,
           associations: {
             workflow_steps: [:category, { workflow_step_options: :workflow_option }],
           },
@@ -19,7 +19,7 @@ module DiscourseWorkflow
           {
             workflows:
               ActiveModel::ArraySerializer.new(
-                @workflows,
+                @processes,
                 each_serializer: DiscourseWorkflow::WorkflowSerializer,
               ),
           },
@@ -30,41 +30,41 @@ module DiscourseWorkflow
       end
 
       def edit
-        render json: WorkflowSerializer.new(@workflow)
+        render json: WorkflowSerializer.new(@process)
       end
 
       def show
-        render json: WorkflowSerializer.new(@workflow)
+        render json: WorkflowSerializer.new(@process)
       end
 
       def create
         #byebug
-        workflow = Workflow.new(workflow_params)
-        workflow.save!
-        render json: WorkflowSerializer.new(workflow)
+        process = Workflow.new(process_params)
+        process.save!
+        render json: WorkflowSerializer.new(process)
       end
 
       def update
-        if @workflow.update(workflow_params)
-          render json: WorkflowSerializer.new(@workflow, root: false)
+        if @process.update(process_params)
+          render json: WorkflowSerializer.new(@process, root: false)
         else
-          render_json_error @workflow
+          render_json_error @process
         end
       end
 
       def destroy
-        if @workflow.destroy
+        if @process.destroy
           head :no_content
         else
-          render_json_error @workflow
+          render_json_error @process
         end
       end
 
-      def find_workflow
-        @workflow = Workflow.find(params[:id])
+      def find_process
+        @process = Workflow.find(params[:id])
       end
 
-      def workflow_params
+      def process_params
         permitted =
           params.require(:workflow).permit(
             :name,

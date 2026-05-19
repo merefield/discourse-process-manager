@@ -5,31 +5,27 @@ module DiscourseWorkflow
     extend ActiveSupport::Concern
 
     prepended do
-      before_action :ensure_discourse_workflow, only: %i[workflow workflow_charts]
+      before_action :ensure_process_manager_enabled, only: %i[workflow workflow_charts]
       skip_before_action :ensure_logged_in, only: %i[workflow]
     end
 
     def workflow
       list_opts = build_topic_list_options
-      user = workflow_list_user
-      workflow_topic_ids_scope = DiscourseWorkflow::WorkflowState.all.select(:topic_id).distinct
-      workflow_filters_applied = false
+      user = process_list_user
+      process_topic_ids_scope = DiscourseWorkflow::WorkflowState.all.select(:topic_id).distinct
+      process_filters_applied = false
 
       if user.present? && params[:my_categories] == "1"
         allowed_category_ids = Category.topic_create_allowed(Guardian.new(user)).select(:id)
-        workflow_topic_ids_scope =
-          workflow_topic_ids_scope.joins(:topic).where(
-            topics: {
-              category_id: allowed_category_ids,
-            },
-          )
-        workflow_filters_applied = true
+        process_topic_ids_scope =
+          process_topic_ids_scope.joins(:topic).where(topics: { category_id: allowed_category_ids })
+        process_filters_applied = true
       end
 
       if params[:overdue] == "1"
         default_overdue_days = SiteSetting.process_manager_overdue_days_default.to_i
-        workflow_topic_ids_scope =
-          workflow_topic_ids_scope
+        process_topic_ids_scope =
+          process_topic_ids_scope
             .joins(:workflow_step, :workflow)
             .where(
               "COALESCE(workflow_steps.overdue_days, workflows.overdue_days, ?) > 0",
@@ -39,25 +35,25 @@ module DiscourseWorkflow
               "workflow_states.updated_at <= NOW() - (COALESCE(workflow_steps.overdue_days, workflows.overdue_days, ?) * INTERVAL '1 day')",
               default_overdue_days,
             )
-        workflow_filters_applied = true
+        process_filters_applied = true
       elsif params[:overdue_days].present? && params[:overdue_days].to_i > 0
         cutoff = params[:overdue_days].to_i.days.ago
-        workflow_topic_ids_scope =
-          workflow_topic_ids_scope.where("workflow_states.updated_at <= ?", cutoff)
-        workflow_filters_applied = true
+        process_topic_ids_scope =
+          process_topic_ids_scope.where("workflow_states.updated_at <= ?", cutoff)
+        process_filters_applied = true
       end
 
       if params[:process_step_position].present? && params[:process_step_position].to_i > 0
-        workflow_topic_ids_scope =
-          workflow_topic_ids_scope.joins(:workflow_step).where(
+        process_topic_ids_scope =
+          process_topic_ids_scope.joins(:workflow_step).where(
             workflow_steps: {
               position: params[:process_step_position].to_i,
             },
           )
-        workflow_filters_applied = true
+        process_filters_applied = true
       end
 
-      list_opts[:topic_ids] = workflow_topic_ids_scope if workflow_filters_applied
+      list_opts[:topic_ids] = process_topic_ids_scope if process_filters_applied
 
       list = TopicQuery.new(user, list_opts).public_send("list_workflow")
       list_query_opts = list_opts.except(:topic_ids)
@@ -80,7 +76,7 @@ module DiscourseWorkflow
 
     protected
 
-    def workflow_list_user
+    def process_list_user
       if respond_to?(:list_target_user, true)
         send(:list_target_user) || current_user
       else
@@ -88,7 +84,7 @@ module DiscourseWorkflow
       end
     end
 
-    def ensure_discourse_workflow
+    def ensure_process_manager_enabled
       raise Discourse::NotFound if !SiteSetting.process_manager_enabled
     end
   end

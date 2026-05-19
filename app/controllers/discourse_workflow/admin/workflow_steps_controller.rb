@@ -5,26 +5,26 @@ module DiscourseWorkflow
     class WorkflowStepsController < ::Admin::AdminController
       requires_plugin ::DiscourseWorkflow::PLUGIN_NAME
 
-      before_action :set_workflow, only: %i[index new create]
-      before_action :set_workflow_step, only: %i[show edit update destroy reorder]
+      before_action :set_process, only: %i[index new create]
+      before_action :set_process_step, only: %i[show edit update destroy reorder]
 
       def index
-        @workflow_steps =
-          if @workflow.present?
-            WorkflowStep.where(workflow_id: @workflow.id).order(:position).to_a
+        @process_steps =
+          if @process.present?
+            WorkflowStep.where(workflow_id: @process.id).order(:position).to_a
           else
             WorkflowStep.all.order(:position).to_a
           end
         ActiveRecord::Associations::Preloader.new(
-          records: @workflow_steps,
+          records: @process_steps,
           associations: [:category, { workflow_step_options: :workflow_option }],
         ).call
-        workflow_categories = categories_for_visual(@workflow_steps)
+        workflow_categories = visual_categories_for(@process_steps)
         render_json_dump(
           {
             workflow_steps:
               ActiveModel::ArraySerializer.new(
-                @workflow_steps,
+                @process_steps,
                 each_serializer: DiscourseWorkflow::WorkflowStepSerializer,
               ),
             workflow_categories:
@@ -40,7 +40,7 @@ module DiscourseWorkflow
       end
 
       def new
-        workflow_step = WorkflowStep.new(workflow_step_params)
+        workflow_step = WorkflowStep.new(process_step_params)
         if workflow_step.save
           render json: {
                    workflow_step: WorkflowStepSerializer.new(workflow_step, root: false),
@@ -52,7 +52,7 @@ module DiscourseWorkflow
       end
 
       def create
-        workflow_step = WorkflowStep.new(workflow_step_params)
+        workflow_step = WorkflowStep.new(process_step_params)
         if !workflow_step.position.present?
           if WorkflowStep.count == 0 ||
                WorkflowStep.where(workflow_id: workflow_step.workflow_id).count == 0
@@ -77,31 +77,31 @@ module DiscourseWorkflow
       end
 
       def update
-        if @workflow_step.update(workflow_step_params)
+        if @process_step.update(process_step_params)
           render json: {
-                   workflow_step: WorkflowStepSerializer.new(@workflow_step, root: false),
+                   workflow_step: WorkflowStepSerializer.new(@process_step, root: false),
                  },
                  status: :ok
         else
-          render_json_error @workflow_step
+          render_json_error @process_step
         end
       end
 
       def reorder
         WorkflowStep.transaction do
-          reorder_params = workflow_step_reorder_params
+          reorder_params = process_step_reorder_params
           target_position = reorder_params[:position].to_i
           target_steps =
             WorkflowStep
-              .where(workflow_id: @workflow_step.workflow_id, position: target_position)
-              .where.not(id: @workflow_step.id)
+              .where(workflow_id: @process_step.workflow_id, position: target_position)
+              .where.not(id: @process_step.id)
 
-          target_steps.update_all(position: @workflow_step.position, updated_at: Time.zone.now)
-          @workflow_step.update!(reorder_params)
+          target_steps.update_all(position: @process_step.position, updated_at: Time.zone.now)
+          @process_step.update!(reorder_params)
         end
 
         render json: {
-                 workflow_step: WorkflowStepSerializer.new(@workflow_step, root: false),
+                 workflow_step: WorkflowStepSerializer.new(@process_step, root: false),
                },
                status: :ok
       rescue ActiveRecord::RecordInvalid => err
@@ -111,34 +111,34 @@ module DiscourseWorkflow
       def destroy
         WorkflowStep.transaction do
           WorkflowStepOption
-            .where(workflow_step_id: @workflow_step.id)
-            .or(WorkflowStepOption.where(target_step_id: @workflow_step.id))
+            .where(workflow_step_id: @process_step.id)
+            .or(WorkflowStepOption.where(target_step_id: @process_step.id))
             .destroy_all
 
-          @workflow_step.destroy!
+          @process_step.destroy!
         end
 
         head :no_content
       rescue ActiveRecord::RecordNotDestroyed => err
-        render_json_error err.record || @workflow_step
+        render_json_error err.record || @process_step
       end
 
       private
 
-      def set_workflow
+      def set_process
         workflow_id = params.dig(:workflow_id)
         if workflow_id.present?
-          @workflow = Workflow.find(workflow_id)
+          @process = Workflow.find(workflow_id)
         else
-          @workflow = nil
+          @process = nil
         end
       end
 
-      def set_workflow_step
-        @workflow_step = WorkflowStep.find(params[:id])
+      def set_process_step
+        @process_step = WorkflowStep.find(params[:id])
       end
 
-      def workflow_step_params
+      def process_step_params
         params.require(:workflow_step).permit(
           :workflow_id,
           :position,
@@ -151,11 +151,11 @@ module DiscourseWorkflow
         )
       end
 
-      def workflow_step_reorder_params
+      def process_step_reorder_params
         params.require(:workflow_step).permit(:position, :category_id)
       end
 
-      def categories_for_visual(workflow_steps)
+      def visual_categories_for(workflow_steps)
         categories = workflow_steps.filter_map(&:category)
         category_ids = categories.map(&:id)
         parent_category_ids = categories.filter_map(&:parent_category_id).uniq
