@@ -192,12 +192,12 @@ export default class WorkflowEditor extends Component {
         }}</h2>
     {{/if}}
     <form
-      class="form-horizontal workflow-editor"
+      class="form-horizontal process-editor"
       {{didUpdate this.updateModel @model.id}}
       {{didInsert this.updateModel @model.id}}
     >
       {{#if @workflow.validation_warnings.length}}
-        <div class="control-group workflow-editor__validation-warnings">
+        <div class="control-group process-editor__validation-warnings">
           <label>{{i18n
               "admin.discourse_workflow.workflows.validation.title"
             }}</label>
@@ -210,7 +210,7 @@ export default class WorkflowEditor extends Component {
       {{/if}}
       <div class="control-group">
         <DToggleSwitch
-          class="workflow-editor__enabled"
+          class="process-editor__enabled"
           @state={{@workflow.enabled}}
           @label="admin.discourse_workflow.workflows.enabled"
           {{on "click" this.toggleEnabled}}
@@ -219,7 +219,7 @@ export default class WorkflowEditor extends Component {
       <div class="control-group">
         <label>{{I18n.t "admin.discourse_workflow.workflows.name"}}</label>
         <Input
-          class="workflow-editor__name"
+          class="process-editor__name"
           @type="text"
           @value={{this.editingModel.name}}
           disabled={{this.editingModel.system}}
@@ -230,7 +230,7 @@ export default class WorkflowEditor extends Component {
             "admin.discourse_workflow.workflows.description"
           }}</label>
         <Textarea
-          class="workflow-editor__description"
+          class="process-editor__description"
           @value={{this.editingModel.description}}
           disabled={{this.editingModel.system}}
         />
@@ -240,7 +240,7 @@ export default class WorkflowEditor extends Component {
             "admin.discourse_workflow.workflows.overdue_days"
           }}</label>
         <Input
-          class="workflow-editor__overdue-days"
+          class="process-editor__overdue-days"
           @type="number"
           min="0"
           @value={{this.editingModel.overdue_days}}
@@ -250,7 +250,7 @@ export default class WorkflowEditor extends Component {
       </div>
       <div class="control-group">
         <DToggleSwitch
-          class="workflow-editor__show-kanban-tags"
+          class="process-editor__show-kanban-tags"
           @state={{this.editingModel.show_kanban_tags}}
           @label="admin.discourse_workflow.workflows.show_kanban_tags"
           @disabled={{this.editingModel.system}}
@@ -267,13 +267,13 @@ export default class WorkflowEditor extends Component {
             }}</label>
           <p>
             {{#if @workflow.kanban_compatible}}
-              <span class="workflow-editor__kanban-compatible">
+              <span class="process-editor__kanban-compatible">
                 {{i18n
                   "admin.discourse_workflow.workflows.kanban_compatibility.compatible"
                 }}
               </span>
             {{else}}
-              <span class="workflow-editor__kanban-incompatible">
+              <span class="process-editor__kanban-incompatible">
                 {{i18n
                   "admin.discourse_workflow.workflows.kanban_compatibility.incompatible"
                 }}
@@ -286,14 +286,14 @@ export default class WorkflowEditor extends Component {
         </div>
       {{/if}}
       {{#if this.showSteps}}
-        <div class="control-group workflow-editor__steps-panel">
-          <div class="workflow-editor__steps-tabs">
+        <div class="control-group process-editor__steps-panel">
+          <div class="process-editor__steps-tabs">
             <button
               type="button"
               class={{if
                 this.showingStepsList
-                "btn btn-primary workflow-editor__steps-tab"
-                "btn btn-default workflow-editor__steps-tab"
+                "btn btn-primary process-editor__steps-tab"
+                "btn btn-default process-editor__steps-tab"
               }}
               {{on "click" this.showStepsList}}
             >
@@ -303,8 +303,8 @@ export default class WorkflowEditor extends Component {
               type="button"
               class={{if
                 this.showingStepsVisual
-                "btn btn-primary workflow-editor__steps-tab"
-                "btn btn-default workflow-editor__steps-tab"
+                "btn btn-primary process-editor__steps-tab"
+                "btn btn-default process-editor__steps-tab"
               }}
               {{on "click" this.showStepsVisual}}
             >
@@ -314,7 +314,7 @@ export default class WorkflowEditor extends Component {
 
           {{#if this.showingStepsList}}
             <WorkflowStepListEditor
-              class="workflow-editor__steps"
+              class="process-editor__steps"
               @workflow={{@workflow}}
               @disabled={{this.editingModel.system}}
               @onChange={{this.stepsChanged}}
@@ -327,16 +327,16 @@ export default class WorkflowEditor extends Component {
           {{/if}}
         </div>
       {{/if}}
-      <div class="control-group workflow-editor__action_panel">
+      <div class="control-group process-editor__action_panel">
         <DButton
-          class="btn-primary workflow-editor__save"
+          class="btn-primary process-editor__save"
           @action={{this.save}}
           @disabled={{this.isSaving}}
         >{{I18n.t "admin.discourse_workflow.workflows.save"}}</DButton>
         {{#if this.showDelete}}
           <DButton
             @action={{this.delete}}
-            class="btn-danger workflow-editor__delete"
+            class="btn-danger process-editor__delete"
           >
             {{I18n.t "admin.discourse_workflow.workflows.delete"}}
           </DButton>

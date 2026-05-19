@@ -109,7 +109,7 @@ export default class WorkflowStepOptionEditor extends Component {
         }}</h2>
     {{/if}}
     <form
-      class="form-horizontal workflow-step-editor"
+      class="form-horizontal process-step-editor"
       {{didUpdate this.updateModel @currentWorkflowStepOption.id}}
       {{didInsert this.updateModel @currentWorkflowStepOption.id}}
     >
@@ -139,16 +139,16 @@ export default class WorkflowStepOptionEditor extends Component {
           }}
         />
       </div>
-      <div class="control-group workflow-editor__action_panel">
+      <div class="control-group process-editor__action_panel">
         <DButton
-          class="btn-primary workflow-editor__save"
+          class="btn-primary process-editor__save"
           @action={{this.save}}
           @disabled={{this.isSaving}}
         >{{I18n.t "admin.discourse_workflow.workflows.save"}}</DButton>
         {{#if this.showDelete}}
           <DButton
             @action={{this.delete}}
-            class="btn-danger workflow-editor__delete"
+            class="btn-danger process-editor__delete"
           >
             {{I18n.t "admin.discourse_workflow.workflows.delete"}}
           </DButton>

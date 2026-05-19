@@ -176,16 +176,16 @@ export default class WorkflowVisualEditor extends Component {
   @bind
   connectorHandleClass(step, side) {
     const classes = [
-      "workflow-visual-editor__connector-handle",
-      `workflow-visual-editor__connector-handle--${side}`,
+      "process-visual-editor__connector-handle",
+      `process-visual-editor__connector-handle--${side}`,
     ];
 
     if (this.edgeForHandle(step, side)) {
-      classes.push("workflow-visual-editor__connector-handle--connected");
+      classes.push("process-visual-editor__connector-handle--connected");
     }
 
     if (this.connectorHandleSelected(step, side)) {
-      classes.push("workflow-visual-editor__connector-handle--selected");
+      classes.push("process-visual-editor__connector-handle--selected");
     }
 
     return classes.join(" ");
@@ -472,7 +472,7 @@ export default class WorkflowVisualEditor extends Component {
 
   laneStackBounds(boardRect) {
     const laneElements = this.boardElement.querySelectorAll(
-      ".workflow-visual-editor__lane"
+      ".process-visual-editor__lane"
     );
 
     if (!laneElements.length) {
@@ -482,10 +482,10 @@ export default class WorkflowVisualEditor extends Component {
     const bounds = Array.from(laneElements).map((lane) => {
       const rect = lane.getBoundingClientRect();
       const headerRect = lane
-        .querySelector(".workflow-visual-editor__lane-header")
+        .querySelector(".process-visual-editor__lane-header")
         ?.getBoundingClientRect();
       const contentRect = lane
-        .querySelector(".workflow-visual-editor__lane-steps")
+        .querySelector(".process-visual-editor__lane-steps")
         ?.getBoundingClientRect();
 
       return {
@@ -2320,10 +2320,10 @@ export default class WorkflowVisualEditor extends Component {
   }
 
   <template>
-    <section class="workflow-visual-editor" {{didInsert this.loadGraph}}>
-      <div class="workflow-visual-editor__add-step">
+    <section class="process-visual-editor" {{didInsert this.loadGraph}}>
+      <div class="process-visual-editor__add-step">
         <Input
-          class="workflow-visual-editor__new-step-name"
+          class="process-visual-editor__new-step-name"
           @value={{this.newStepName}}
           placeholder={{i18n
             "admin.discourse_workflow.workflows.visual.new_step_name"
@@ -2334,7 +2334,7 @@ export default class WorkflowVisualEditor extends Component {
           @onChangeCategory={{this.updateNewStepCategory}}
         />
         <DButton
-          class="btn-primary workflow-visual-editor__add-step-button"
+          class="btn-primary process-visual-editor__add-step-button"
           @action={{this.addStep}}
           @label="admin.discourse_workflow.workflows.visual.add_step"
           @title="admin.discourse_workflow.workflows.visual.add_step_title"
@@ -2346,7 +2346,7 @@ export default class WorkflowVisualEditor extends Component {
         <p>{{i18n "admin.discourse_workflow.workflows.visual.loading"}}</p>
       {{else if this.hasSteps}}
         <div
-          class="workflow-visual-editor__board"
+          class="process-visual-editor__board"
           {{didInsert this.captureBoard}}
           {{didUpdate
             this.scheduleEdgeLayout
@@ -2355,10 +2355,10 @@ export default class WorkflowVisualEditor extends Component {
           }}
           {{on "dragover" this.dragConnectorOverBoard}}
         >
-          <svg class="workflow-visual-editor__edge-layer" aria-hidden="true">
+          <svg class="process-visual-editor__edge-layer" aria-hidden="true">
             <defs>
               <marker
-                id="workflow-visual-editor-arrowhead"
+                id="process-visual-editor-arrowhead"
                 markerHeight="8"
                 markerWidth="10"
                 orient="auto"
@@ -2371,7 +2371,7 @@ export default class WorkflowVisualEditor extends Component {
             </defs>
             {{#each this.edgeLayouts as |edge|}}
               <path
-                class="workflow-visual-editor__edge-path"
+                class="process-visual-editor__edge-path"
                 data-workflow-step-option-id={{edge.step_option.id}}
                 data-workflow-source-step-id={{edge.source_step_id}}
                 data-workflow-target-step-id={{edge.target_step_id}}
@@ -2382,21 +2382,21 @@ export default class WorkflowVisualEditor extends Component {
             {{/each}}
             {{#if this.previewPath}}
               <path
-                class="workflow-visual-editor__edge-path workflow-visual-editor__edge-path--preview"
+                class="process-visual-editor__edge-path process-visual-editor__edge-path--preview"
                 d={{this.previewPath}}
               ></path>
             {{/if}}
           </svg>
 
-          <div class="workflow-visual-editor__edge-controls">
+          <div class="process-visual-editor__edge-controls">
             {{#each this.edgeLayouts as |edge|}}
               <div
-                class="workflow-visual-editor__option"
+                class="process-visual-editor__option"
                 data-workflow-step-option-id={{edge.step_option.id}}
                 style={{this.edgeOptionStyle edge}}
               >
                 <DButton
-                  class="btn-danger btn-small workflow-visual-editor__delete-option"
+                  class="btn-danger btn-small process-visual-editor__delete-option"
                   @icon="xmark"
                   @title="admin.discourse_workflow.workflows.visual.delete_connector"
                   @action={{fn this.confirmDeleteStepOption edge.step_option}}
@@ -2429,21 +2429,21 @@ export default class WorkflowVisualEditor extends Component {
             {{/each}}
           </div>
 
-          <div class="workflow-visual-editor__lanes">
+          <div class="process-visual-editor__lanes">
             {{#each this.lanes as |lane|}}
               <section
-                class="workflow-visual-editor__lane"
+                class="process-visual-editor__lane"
                 data-workflow-category-id={{lane.id}}
                 style={{this.laneStyle lane}}
                 {{on "dragover" this.allowDrop}}
                 {{on "drop" (fn this.dropStepOnLane lane)}}
               >
-                <header class="workflow-visual-editor__lane-header">
-                  <span class="workflow-visual-editor__lane-title">
+                <header class="process-visual-editor__lane-header">
+                  <span class="process-visual-editor__lane-title">
                     {{lane.name}}
                   </span>
                   <DButton
-                    class="btn-small btn-default workflow-visual-editor__add-step-to-lane"
+                    class="btn-small btn-default process-visual-editor__add-step-to-lane"
                     @icon="plus"
                     @title="admin.discourse_workflow.workflows.visual.add_step_to_lane"
                     @action={{fn this.addStepToLane lane}}
@@ -2451,10 +2451,10 @@ export default class WorkflowVisualEditor extends Component {
                   />
                 </header>
 
-                <div class="workflow-visual-editor__lane-steps">
+                <div class="process-visual-editor__lane-steps">
                   {{#each this.positionSlots as |position|}}
                     <div
-                      class="workflow-visual-editor__position-slot"
+                      class="process-visual-editor__position-slot"
                       data-workflow-category-id={{lane.id}}
                       data-workflow-position={{position}}
                       {{on "dragover" this.allowDrop}}
@@ -2468,7 +2468,7 @@ export default class WorkflowVisualEditor extends Component {
                         as |step|
                       }}
                         <article
-                          class="workflow-visual-editor__step"
+                          class="process-visual-editor__step"
                           data-workflow-step-id={{step.id}}
                           draggable={{if @disabled false true}}
                           {{on "dragstart" (fn this.dragStepStart step)}}
@@ -2477,7 +2477,7 @@ export default class WorkflowVisualEditor extends Component {
                           {{on "drop" (fn this.dropOnStep step)}}
                         >
                           <DButton
-                            class="btn-danger btn-small workflow-visual-editor__delete-step"
+                            class="btn-danger btn-small process-visual-editor__delete-step"
                             @icon="xmark"
                             @title="admin.discourse_workflow.workflows.visual.delete_step"
                             @action={{fn this.confirmDeleteStep step}}
@@ -2517,11 +2517,11 @@ export default class WorkflowVisualEditor extends Component {
                             ></button>
                           {{/each}}
 
-                          <div class="workflow-visual-editor__step-title">
-                            <span class="workflow-visual-editor__step-number">
+                          <div class="process-visual-editor__step-title">
+                            <span class="process-visual-editor__step-number">
                               {{step.position}}.
                             </span>
-                            <strong class="workflow-visual-editor__step-label">
+                            <strong class="process-visual-editor__step-label">
                               {{step.name}}
                             </strong>
                           </div>
@@ -2536,10 +2536,10 @@ export default class WorkflowVisualEditor extends Component {
         </div>
       {{else}}
         <div
-          class="workflow-visual-editor__board"
+          class="process-visual-editor__board"
           {{didInsert this.captureBoard}}
         >
-          <p class="workflow-visual-editor__empty">
+          <p class="process-visual-editor__empty">
             {{i18n "admin.discourse_workflow.workflows.steps.none"}}
           </p>
         </div>

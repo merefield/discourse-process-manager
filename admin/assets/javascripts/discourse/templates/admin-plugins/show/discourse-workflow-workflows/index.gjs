@@ -3,7 +3,7 @@ import { i18n } from "discourse-i18n";
 import WorkflowListEditor from "../../../../components/workflow-list-editor";
 
 export default <template>
-  <div class="discourse-workflow-workflows admin-detail">
+  <div class="discourse-process-workflows admin-detail">
     <DPageSubheader
       @titleLabel={{i18n "admin.discourse_workflow.workflows.title"}}
       @descriptionLabel={{i18n

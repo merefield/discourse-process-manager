@@ -1,5 +1,5 @@
 .topic-list {
-  .workflow-after-title .workflow-action-button {
+  .process-after-title .process-action-button {
     font-size: 0.8em;
 
     button {
@@ -7,24 +7,24 @@
     }
   }
 
-  td.workflow-step-position .workflow-action-button {
+  td.process-step-position .process-action-button {
     justify-content: center;
     display: flex;
   }
 
-  th.workflow-overdue-column,
-  td.workflow-overdue {
+  th.process-overdue-column,
+  td.process-overdue {
     text-align: center;
     width: 110px;
   }
 
-  .workflow-overdue-indicator {
+  .process-overdue-indicator {
     color: var(--danger);
     font-weight: 600;
   }
 }
 
-body.workflow-topic {
+body.process-topic {
   &:not(.staff) {
     .edit-category__wrapper {
       display: none;
@@ -33,7 +33,7 @@ body.workflow-topic {
 }
 
 .regular {
-  .workflow-topic-banner {
+  .process-topic-banner {
     padding: 7px;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -41,7 +41,7 @@ body.workflow-topic {
     border: solid 1px $primary-medium;
     max-width: 610px;
 
-    .workflow-banner-border-title {
+    .process-banner-border-title {
       position: relative;
       top: -1.6em;
       margin-left: 0.5em;
@@ -51,7 +51,7 @@ body.workflow-topic {
       font-size: 0.8em;
     }
 
-    .workflow-banner-meta {
+    .process-banner-meta {
       padding: 5px;
       display: grid;
       row-gap: 10px;
@@ -59,20 +59,20 @@ body.workflow-topic {
       grid-template-columns: repeat(auto-fill, minmax(240px, 240px));
       margin-top: -1.2em;
 
-      .workflow-banner-section {
+      .process-banner-section {
         display: grid;
         grid-template-columns: 80px 140px 100px;
         min-width: 260px;
 
-        .workflow-action-buttons {
+        .process-action-buttons {
           display: inline-flex;
         }
 
-        .workflow-action-button {
+        .process-action-button {
           margin-bottom: 5px;
           margin-right: 10px;
 
-          .workflow-action-helper {
+          .process-action-helper {
             font-size: var(--font-down-1);
             color: var(--primary-medium);
             margin-top: 2px;
@@ -80,13 +80,13 @@ body.workflow-topic {
         }
       }
 
-      .workflow-step-age-badge {
+      .process-step-age-badge {
         margin-top: 4px;
         font-size: var(--font-down-1);
         color: var(--primary-medium);
       }
 
-      .workflow-actions-blocked-reason {
+      .process-actions-blocked-reason {
         margin-top: 8px;
         color: var(--danger);
         font-size: var(--font-down-1);
@@ -95,24 +95,24 @@ body.workflow-topic {
   }
 }
 
-.workflow-quick-filters {
+.process-quick-filters {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   margin: 0.75rem 0;
 
-  .workflow-quick-filters__step-input {
+  .process-quick-filters__step-input {
     max-width: 90px;
     margin-bottom: 0;
   }
 
-  .workflow-quick-filters__view-select {
+  .process-quick-filters__view-select {
     margin-bottom: 0;
     min-height: 36px;
     min-width: 130px;
   }
 
-  .workflow-quick-filters__chart-weeks-select {
+  .process-quick-filters__chart-weeks-select {
     margin-bottom: 0;
     min-height: 36px;
     min-width: 115px;
@@ -120,56 +120,56 @@ body.workflow-topic {
 }
 
 .admin-interface {
-  .workflow-editor__kanban-compatible {
+  .process-editor__kanban-compatible {
     color: var(--success);
     font-weight: 600;
   }
 
-  .workflow-editor__kanban-incompatible {
+  .process-editor__kanban-incompatible {
     color: var(--danger);
     font-weight: 600;
   }
 
-  .workflow-editor__steps-tabs {
+  .process-editor__steps-tabs {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 1rem;
   }
 
-  .workflow-visual-editor {
+  .process-visual-editor {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
 
-  .workflow-visual-editor__add-step {
+  .process-visual-editor__add-step {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.75rem;
   }
 
-  .workflow-visual-editor__new-step-name {
+  .process-visual-editor__new-step-name {
     margin-bottom: 0;
   }
 
-  .workflow-visual-editor__lanes {
+  .process-visual-editor__lanes {
     display: grid;
     gap: 1rem;
   }
 
-  .workflow-visual-editor__board {
+  .process-visual-editor__board {
     position: relative;
   }
 
-  .workflow-visual-editor__edge-layer,
-  .workflow-visual-editor__edge-controls {
+  .process-visual-editor__edge-layer,
+  .process-visual-editor__edge-controls {
     position: absolute;
     inset: 0;
     pointer-events: none;
   }
 
-  .workflow-visual-editor__edge-layer {
+  .process-visual-editor__edge-layer {
     z-index: 4;
     overflow: visible;
 
@@ -178,23 +178,23 @@ body.workflow-topic {
     }
   }
 
-  .workflow-visual-editor__edge-path {
+  .process-visual-editor__edge-path {
     fill: none;
     stroke: var(--primary-medium);
     stroke-width: 2;
-    marker-end: url("#workflow-visual-editor-arrowhead");
+    marker-end: url("#process-visual-editor-arrowhead");
   }
 
-  .workflow-visual-editor__edge-path--preview {
+  .process-visual-editor__edge-path--preview {
     stroke: var(--tertiary);
     stroke-dasharray: 5 4;
   }
 
-  .workflow-visual-editor__edge-controls {
+  .process-visual-editor__edge-controls {
     z-index: 5;
   }
 
-  .workflow-visual-editor__lane {
+  .process-visual-editor__lane {
     position: relative;
     z-index: 1;
     display: flex;
@@ -206,7 +206,7 @@ body.workflow-topic {
     overflow: hidden;
   }
 
-  .workflow-visual-editor__lane-header {
+  .process-visual-editor__lane-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -217,15 +217,15 @@ body.workflow-topic {
     padding: 0.6rem 0.75rem;
   }
 
-  .workflow-visual-editor__lane-title {
+  .process-visual-editor__lane-title {
     min-width: 0;
   }
 
-  .workflow-visual-editor__add-step-to-lane {
+  .process-visual-editor__add-step-to-lane {
     margin-left: auto;
   }
 
-  .workflow-visual-editor__lane-steps {
+  .process-visual-editor__lane-steps {
     display: grid;
     flex: 1;
     grid-auto-columns: minmax(220px, 1fr);
@@ -234,7 +234,7 @@ body.workflow-topic {
     padding: 0 0.75rem;
   }
 
-  .workflow-visual-editor__position-slot {
+  .process-visual-editor__position-slot {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -250,7 +250,7 @@ body.workflow-topic {
     }
   }
 
-  .workflow-visual-editor__step {
+  .process-visual-editor__step {
     position: relative;
     box-sizing: border-box;
     display: flex;
@@ -266,7 +266,7 @@ body.workflow-topic {
     width: 60%;
   }
 
-  .workflow-visual-editor__delete-step {
+  .process-visual-editor__delete-step {
     position: absolute;
     top: 0;
     right: 0;
@@ -277,27 +277,27 @@ body.workflow-topic {
     z-index: 7;
   }
 
-  .workflow-visual-editor__step-title {
+  .process-visual-editor__step-title {
     position: relative;
     display: block;
     margin: 0;
     width: 100%;
   }
 
-  .workflow-visual-editor__step-number {
+  .process-visual-editor__step-number {
     position: absolute;
     left: 0;
     top: 50%;
     transform: translateY(-50%);
   }
 
-  .workflow-visual-editor__step-label {
+  .process-visual-editor__step-label {
     display: block;
     padding: 0 1.25rem;
     text-align: center;
   }
 
-  .workflow-visual-editor__connector-handle {
+  .process-visual-editor__connector-handle {
     position: absolute;
     z-index: 6;
     width: 0.75rem;
@@ -309,41 +309,41 @@ body.workflow-topic {
     padding: 0;
   }
 
-  .workflow-visual-editor__connector-handle--connected {
+  .process-visual-editor__connector-handle--connected {
     border-style: solid;
     background: var(--tertiary-low);
   }
 
-  .workflow-visual-editor__connector-handle--selected {
+  .process-visual-editor__connector-handle--selected {
     outline: 2px solid var(--tertiary);
     outline-offset: 2px;
   }
 
-  .workflow-visual-editor__connector-handle--top {
+  .process-visual-editor__connector-handle--top {
     top: 0;
     left: 50%;
     transform: translate(-50%, -50%);
   }
 
-  .workflow-visual-editor__connector-handle--right {
+  .process-visual-editor__connector-handle--right {
     top: 50%;
     right: 0;
     transform: translate(50%, -50%);
   }
 
-  .workflow-visual-editor__connector-handle--bottom {
+  .process-visual-editor__connector-handle--bottom {
     bottom: 0;
     left: 50%;
     transform: translate(-50%, 50%);
   }
 
-  .workflow-visual-editor__connector-handle--left {
+  .process-visual-editor__connector-handle--left {
     top: 50%;
     left: 0;
     transform: translate(-50%, -50%);
   }
 
-  .workflow-visual-editor__options {
+  .process-visual-editor__options {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
@@ -351,7 +351,7 @@ body.workflow-topic {
     margin: 0;
   }
 
-  .workflow-visual-editor__option {
+  .process-visual-editor__option {
     position: absolute;
     display: flex;
     align-items: center;
@@ -365,7 +365,7 @@ body.workflow-topic {
     transform: translate(-50%, -50%);
   }
 
-  .workflow-visual-editor__delete-option {
+  .process-visual-editor__delete-option {
     align-self: stretch;
     border-radius: calc(var(--d-border-radius) - 1px) 0 0
       calc(var(--d-border-radius) - 1px);
@@ -375,29 +375,29 @@ body.workflow-topic {
     padding: 0.25rem 0.4rem;
   }
 
-  .workflow-visual-editor__option select {
+  .process-visual-editor__option select {
     margin-bottom: 0;
     width: 8rem;
   }
 }
 
-.workflow-quick-filters {
-  .workflow-kanban {
+.process-quick-filters {
+  .process-kanban {
     display: none;
   }
 }
 
-.workflow-quick-filters.workflow-quick-filters--kanban-active {
+.process-quick-filters.process-quick-filters--kanban-active {
   flex-wrap: wrap;
 
-  .workflow-kanban {
+  .process-kanban {
     display: block;
     flex-basis: 100%;
     width: 100%;
   }
 }
 
-.workflow-quick-filters.workflow-quick-filters--kanban-active
+.process-quick-filters.process-quick-filters--kanban-active
   ~ .discovery-topics-list {
   .topic-list,
   .load-more,
@@ -406,7 +406,7 @@ body.workflow-topic {
   }
 }
 
-body.workflow-kanban-view {
+body.process-kanban-view {
   .discovery-topics-list {
     .topic-list,
     .load-more,
@@ -416,7 +416,7 @@ body.workflow-kanban-view {
   }
 }
 
-.contents.workflow-kanban-hide-topics {
+.contents.process-kanban-hide-topics {
   .topic-list,
   .load-more,
   .topic-list-bottom {
@@ -424,7 +424,7 @@ body.workflow-kanban-view {
   }
 }
 
-body.workflow-charts-view {
+body.process-charts-view {
   .discovery-topics-list {
     .topic-list,
     .load-more,
@@ -434,7 +434,7 @@ body.workflow-charts-view {
   }
 }
 
-.contents.workflow-charts-hide-topics {
+.contents.process-charts-hide-topics {
   .topic-list,
   .load-more,
   .topic-list-bottom {
@@ -442,32 +442,32 @@ body.workflow-charts-view {
   }
 }
 
-.workflow-kanban {
+.process-kanban {
   margin: 0.75rem 0 1rem;
 
-  .workflow-kanban__header {
+  .process-kanban__header {
     margin-bottom: 0.75rem;
   }
 
-  .workflow-kanban__title {
+  .process-kanban__title {
     margin: 0;
     font-size: var(--font-up-1);
   }
 
-  .workflow-kanban__workflow-name {
+  .process-kanban__workflow-name {
     margin: 0.25rem 0 0;
     color: var(--primary-medium);
     font-size: var(--font-down-1);
   }
 
-  .workflow-kanban__columns {
+  .process-kanban__columns {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 0.75rem;
     align-items: start;
   }
 
-  .workflow-kanban__column {
+  .process-kanban__column {
     display: flex;
     flex-direction: column;
     border: 1px solid var(--category-badge-color, var(--primary-low));
@@ -476,20 +476,20 @@ body.workflow-charts-view {
     overflow: visible;
   }
 
-  .workflow-kanban__column--source {
+  .process-kanban__column--source {
     border-color: var(--primary-medium);
   }
 
-  .workflow-kanban__column--legal {
+  .process-kanban__column--legal {
     border-color: var(--success);
 
-    .workflow-kanban__cards {
+    .process-kanban__cards {
       background: color-mix(in srgb, var(--success) 14%, transparent);
     }
   }
 
-  .workflow-kanban__column--illegal {
-    .workflow-kanban__cards {
+  .process-kanban__column--illegal {
+    .process-kanban__cards {
       background-image: repeating-linear-gradient(
         135deg,
         transparent,
@@ -501,7 +501,7 @@ body.workflow-charts-view {
     }
   }
 
-  .workflow-kanban__column-header {
+  .process-kanban__column-header {
     display: grid;
     grid-template-columns: auto 1fr auto;
     gap: 0.5rem;
@@ -513,21 +513,21 @@ body.workflow-charts-view {
     background: var(--primary-very-low);
   }
 
-  .workflow-kanban__step-position {
+  .process-kanban__step-position {
     font-weight: 700;
     color: var(--primary-medium);
   }
 
-  .workflow-kanban__step-name {
+  .process-kanban__step-name {
     font-weight: 600;
   }
 
-  .workflow-kanban__topic-count {
+  .process-kanban__topic-count {
     color: var(--primary-medium);
     font-size: var(--font-down-1);
   }
 
-  .workflow-kanban__cards {
+  .process-kanban__cards {
     display: grid;
     grid-auto-rows: min-content;
     gap: 0.5rem;
@@ -539,7 +539,7 @@ body.workflow-charts-view {
       opacity 120ms ease;
   }
 
-  .workflow-kanban__card {
+  .process-kanban__card {
     display: grid;
     gap: 0.35rem;
     border: 1px solid color-mix(in srgb, var(--primary-low) 80%, black);
@@ -561,79 +561,79 @@ body.workflow-charts-view {
       border-color 100ms ease;
   }
 
-  .workflow-kanban__card:hover {
+  .process-kanban__card:hover {
     border-color: var(--primary-medium);
     box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 20%, transparent);
     transform: translateY(-1px);
   }
 
-  .workflow-kanban__card--draggable:active {
+  .process-kanban__card--draggable:active {
     cursor: grabbing;
   }
 
-  .workflow-kanban__card--dragging {
+  .process-kanban__card--dragging {
     opacity: 0.55;
     transform: scale(0.98);
   }
 
-  .workflow-kanban__card--transitioning {
+  .process-kanban__card--transitioning {
     opacity: 0.7;
     cursor: progress;
   }
 
-  .workflow-kanban__card--locked {
+  .process-kanban__card--locked {
     opacity: 0.7;
     cursor: not-allowed;
   }
 
-  .workflow-kanban__card-title {
+  .process-kanban__card-title {
     font-weight: 500;
     overflow-wrap: anywhere;
   }
 
-  .workflow-kanban__tags.discourse-tags {
+  .process-kanban__tags.discourse-tags {
     margin-top: 0.15rem;
     gap: 0.3rem;
   }
 
-  .workflow-kanban__tags .discourse-tag.box {
+  .process-kanban__tags .discourse-tag.box {
     font-size: var(--font-down-2);
     line-height: 1.4;
   }
 
-  .workflow-kanban__card-overdue {
+  .process-kanban__card-overdue {
     color: var(--danger);
     font-size: var(--font-down-1);
     font-weight: 600;
   }
 
-  .workflow-kanban__empty-step {
+  .process-kanban__empty-step {
     margin: 0;
     color: var(--primary-medium);
     font-size: var(--font-down-1);
   }
 }
 
-.workflow-burndown {
+.process-burndown {
   margin: 0.75rem 0 1rem;
   display: grid;
   gap: 0.75rem;
 
-  .workflow-burndown__title {
+  .process-burndown__title {
     margin: 0;
     font-size: var(--font-up-1);
   }
 
-  .workflow-burndown__status {
+  .process-burndown__status {
     margin: 0;
     color: var(--primary-medium);
   }
 
-  .workflow-burndown__status--error {
+  .process-burndown__status--error {
     color: var(--danger);
   }
 
-  .workflow-burndown__chart {
+  .process-burndown__chart {
     border: 1px solid var(--primary-low);
     border-radius: 8px;
     background: var(--secondary);
@@ -641,18 +641,18 @@ body.workflow-charts-view {
     padding: 0.75rem;
   }
 
-  .workflow-burndown__chart canvas {
+  .process-burndown__chart canvas {
     width: 100%;
     min-height: 300px;
   }
 
-  .workflow-burndown__legend {
+  .process-burndown__legend {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
   }
 
-  .workflow-burndown__legend-step {
+  .process-burndown__legend-step {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -660,7 +660,7 @@ body.workflow-charts-view {
     color: var(--primary-medium);
   }
 
-  .workflow-burndown__legend-color {
+  .process-burndown__legend-color {
     width: 0.9rem;
     height: 0.9rem;
     border-radius: 999px;
@@ -669,7 +669,7 @@ body.workflow-charts-view {
   }
 }
 
-#workflow-visualisation {
+#process-visualisation {
   svg {
     z-index: 1000;
     border: 1px solid #ccc;

@@ -146,7 +146,7 @@ export default class WorkflowStepsListEditor extends Component {
       @label={{i18n "admin.discourse_workflow.workflows.steps.short_title"}}
     />
     <section
-      class="workflow-step-list-editor__current admin-detail pull-left"
+      class="process-step-list-editor__current admin-detail pull-left"
       {{didInsert this.loadSteps}}
     >
       {{#if this.currentWorkflowStep}}
@@ -165,7 +165,7 @@ export default class WorkflowStepsListEditor extends Component {
         />
 
         {{#if this.workflowStepsPresent}}
-          <table class="content-list workflow-step-list-editor d-admin-table">
+          <table class="content-list process-step-list-editor d-admin-table">
             <thead>
               <tr>
                 <th>{{i18n
@@ -223,7 +223,7 @@ export default class WorkflowStepsListEditor extends Component {
                   </td>
                   <td class="d-admin-row__overview">
                     <DToggleSwitch
-                      class="workflow-editor__ai_enabled"
+                      class="process-editor__ai_enabled"
                       @state={{step.ai_enabled}}
                       @label="admin.discourse_workflow.workflows.enabled"
                       {{on "click" (fn this.toggleAiEnabled step)}}
@@ -239,7 +239,7 @@ export default class WorkflowStepsListEditor extends Component {
                       (this.isfirstStep step this.workflowSteps.length)
                     }}
                       <DButton
-                        class="workflow-editor__ai_enabled"
+                        class="process-editor__ai_enabled"
                         @icon="arrow-up"
                         @title="admin.discourse_workflow.workflows.steps.move_up"
                         {{on "click" (fn this.moveUp step)}}
@@ -247,7 +247,7 @@ export default class WorkflowStepsListEditor extends Component {
                     {{/unless}}
                     {{#unless (this.islastStep step this.workflowSteps.length)}}
                       <DButton
-                        class="workflow-editor__ai_enabled"
+                        class="process-editor__ai_enabled"
                         @icon="arrow-down"
                         @title="admin.discourse_workflow.workflows.steps.move_down"
                         {{on "click" (fn this.moveDown step)}}

@@ -31,7 +31,7 @@ export default class WorkflowQuickFiltersConnector extends Component {
     super.willDestroy(...args);
 
     if (typeof document !== "undefined") {
-      document.body.classList.remove("workflow-kanban-view");
+      document.body.classList.remove("process-kanban-view");
     }
   }
 
@@ -380,10 +380,10 @@ export default class WorkflowQuickFiltersConnector extends Component {
         }));
 
       const dropState = this.dropStateForColumn(position);
-      const columnClasses = ["workflow-kanban__column"];
+      const columnClasses = ["process-kanban__column"];
 
       if (dropState) {
-        columnClasses.push(`workflow-kanban__column--${dropState}`);
+        columnClasses.push(`process-kanban__column--${dropState}`);
       }
 
       return {
@@ -773,7 +773,7 @@ export default class WorkflowQuickFiltersConnector extends Component {
     }
 
     document
-      .querySelector(`.workflow-kanban__card[data-topic-id="${topicId}"]`)
+      .querySelector(`.process-kanban__card[data-topic-id="${topicId}"]`)
       ?.focus();
   }
 
@@ -816,14 +816,14 @@ export default class WorkflowQuickFiltersConnector extends Component {
       return;
     }
 
-    document.body.classList.toggle("workflow-kanban-view", this.isKanbanView);
+    document.body.classList.toggle("process-kanban-view", this.isKanbanView);
     document
       .querySelector("#list-area .contents")
-      ?.classList.toggle("workflow-kanban-hide-topics", this.isKanbanView);
-    document.body.classList.toggle("workflow-charts-view", this.isChartView);
+      ?.classList.toggle("process-kanban-hide-topics", this.isKanbanView);
+    document.body.classList.toggle("process-charts-view", this.isChartView);
     document
       .querySelector("#list-area .contents")
-      ?.classList.toggle("workflow-charts-hide-topics", this.isChartView);
+      ?.classList.toggle("process-charts-hide-topics", this.isChartView);
   }
 
   <template>
@@ -831,8 +831,8 @@ export default class WorkflowQuickFiltersConnector extends Component {
       <div
         class={{if
           this.isKanbanView
-          "discovery-list-container-top-outlet workflow-quick-filters workflow-quick-filters--kanban-active"
-          "discovery-list-container-top-outlet workflow-quick-filters"
+          "discovery-list-container-top-outlet process-quick-filters process-quick-filters--kanban-active"
+          "discovery-list-container-top-outlet process-quick-filters"
         }}
         {{didInsert this.initializeFilters}}
         {{didInsert this.syncBodyClass}}
@@ -840,7 +840,7 @@ export default class WorkflowQuickFiltersConnector extends Component {
       >
         {{#if this.showWorkflowViewSelector}}
           <select
-            class="workflow-quick-filters__view-select"
+            class="process-quick-filters__view-select"
             value={{this.currentWorkflowView}}
             aria-label={{i18n "discourse_workflow.quick_filters.view_label"}}
             {{on "change" this.changeWorkflowView}}
@@ -862,7 +862,7 @@ export default class WorkflowQuickFiltersConnector extends Component {
         {{/if}}
         {{#if this.isChartView}}
           <select
-            class="workflow-quick-filters__chart-weeks-select"
+            class="process-quick-filters__chart-weeks-select"
             value={{this.chartWeeksValue}}
             aria-label={{i18n "discourse_workflow.charts.weeks_label"}}
             {{on "change" this.changeChartWeeks}}
@@ -879,8 +879,8 @@ export default class WorkflowQuickFiltersConnector extends Component {
           <DButton
             class={{if
               this.hasMyCategoriesFilter
-              "workflow-quick-filters__my-categories btn-primary"
-              "workflow-quick-filters__my-categories btn-default"
+              "process-quick-filters__my-categories btn-primary"
+              "process-quick-filters__my-categories btn-default"
             }}
             @label="discourse_workflow.quick_filters.my_categories"
             @action={{this.toggleMyCategories}}
@@ -888,14 +888,14 @@ export default class WorkflowQuickFiltersConnector extends Component {
           <DButton
             class={{if
               this.hasOverdueFilter
-              "workflow-quick-filters__overdue btn-primary"
-              "workflow-quick-filters__overdue btn-default"
+              "process-quick-filters__overdue btn-primary"
+              "process-quick-filters__overdue btn-default"
             }}
             @label="discourse_workflow.quick_filters.overdue"
             @action={{this.toggleOverdue}}
           />
           <input
-            class="workflow-quick-filters__step-input"
+            class="process-quick-filters__step-input"
             type="number"
             min="1"
             value={{this.stepPosition}}
@@ -907,15 +907,15 @@ export default class WorkflowQuickFiltersConnector extends Component {
           <DButton
             class={{if
               this.hasStepFilter
-              "workflow-quick-filters__apply-step btn-primary"
-              "workflow-quick-filters__apply-step btn-default"
+              "process-quick-filters__apply-step btn-primary"
+              "process-quick-filters__apply-step btn-default"
             }}
             @label="discourse_workflow.quick_filters.apply_step"
             @action={{this.applyStepFilter}}
           />
         {{/unless}}
         <DButton
-          class="workflow-quick-filters__clear btn-default"
+          class="process-quick-filters__clear btn-default"
           @label="discourse_workflow.quick_filters.clear"
           @action={{this.clearFilters}}
         />
@@ -926,19 +926,19 @@ export default class WorkflowQuickFiltersConnector extends Component {
               this.isKanbanView
               (if
                 this.draggedTopicId
-                "workflow-kanban workflow-kanban--active workflow-kanban--dragging"
-                "workflow-kanban workflow-kanban--active"
+                "process-kanban process-kanban--active process-kanban--dragging"
+                "process-kanban process-kanban--active"
               )
-              "workflow-kanban"
+              "process-kanban"
             }}
             data-workflow-kanban-view={{if this.isKanbanView "active"}}
           >
-            <div class="workflow-kanban__header">
-              <h3 class="workflow-kanban__title">
+            <div class="process-kanban__header">
+              <h3 class="process-kanban__title">
                 {{i18n "discourse_workflow.kanban.title"}}
               </h3>
               {{#if this.kanbanWorkflowName}}
-                <p class="workflow-kanban__workflow-name">
+                <p class="process-kanban__workflow-name">
                   {{i18n
                     "discourse_workflow.kanban.workflow_name"
                     workflow_name=this.kanbanWorkflowName
@@ -947,7 +947,7 @@ export default class WorkflowQuickFiltersConnector extends Component {
               {{/if}}
             </div>
 
-            <div class="workflow-kanban__columns">
+            <div class="process-kanban__columns">
               {{#each this.kanbanColumns key="position" as |column|}}
                 <section
                   class={{column.column_class}}
@@ -956,19 +956,19 @@ export default class WorkflowQuickFiltersConnector extends Component {
                   {{on "dragover" (fn this.columnDragOver column)}}
                   {{on "drop" (fn this.columnDrop column)}}
                 >
-                  <div class="workflow-kanban__column-header">
-                    <span class="workflow-kanban__step-position">
+                  <div class="process-kanban__column-header">
+                    <span class="process-kanban__step-position">
                       {{column.position}}
                     </span>
                     <span
-                      class="workflow-kanban__step-name"
+                      class="process-kanban__step-name"
                     >{{column.name}}</span>
-                    <span class="workflow-kanban__topic-count">
+                    <span class="process-kanban__topic-count">
                       {{column.topic_count_label}}
                     </span>
                   </div>
 
-                  <div class="workflow-kanban__cards">
+                  <div class="process-kanban__cards">
                     {{#if column.topics.length}}
                       {{#each column.topics key="id" as |topic|}}
                         <div
@@ -976,14 +976,14 @@ export default class WorkflowQuickFiltersConnector extends Component {
                             topic.workflow_can_act
                             (if
                               topic.is_dragging
-                              "workflow-kanban__card workflow-kanban__card--draggable workflow-kanban__card--dragging"
+                              "process-kanban__card process-kanban__card--draggable process-kanban__card--dragging"
                               (if
                                 topic.is_transitioning
-                                "workflow-kanban__card workflow-kanban__card--draggable workflow-kanban__card--transitioning"
-                                "workflow-kanban__card workflow-kanban__card--draggable"
+                                "process-kanban__card process-kanban__card--draggable process-kanban__card--transitioning"
+                                "process-kanban__card process-kanban__card--draggable"
                               )
                             )
-                            "workflow-kanban__card workflow-kanban__card--locked"
+                            "process-kanban__card process-kanban__card--locked"
                           }}
                           data-topic-id={{topic.id}}
                           draggable={{if
@@ -1001,7 +1001,7 @@ export default class WorkflowQuickFiltersConnector extends Component {
                             (fn this.openKanbanTopicWithKeyboard topic)
                           }}
                         >
-                          <span class="workflow-kanban__card-title">
+                          <span class="process-kanban__card-title">
                             {{topic.title}}
                           </span>
                           {{#if this.showKanbanTags}}
@@ -1011,19 +1011,19 @@ export default class WorkflowQuickFiltersConnector extends Component {
                                 tags=topic.tags
                                 style="box"
                                 tagName="span"
-                                className="workflow-kanban__tags"
+                                className="process-kanban__tags"
                               }}
                             {{/if}}
                           {{/if}}
                           {{#if topic.workflow_overdue}}
-                            <span class="workflow-kanban__card-overdue">
+                            <span class="process-kanban__card-overdue">
                               {{i18n "discourse_workflow.overdue_indicator"}}
                             </span>
                           {{/if}}
                         </div>
                       {{/each}}
                     {{else}}
-                      <p class="workflow-kanban__empty-step">
+                      <p class="process-kanban__empty-step">
                         {{i18n "discourse_workflow.kanban.empty_step"}}
                       </p>
                     {{/if}}

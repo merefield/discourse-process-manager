@@ -9,19 +9,19 @@ module PageObjects
       end
 
       def has_transition_helper_text?(text)
-        has_css?(".workflow-action-helper", text: text)
+        has_css?(".process-action-helper", text: text)
       end
 
       def has_blocked_reason?
-        has_css?(".workflow-actions-blocked-reason")
+        has_css?(".process-actions-blocked-reason")
       end
 
       def has_disabled_action_button?
-        has_css?(".workflow-action-button .btn[disabled]")
+        has_css?(".process-action-button .btn[disabled]")
       end
 
       def has_step_age_badge_text?(text)
-        has_css?(".workflow-step-age-badge", text: text)
+        has_css?(".process-step-age-badge", text: text)
       end
     end
   end

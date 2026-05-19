@@ -40,32 +40,32 @@ export default class WorkflowButtonsComponent extends Component {
 
   <template>
     {{#if @workflow_name}}
-      {{bodyClass "workflow-topic"}}
-      <div class="workflow-topic-banner">
-        <div class="workflow-banner-border-title">{{i18n
+      {{bodyClass "process-topic"}}
+      <div class="process-topic-banner">
+        <div class="process-banner-border-title">{{i18n
             "discourse_workflow.topic_banner.title"
           }}</div>
-        <div class="workflow-banner-meta">
-          <div class="workflow-banner-section workflow-workflow-name">
-            <div
-              class="workflow-banner-title workflow-workflow-name-title"
-            >{{i18n "discourse_workflow.topic_banner.workflow_title"}}</div>
-            <div class="workflow-workflow-name-name">{{@workflow_name}}</div>
+        <div class="process-banner-meta">
+          <div class="process-banner-section process-workflow-name">
+            <div class="process-banner-title process-workflow-name-title">{{i18n
+                "discourse_workflow.topic_banner.workflow_title"
+              }}</div>
+            <div class="process-workflow-name-name">{{@workflow_name}}</div>
           </div>
-          <div class="workflow-banner-section workflow-step-name">
-            <div class="workflow-banner-title workflow-step-name-title">{{i18n
+          <div class="process-banner-section process-step-name">
+            <div class="process-banner-title process-step-name-title">{{i18n
                 "discourse_workflow.topic_banner.step_title"
               }}</div>
-            <div class="workflow-step-name">{{i18n
+            <div class="process-step-name">{{i18n
                 "discourse_workflow.topic_banner.step"
                 workflow_step_position=@workflow_step_position
                 workflow_step_name=@workflow_step_name
               }}</div>
             {{#if this.stepAgeLabel}}
-              <div class="workflow-step-age-badge">{{this.stepAgeLabel}}</div>
+              <div class="process-step-age-badge">{{this.stepAgeLabel}}</div>
             {{/if}}
           </div>
-          <div class="workflow-banner-section workflow-step-actions">
+          <div class="process-banner-section process-step-actions">
             {{#if @workflow_step_actions}}
               <WorkflowButtons
                 @workflow_step_actions={{@workflow_step_actions}}
@@ -75,12 +75,12 @@ export default class WorkflowButtonsComponent extends Component {
               />
             {{/if}}
             {{#unless @workflow_can_act}}
-              <div class="workflow-actions-blocked-reason">{{i18n
+              <div class="process-actions-blocked-reason">{{i18n
                   "discourse_workflow.topic_banner.blocked_reason_create_permission"
                 }}</div>
             {{/unless}}
           </div>
-          <div class="workflow-action-button">
+          <div class="process-action-button">
             <DButton
               class="btn-primary"
               @icon="right-left"

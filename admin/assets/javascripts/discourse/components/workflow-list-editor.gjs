@@ -33,7 +33,7 @@ export default class WorkflowListEditor extends Component {
       @path="/admin/plugins/{{this.adminPluginNavManager.currentPlugin.name}}/workflows"
       @label={{i18n "admin.discourse_workflow.workflows.short_title"}}
     />
-    <section class="workflow-list-editor__current admin-detail pull-left">
+    <section class="process-list-editor__current admin-detail pull-left">
       {{#if @currentWorkflow}}
         <WorkflowEditor
           @workflow={{@currentWorkflow}}
@@ -41,7 +41,7 @@ export default class WorkflowListEditor extends Component {
         />
       {{else}}
         {{#if @workflows}}
-          <table class="content-list workflow-list-editor d-admin-table">
+          <table class="content-list process-list-editor d-admin-table">
             <thead>
               <tr>
                 <th>{{i18n "admin.discourse_workflow.workflows.enabled"}}</th>
@@ -57,7 +57,7 @@ export default class WorkflowListEditor extends Component {
                 <tr
                   data-workflow-id={{workflow.id}}
                   class={{concatClass
-                    "workflow-list__row d-admin-row__content"
+                    "process-list__row d-admin-row__content"
                     (if workflow.priority "priority")
                   }}
                 >
@@ -68,14 +68,14 @@ export default class WorkflowListEditor extends Component {
                     />
                   </td>
                   <td class="d-admin-row__overview">
-                    <div class="workflow-list__name">
+                    <div class="process-list__name">
                       <strong>
                         {{workflow.name}}
                       </strong>
                     </div>
                   </td>
                   <td class="d-admin-row__overview">
-                    <div class="workflow-list__description">
+                    <div class="process-list__description">
                       {{workflow.description}}
                     </div>
                   </td>
@@ -92,11 +92,11 @@ export default class WorkflowListEditor extends Component {
             </tbody>
           </table>
         {{else}}
-          <div class="workflow-list-editor__empty empty-state">
+          <div class="process-list-editor__empty empty-state">
             <p>{{i18n "admin.discourse_workflow.workflows.none"}}</p>
             <LinkTo
               @route="adminPlugins.show.discourse-workflow-workflows.new"
-              class="btn btn-primary workflow-list-editor__empty-new-button"
+              class="btn btn-primary process-list-editor__empty-new-button"
             >
               {{i18n "admin.discourse_workflow.workflows.new"}}
             </LinkTo>

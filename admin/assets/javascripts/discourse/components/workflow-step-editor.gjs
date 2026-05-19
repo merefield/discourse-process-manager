@@ -140,14 +140,14 @@ export default class WorkflowStepEditor extends Component {
         }}</h2>
     {{/if}}
     <form
-      class="form-horizontal workflow-step-editor"
+      class="form-horizontal process-step-editor"
       {{didUpdate this.updateModel @currentWorkflowStep.id}}
       {{didInsert this.updateModel @currentWorkflowStep.id}}
     >
       <div class="control-group">
         <label>{{I18n.t "admin.discourse_workflow.workflows.name"}}</label>
         <Input
-          class="workflow-editor__name"
+          class="process-editor__name"
           @type="text"
           @value={{this.editingModel.name}}
           disabled={{this.editingModel.system}}
@@ -168,7 +168,7 @@ export default class WorkflowStepEditor extends Component {
             "admin.discourse_workflow.workflows.description"
           }}</label>
         <Textarea
-          class="workflow-editor__description"
+          class="process-editor__description"
           @value={{this.editingModel.description}}
           disabled={{this.editingModel.system}}
         />
@@ -178,7 +178,7 @@ export default class WorkflowStepEditor extends Component {
             "admin.discourse_workflow.workflows.steps.overdue_days"
           }}</label>
         <Input
-          class="workflow-step-editor__overdue-days"
+          class="process-step-editor__overdue-days"
           @type="number"
           min="0"
           @value={{this.editingModel.overdue_days}}
@@ -190,7 +190,7 @@ export default class WorkflowStepEditor extends Component {
       </div>
       <div class="control-group">
         <DToggleSwitch
-          class="workflow-editor__enabled"
+          class="process-editor__enabled"
           @state={{this.editingModel.ai_enabled}}
           @label="admin.discourse_workflow.workflows.steps.ai_enabled"
           {{on "click" this.toggleAiEnabled}}
@@ -201,7 +201,7 @@ export default class WorkflowStepEditor extends Component {
             "admin.discourse_workflow.workflows.steps.ai_prompt"
           }}</label>
         <Textarea
-          class="workflow-editor__ai_prompt"
+          class="process-editor__ai_prompt"
           @value={{this.editingModel.ai_prompt}}
           disabled={{not this.editingModel.ai_enabled}}
         />
@@ -209,7 +209,7 @@ export default class WorkflowStepEditor extends Component {
       {{#if this.showStepOptions}}
         <div class="control-group">
           <WorkflowStepOptionListEditor
-            class="workflow-editor__steps_options"
+            class="process-editor__steps_options"
             @workflowStep={{@currentWorkflowStep}}
             @workflowSteps={{@workflowSteps}}
             @disabled={{this.editingModel.system}}
@@ -217,16 +217,16 @@ export default class WorkflowStepEditor extends Component {
           />
         </div>
       {{/if}}
-      <div class="control-group workflow-editor__action_panel">
+      <div class="control-group process-editor__action_panel">
         <DButton
-          class="btn-primary workflow-editor__save"
+          class="btn-primary process-editor__save"
           @action={{this.save}}
           @disabled={{this.isSaving}}
         >{{I18n.t "admin.discourse_workflow.workflows.save"}}</DButton>
         {{#if this.showDelete}}
           <DButton
             @action={{this.delete}}
-            class="btn-danger workflow-editor__delete"
+            class="btn-danger process-editor__delete"
           >
             {{I18n.t "admin.discourse_workflow.workflows.delete"}}
           </DButton>

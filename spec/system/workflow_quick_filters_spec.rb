@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "Workflow quick filters", type: :system do
+RSpec.describe "Workflow quick filters" do
   fab!(:workflow_discovery_page) { PageObjects::Pages::WorkflowDiscovery.new }
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
   fab!(:workflow) { Fabricate(:workflow, name: "Quick Filter Workflow") }
@@ -119,21 +119,21 @@ RSpec.describe "Workflow quick filters", type: :system do
     expect(page).to have_current_path(%r{/workflow\?.*workflow_step_position=2}, url: true)
     expect(page).to have_content(topic_2.title)
     expect(page).to have_no_content(topic_1.title)
-    expect(page).to have_css(".workflow-quick-filters__apply-step.btn-primary")
+    expect(page).to have_css(".process-quick-filters__apply-step.btn-primary")
   end
 
   it "toggles step quick filter and active state on repeated apply" do
     workflow_discovery_page.visit_workflow
     expect(workflow_discovery_page).to have_quick_filters
-    expect(page).to have_css(".workflow-quick-filters__apply-step.btn-default")
+    expect(page).to have_css(".process-quick-filters__apply-step.btn-default")
 
     workflow_discovery_page.set_step_filter(2)
     expect(page).to have_current_path(%r{/workflow\?.*workflow_step_position=2}, url: true)
-    expect(page).to have_css(".workflow-quick-filters__apply-step.btn-primary")
+    expect(page).to have_css(".process-quick-filters__apply-step.btn-primary")
 
     workflow_discovery_page.set_step_filter(2)
     expect(page).to have_current_path("/workflow", url: false)
-    expect(page).to have_css(".workflow-quick-filters__apply-step.btn-default")
+    expect(page).to have_css(".process-quick-filters__apply-step.btn-default")
   end
 
   it "does not redirect repeatedly when saved filters contain empty values" do
@@ -161,23 +161,23 @@ RSpec.describe "Workflow quick filters", type: :system do
   it "toggles quick filter button state and query params on repeated click" do
     workflow_discovery_page.visit_workflow
 
-    expect(page).to have_css(".workflow-quick-filters__my-categories.btn-default")
+    expect(page).to have_css(".process-quick-filters__my-categories.btn-default")
 
     workflow_discovery_page.toggle_my_categories
     expect(page).to have_current_path(%r{/workflow\?.*my_categories=1}, url: true)
-    expect(page).to have_css(".workflow-quick-filters__my-categories.btn-primary")
+    expect(page).to have_css(".process-quick-filters__my-categories.btn-primary")
 
     workflow_discovery_page.toggle_my_categories
     expect(page).to have_current_path("/workflow", url: false)
-    expect(page).to have_css(".workflow-quick-filters__my-categories.btn-default")
+    expect(page).to have_css(".process-quick-filters__my-categories.btn-default")
   end
 
   it "shows overdue state in a dedicated workflow list column" do
     workflow_discovery_page.visit_workflow
 
-    expect(page).to have_css("th.workflow-overdue-column")
-    expect(page).to have_css("tr[data-topic-id='#{topic_1.id}'] .workflow-overdue-indicator")
-    expect(page).to have_no_css("tr[data-topic-id='#{topic_2.id}'] .workflow-overdue-indicator")
+    expect(page).to have_css("th.process-overdue-column")
+    expect(page).to have_css("tr[data-topic-id='#{topic_1.id}'] .process-overdue-indicator")
+    expect(page).to have_no_css("tr[data-topic-id='#{topic_2.id}'] .process-overdue-indicator")
   end
 
   it "shows kanban toggle only when the current list is a single compatible workflow" do
@@ -190,7 +190,7 @@ RSpec.describe "Workflow quick filters", type: :system do
   it "toggles between workflow list and kanban board view" do
     workflow_discovery_page.visit_workflow
     expect(page).to have_css(".topic-list")
-    expect(page).to have_no_css(".workflow-kanban")
+    expect(page).to have_no_css(".process-kanban")
 
     workflow_discovery_page.toggle_workflow_view
 
@@ -208,7 +208,7 @@ RSpec.describe "Workflow quick filters", type: :system do
 
     expect(page).to have_current_path("/workflow", url: false)
     expect(page).to have_css(".topic-list")
-    expect(page).to have_no_css(".workflow-kanban")
+    expect(page).to have_no_css(".process-kanban")
     expect(workflow_discovery_page.workflow_view_value).to eq("list")
   end
 

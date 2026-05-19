@@ -149,7 +149,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
 
   <template>
     <section
-      class="workflow-step-list-editor__current admin-detail pull-left"
+      class="process-step-list-editor__current admin-detail pull-left"
       {{didInsert this.loadStepOptions}}
     >
       {{#if this.currentWorkflowStepOption}}
@@ -171,7 +171,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
         />
 
         {{#if this.workflowStepOptionsPresent}}
-          <table class="content-list workflow-step-list-editor d-admin-table">
+          <table class="content-list process-step-list-editor d-admin-table">
             <thead>
               <tr>
                 <th>{{i18n
@@ -191,23 +191,23 @@ export default class WorkflowStepOptionsListEditor extends Component {
                 <tr
                   data-workflow-step-option-id={{stepOption.workflow_step_option_id}}
                   class={{concatClass
-                    "workflow-step-option-list__row d-admin-row__content"
+                    "process-step-option-list__row d-admin-row__content"
                   }}
                 >
                   <td class="d-admin-row__overview">
-                    <div class="workflow-step-option-list__position">
+                    <div class="process-step-option-list__position">
                       {{stepOption.position}}
                     </div>
                   </td>
                   <td class="d-admin-row__overview">
-                    <div class="workflow-step-option-list__name">
+                    <div class="process-step-option-list__name">
                       <strong>
                         {{this.localizedStepOptionName stepOption}}
                       </strong>
                     </div>
                   </td>
                   <td class="d-admin-row__overview">
-                    <div class="workflow-step-option-list__target_position">
+                    <div class="process-step-option-list__target_position">
                       <strong>
                         {{this.convertStepIdToPosition
                           @workflowSteps
@@ -217,7 +217,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
                     </div>
                   </td>
                   <td class="d-admin-row__overview">
-                    <div class="workflow-step-option-list__actions">
+                    <div class="process-step-option-list__actions">
                       {{! this may have more actions }}
                     </div>
                   </td>
@@ -228,7 +228,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
                       )
                     }}
                       <DButton
-                        class="workflow-step-option-list-editor__up_arrow"
+                        class="process-step-option-list-editor__up_arrow"
                         @icon="arrow-up"
                         @title="admin.discourse_workflow.workflows.options.move_up"
                         {{on "click" (fn this.moveUp stepOption)}}
@@ -240,7 +240,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
                       )
                     }}
                       <DButton
-                        class="workflow-step-option-list-editor__down_arrow"
+                        class="process-step-option-list-editor__down_arrow"
                         @icon="arrow-down"
                         @title="admin.discourse_workflow.workflows.options.move_down"
                         {{on "click" (fn this.moveDown stepOption)}}

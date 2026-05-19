@@ -14,11 +14,11 @@ module PageObjects
       end
 
       def has_steps_tab?(label)
-        has_css?(".workflow-editor__steps-tab", text: label)
+        has_css?(".process-editor__steps-tab", text: label)
       end
 
       def has_visual?
-        has_css?(".workflow-visual-editor")
+        has_css?(".process-visual-editor")
       end
 
       def has_step?(step, text: nil)
@@ -40,18 +40,18 @@ module PageObjects
       end
 
       def add_step_from_lane(category)
-        within(lane_selector(category)) { find(".workflow-visual-editor__add-step-to-lane").click }
+        within(lane_selector(category)) { find(".process-visual-editor__add-step-to-lane").click }
 
         self
       end
 
       def has_new_step_editor?
-        has_css?(".workflow-step-editor")
+        has_css?(".process-step-editor")
       end
 
       def has_new_step_category?(category)
         has_current_path?(/category_id=#{category.id}/) &&
-          has_css?(".workflow-step-editor", text: category.name)
+          has_css?(".process-step-editor", text: category.name)
       end
 
       def has_step_in_lane?(step, category)
@@ -67,8 +67,8 @@ module PageObjects
           (() => {
             const stepId = arguments[0];
             const expectedRatio = arguments[1];
-            const step = document.querySelector(`.workflow-visual-editor__step[data-workflow-step-id="${stepId}"]`);
-            const slot = step.closest(".workflow-visual-editor__position-slot");
+            const step = document.querySelector(`.process-visual-editor__step[data-workflow-step-id="${stepId}"]`);
+            const slot = step.closest(".process-visual-editor__position-slot");
             const stepRect = step.getBoundingClientRect();
             const slotRect = slot.getBoundingClientRect();
             const actualRatio = stepRect.width / slotRect.width;
@@ -82,9 +82,9 @@ module PageObjects
         has_css?(step_selector(step)) && page.evaluate_script(<<~JS, step.id)
           (() => {
             const stepId = arguments[0];
-            const step = document.querySelector(`.workflow-visual-editor__step[data-workflow-step-id="${stepId}"]`);
-            const number = step.querySelector(".workflow-visual-editor__step-number");
-            const label = step.querySelector(".workflow-visual-editor__step-label");
+            const step = document.querySelector(`.process-visual-editor__step[data-workflow-step-id="${stepId}"]`);
+            const number = step.querySelector(".process-visual-editor__step-number");
+            const label = step.querySelector(".process-visual-editor__step-label");
             const stepRect = step.getBoundingClientRect();
             const labelRect = label.getBoundingClientRect();
             const stepCenter = stepRect.left + stepRect.width / 2;
@@ -99,8 +99,8 @@ module PageObjects
         has_css?(step_selector(step)) && page.evaluate_script(<<~JS, step.id)
           (() => {
             const stepId = arguments[0];
-            const step = document.querySelector(`.workflow-visual-editor__step[data-workflow-step-id="${stepId}"]`);
-            const laneContent = step.closest(".workflow-visual-editor__lane-steps");
+            const step = document.querySelector(`.process-visual-editor__step[data-workflow-step-id="${stepId}"]`);
+            const laneContent = step.closest(".process-visual-editor__lane-steps");
             const stepRect = step.getBoundingClientRect();
             const laneContentRect = laneContent.getBoundingClientRect();
             const stepCenter = stepRect.top + stepRect.height / 2;
@@ -119,7 +119,7 @@ module PageObjects
       end
 
       def has_any_option?(text:)
-        has_css?(".workflow-visual-editor__option", text: text)
+        has_css?(".process-visual-editor__option", text: text)
       end
 
       def has_selected_option_label?(step_option, text)
@@ -128,7 +128,7 @@ module PageObjects
               const stepOptionId = arguments[0];
               const expectedText = arguments[1];
               const select = document.querySelector(
-                `.workflow-visual-editor__option[data-workflow-step-option-id="${stepOptionId}"] select`
+                `.process-visual-editor__option[data-workflow-step-option-id="${stepOptionId}"] select`
               );
 
               return select?.selectedOptions?.[0]?.textContent.trim() === expectedText;
@@ -137,11 +137,11 @@ module PageObjects
       end
 
       def has_any_option_control?
-        has_css?(".workflow-visual-editor__option")
+        has_css?(".process-visual-editor__option")
       end
 
       def has_no_new_arrow_option_control?
-        has_no_css?(".workflow-visual-editor__link-option") && has_no_content?("New arrow option")
+        has_no_css?(".process-visual-editor__link-option") && has_no_content?("New arrow option")
       end
 
       def has_connector_handles?(step)
@@ -161,31 +161,30 @@ module PageObjects
 
       def has_selected_connector_handle?(step, side)
         has_css?(
-          "#{connector_handle_selector(step, side)}.workflow-visual-editor__connector-handle--selected[aria-pressed='true']",
+          "#{connector_handle_selector(step, side)}.process-visual-editor__connector-handle--selected[aria-pressed='true']",
         )
       end
 
       def has_arrow_link_for_option?(step_option)
-        has_css?("#{option_selector(step_option)}") &&
-          has_css?(".workflow-visual-editor__edge-path")
+        has_css?("#{option_selector(step_option)}") && has_css?(".process-visual-editor__edge-path")
       end
 
       def has_only_orthogonal_arrow_paths?
-        has_css?(".workflow-visual-editor__edge-path") &&
-          all(".workflow-visual-editor__edge-path").all? do |path|
+        has_css?(".process-visual-editor__edge-path") &&
+          all(".process-visual-editor__edge-path").all? do |path|
             path["d"].exclude?("C") && path["d"].exclude?("Q")
           end
       end
 
       def has_forward_arrow_path?
-        has_css?(".workflow-visual-editor__edge-path") &&
-          all(".workflow-visual-editor__edge-path").any? do |path|
+        has_css?(".process-visual-editor__edge-path") &&
+          all(".process-visual-editor__edge-path").any? do |path|
             path["d"].include?(" H") && path["d"].include?(" V")
           end
       end
 
       def has_no_arrow_crossing_step_boxes?
-        has_css?(".workflow-visual-editor__edge-path") && page.evaluate_script(<<~JS)
+        has_css?(".process-visual-editor__edge-path") && page.evaluate_script(<<~JS)
             (() => {
             const parsePathSegments = (path) => {
               const tokens = path.getAttribute("d").match(/[MLHV]|-?\\d+(?:\\.\\d+)?/g) || [];
@@ -242,8 +241,8 @@ module PageObjects
 
               return false;
             };
-            const boardRect = document.querySelector(".workflow-visual-editor__board").getBoundingClientRect();
-            const stepRects = Array.from(document.querySelectorAll(".workflow-visual-editor__step")).map((step) => {
+            const boardRect = document.querySelector(".process-visual-editor__board").getBoundingClientRect();
+            const stepRects = Array.from(document.querySelectorAll(".process-visual-editor__step")).map((step) => {
               const rect = step.getBoundingClientRect();
               return {
                 id: step.dataset.workflowStepId,
@@ -254,7 +253,7 @@ module PageObjects
               };
             });
 
-            return Array.from(document.querySelectorAll(".workflow-visual-editor__edge-path")).every((path) => {
+            return Array.from(document.querySelectorAll(".process-visual-editor__edge-path")).every((path) => {
               const endpointStepIds = [path.dataset.workflowSourceStepId, path.dataset.workflowTargetStepId];
 
               return parsePathSegments(path).every((segment) => {
@@ -266,7 +265,7 @@ module PageObjects
       end
 
       def has_no_overlapping_arrow_segments?
-        has_css?(".workflow-visual-editor__edge-path") && page.evaluate_script(<<~JS)
+        has_css?(".process-visual-editor__edge-path") && page.evaluate_script(<<~JS)
           (() => {
             #{path_geometry_helpers}
 
@@ -289,7 +288,7 @@ module PageObjects
 
               return false;
             };
-            const segments = Array.from(document.querySelectorAll(".workflow-visual-editor__edge-path")).flatMap((path, pathIndex) => {
+            const segments = Array.from(document.querySelectorAll(".process-visual-editor__edge-path")).flatMap((path, pathIndex) => {
               return parsePathSegments(path).map((segment) => ({ ...segment, pathIndex }));
             });
 
@@ -303,7 +302,7 @@ module PageObjects
       end
 
       def has_no_double_back_arrow_paths?
-        has_css?(".workflow-visual-editor__edge-path") && page.evaluate_script(<<~JS)
+        has_css?(".process-visual-editor__edge-path") && page.evaluate_script(<<~JS)
           (() => {
             #{path_geometry_helpers}
 
@@ -325,7 +324,7 @@ module PageObjects
               });
             };
 
-            return Array.from(document.querySelectorAll(".workflow-visual-editor__edge-path")).every((path) => {
+            return Array.from(document.querySelectorAll(".process-visual-editor__edge-path")).every((path) => {
               return !doublesBack(parsePathSegments(path));
             });
           })();
@@ -333,12 +332,12 @@ module PageObjects
       end
 
       def has_arrow_paths_within_lane_stack?
-        has_css?(".workflow-visual-editor__edge-path") && page.evaluate_script(<<~JS)
+        has_css?(".process-visual-editor__edge-path") && page.evaluate_script(<<~JS)
           (() => {
             #{path_geometry_helpers}
 
-            const boardRect = document.querySelector(".workflow-visual-editor__board").getBoundingClientRect();
-            const laneBounds = Array.from(document.querySelectorAll(".workflow-visual-editor__lane")).map((lane) => {
+            const boardRect = document.querySelector(".process-visual-editor__board").getBoundingClientRect();
+            const laneBounds = Array.from(document.querySelectorAll(".process-visual-editor__lane")).map((lane) => {
               const rect = lane.getBoundingClientRect();
               return {
                 top: rect.top - boardRect.top,
@@ -348,7 +347,7 @@ module PageObjects
             const top = Math.min(...laneBounds.map((bound) => bound.top));
             const bottom = Math.max(...laneBounds.map((bound) => bound.bottom));
 
-            return Array.from(document.querySelectorAll(".workflow-visual-editor__edge-path")).every((path) => {
+            return Array.from(document.querySelectorAll(".process-visual-editor__edge-path")).every((path) => {
               return parsePathSegments(path).every((segment) => {
                 return segment.y1 >= top && segment.y1 <= bottom && segment.y2 >= top && segment.y2 <= bottom;
               });
@@ -358,12 +357,12 @@ module PageObjects
       end
 
       def has_no_arrow_travelling_along_lane_borders?
-        has_css?(".workflow-visual-editor__edge-path") && page.evaluate_script(<<~JS)
+        has_css?(".process-visual-editor__edge-path") && page.evaluate_script(<<~JS)
           (() => {
             #{path_geometry_helpers}
 
-            const boardRect = document.querySelector(".workflow-visual-editor__board").getBoundingClientRect();
-            const laneBounds = Array.from(document.querySelectorAll(".workflow-visual-editor__lane")).map((lane) => {
+            const boardRect = document.querySelector(".process-visual-editor__board").getBoundingClientRect();
+            const laneBounds = Array.from(document.querySelectorAll(".process-visual-editor__lane")).map((lane) => {
               const rect = lane.getBoundingClientRect();
               return {
                 left: rect.left - boardRect.left,
@@ -385,7 +384,7 @@ module PageObjects
               return Math.min(segmentRight, lane.right) > Math.max(segmentLeft, lane.left);
             };
 
-            return Array.from(document.querySelectorAll(".workflow-visual-editor__edge-path")).every((path) => {
+            return Array.from(document.querySelectorAll(".process-visual-editor__edge-path")).every((path) => {
               return parsePathSegments(path).every((segment) => {
                 return laneBounds.every((lane) => !overlaps(segment, lane));
               });
@@ -400,18 +399,18 @@ module PageObjects
             #{path_geometry_helpers}
 
             const stepOptionId = arguments[0];
-            const path = document.querySelector(`.workflow-visual-editor__edge-path[data-workflow-step-option-id="${stepOptionId}"]`);
-            const option = document.querySelector(`.workflow-visual-editor__option[data-workflow-step-option-id="${stepOptionId}"]`);
-            const boardRect = document.querySelector(".workflow-visual-editor__board").getBoundingClientRect();
+            const path = document.querySelector(`.process-visual-editor__edge-path[data-workflow-step-option-id="${stepOptionId}"]`);
+            const option = document.querySelector(`.process-visual-editor__option[data-workflow-step-option-id="${stepOptionId}"]`);
+            const boardRect = document.querySelector(".process-visual-editor__board").getBoundingClientRect();
             const optionRect = option.getBoundingClientRect();
             const optionCenter = {
               x: optionRect.left - boardRect.left + optionRect.width / 2,
               y: optionRect.top - boardRect.top + optionRect.height / 2,
             };
             const verticalSegments = parsePathSegments(path).filter((segment) => segment.x1 === segment.x2);
-            const laneCenters = Array.from(document.querySelectorAll(".workflow-visual-editor__lane")).map((lane) => {
+            const laneCenters = Array.from(document.querySelectorAll(".process-visual-editor__lane")).map((lane) => {
               const laneRect = lane.getBoundingClientRect();
-              const headerRect = lane.querySelector(".workflow-visual-editor__lane-header")?.getBoundingClientRect();
+              const headerRect = lane.querySelector(".process-visual-editor__lane-header")?.getBoundingClientRect();
 
               return {
                 xLeft: laneRect.left - boardRect.left,
@@ -449,9 +448,9 @@ module PageObjects
       end
 
       def has_no_overlapping_option_dropdowns?
-        has_css?(".workflow-visual-editor__option") && page.evaluate_script(<<~JS)
+        has_css?(".process-visual-editor__option") && page.evaluate_script(<<~JS)
           (() => {
-            const rects = Array.from(document.querySelectorAll(".workflow-visual-editor__option")).map((option) => {
+            const rects = Array.from(document.querySelectorAll(".process-visual-editor__option")).map((option) => {
               const rect = option.getBoundingClientRect();
               return {
                 left: rect.left,
@@ -480,9 +479,9 @@ module PageObjects
               return Math.max(rect.left, otherRect.left) < Math.min(rect.right, otherRect.right) &&
                 Math.max(rect.top, otherRect.top) < Math.min(rect.bottom, otherRect.bottom);
             };
-            const option = document.querySelector(`.workflow-visual-editor__option[data-workflow-step-option-id="${stepOptionId}"]`);
+            const option = document.querySelector(`.process-visual-editor__option[data-workflow-step-option-id="${stepOptionId}"]`);
             const optionRect = option.getBoundingClientRect();
-            const stepRects = Array.from(document.querySelectorAll(".workflow-visual-editor__step")).map((step) => {
+            const stepRects = Array.from(document.querySelectorAll(".process-visual-editor__step")).map((step) => {
               return step.getBoundingClientRect();
             });
 
@@ -493,7 +492,7 @@ module PageObjects
 
       def has_forward_arrow_from_right_edge?(step_option)
         has_css?(
-          ".workflow-visual-editor__edge-path[data-workflow-step-option-id='#{step_option.id}'][data-workflow-source-side='right']",
+          ".process-visual-editor__edge-path[data-workflow-step-option-id='#{step_option.id}'][data-workflow-source-side='right']",
         )
       end
 
@@ -521,13 +520,13 @@ module PageObjects
       end
 
       def fill_new_step_name(name)
-        find(".workflow-visual-editor__new-step-name").fill_in(with: name)
+        find(".process-visual-editor__new-step-name").fill_in(with: name)
         self
       end
 
       def choose_new_step_category(category)
         PageObjects::Components::SelectKit.new(
-          ".workflow-visual-editor__add-step .category-chooser",
+          ".process-visual-editor__add-step .category-chooser",
         ).select_row_by_value(category.id)
         self
       end
@@ -610,12 +609,12 @@ module PageObjects
       end
 
       def delete_option(step_option)
-        find("#{option_selector(step_option)} .workflow-visual-editor__delete-option").click
+        find("#{option_selector(step_option)} .process-visual-editor__delete-option").click
         self
       end
 
       def delete_step(step)
-        find("#{step_selector(step)} .workflow-visual-editor__delete-step").click
+        find("#{step_selector(step)} .process-visual-editor__delete-step").click
         self
       end
 
@@ -646,31 +645,31 @@ module PageObjects
       private
 
       def step_selector(step)
-        ".workflow-visual-editor__step[data-workflow-step-id='#{step.id}']"
+        ".process-visual-editor__step[data-workflow-step-id='#{step.id}']"
       end
 
       def lane_selector(category)
-        ".workflow-visual-editor__lane[data-workflow-category-id='#{category.id}']"
+        ".process-visual-editor__lane[data-workflow-category-id='#{category.id}']"
       end
 
       def position_selector(category, position)
-        ".workflow-visual-editor__position-slot[data-workflow-category-id='#{category.id}'][data-workflow-position='#{position}']"
+        ".process-visual-editor__position-slot[data-workflow-category-id='#{category.id}'][data-workflow-position='#{position}']"
       end
 
       def option_selector(step_option)
-        ".workflow-visual-editor__option[data-workflow-step-option-id='#{step_option.id}']"
+        ".process-visual-editor__option[data-workflow-step-option-id='#{step_option.id}']"
       end
 
       def connector_handle_selector(step, side)
-        "#{step_selector(step)} .workflow-visual-editor__connector-handle--#{side}"
+        "#{step_selector(step)} .process-visual-editor__connector-handle--#{side}"
       end
 
       def connected_handle_selector(step)
-        "#{step_selector(step)} .workflow-visual-editor__connector-handle--connected"
+        "#{step_selector(step)} .process-visual-editor__connector-handle--connected"
       end
 
       def unconnected_handle_selector(step)
-        "#{step_selector(step)} .workflow-visual-editor__connector-handle:not(.workflow-visual-editor__connector-handle--connected)"
+        "#{step_selector(step)} .process-visual-editor__connector-handle:not(.process-visual-editor__connector-handle--connected)"
       end
 
       def path_geometry_helpers

@@ -32,16 +32,16 @@ const workflowStepPositionHeader = <template>
   <SortableColumn
     @sortable={{@sortable}}
     @number="true"
-    @order="workflow-step-position"
+    @order="process-step-position"
     @activeOrder={{@activeOrder}}
     @changeSort={{@changeSort}}
     @ascending={{@ascending}}
-    @name="workflow-step-position"
+    @name="process-step-position"
   />
 </template>;
 
 const workflowStepPositionCell = <template>
-  <td class="workflow-step-position">
+  <td class="process-step-position">
     <WorkflowNameLink
       @topic_id={{@topic.id}}
       @workflow_name={{@topic.workflow_name}}
@@ -73,15 +73,15 @@ const workflowStepNameCell = <template>
 </template>;
 
 const workflowOverdueHeader = <template>
-  <th class="topic-list-data workflow-overdue-column">
-    {{i18n "workflow-overdue"}}
+  <th class="topic-list-data process-overdue-column">
+    {{i18n "process-overdue"}}
   </th>
 </template>;
 
 const workflowOverdueCell = <template>
-  <td class="workflow-overdue">
+  <td class="process-overdue">
     {{#if @topic.workflow_overdue}}
-      <span class="workflow-overdue-indicator">{{i18n
+      <span class="process-overdue-indicator">{{i18n
           "discourse_workflow.overdue_indicator"
         }}</span>
     {{/if}}
@@ -134,7 +134,7 @@ export default {
 
       api.registerValueTransformer("topic-list-item-class", ({ value }) => {
         if (WORKFLOW_LIST_ROUTES.includes(router.currentRouteName)) {
-          value.push("workflow-list");
+          value.push("process-list");
         }
         return value;
       });
@@ -157,7 +157,7 @@ export default {
         "topic-list-columns",
         ({ value: columns }) => {
           if (WORKFLOW_LIST_ROUTES.includes(router.currentRouteName)) {
-            columns.add("workflow-step-position", {
+            columns.add("process-step-position", {
               header: workflowStepPositionHeader,
               item: workflowStepPositionCell,
               after: "workflow-name",
@@ -174,7 +174,7 @@ export default {
             columns.add("workflow-step-name", {
               header: workflowStepNameHeader,
               item: workflowStepNameCell,
-              after: "workflow-step-position",
+              after: "process-step-position",
             });
           }
           return columns;
@@ -185,7 +185,7 @@ export default {
         "topic-list-columns",
         ({ value: columns }) => {
           if (WORKFLOW_LIST_ROUTES.includes(router.currentRouteName)) {
-            columns.add("workflow-overdue", {
+            columns.add("process-overdue", {
               header: workflowOverdueHeader,
               item: workflowOverdueCell,
               after: "workflow-step-name",

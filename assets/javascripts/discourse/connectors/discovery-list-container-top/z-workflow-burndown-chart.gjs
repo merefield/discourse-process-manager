@@ -339,16 +339,16 @@ export default class WorkflowBurndownChartConnector extends Component {
   <template>
     {{#if this.shouldRenderChart}}
       <section
-        class="discovery-list-container-top-outlet workflow-burndown"
+        class="discovery-list-container-top-outlet process-burndown"
         {{didInsert this.initialize}}
         {{didUpdate this.syncFromUrl this.currentLocation}}
       >
-        <h3 class="workflow-burndown__title">
+        <h3 class="process-burndown__title">
           {{i18n "discourse_workflow.charts.title"}}
         </h3>
 
         {{#if this.selectedWorkflowName}}
-          <p class="workflow-burndown__workflow-name">
+          <p class="process-burndown__workflow-name">
             {{i18n
               "discourse_workflow.charts.workflow_name"
               workflow_name=this.selectedWorkflowName
@@ -357,30 +357,30 @@ export default class WorkflowBurndownChartConnector extends Component {
         {{/if}}
 
         {{#if this.isLoading}}
-          <p class="workflow-burndown__status">
+          <p class="process-burndown__status">
             {{i18n "discourse_workflow.charts.loading"}}
           </p>
         {{/if}}
 
         {{#if this.errorMessage}}
-          <p class="workflow-burndown__status workflow-burndown__status--error">
+          <p class="process-burndown__status process-burndown__status--error">
             {{this.errorMessage}}
           </p>
         {{/if}}
 
         {{#if this.hasChartData}}
           <div
-            class="workflow-burndown__chart"
+            class="process-burndown__chart"
             data-point-count={{this.pointCount}}
           >
             <canvas {{didInsert this.captureCanvas}}></canvas>
           </div>
 
-          <div class="workflow-burndown__legend">
+          <div class="process-burndown__legend">
             {{#each this.chartSeries as |series|}}
-              <div class="workflow-burndown__legend-step">
+              <div class="process-burndown__legend-step">
                 <span
-                  class="workflow-burndown__legend-color"
+                  class="process-burndown__legend-color"
                   style={{series.color_style}}
                 ></span>
                 <span>

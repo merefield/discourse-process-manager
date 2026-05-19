@@ -65,12 +65,12 @@ export default class WorkflowButtonsComponent extends Component {
   }
 
   <template>
-    <div class="workflow-banner-title workflow-buttons-title">
+    <div class="process-banner-title process-buttons-title">
       {{i18n "discourse_workflow.topic_banner.actions_intro"}}
     </div>
-    <div class="workflow-action-buttons">
+    <div class="process-action-buttons">
       {{#each @workflow_step_actions as |workflowAction|}}
-        <div class="workflow-action-button">
+        <div class="process-action-button">
           <DButton
             class="btn-primary"
             @action={{fn this.actOnWorkflow workflowAction}}
@@ -78,7 +78,7 @@ export default class WorkflowButtonsComponent extends Component {
             @disabled={{this.actionsDisabled}}
           />
           {{#if (this.workflowActionHelperText workflowAction)}}
-            <div class="workflow-action-helper">{{this.workflowActionHelperText
+            <div class="process-action-helper">{{this.workflowActionHelperText
                 workflowAction
               }}</div>
           {{/if}}
