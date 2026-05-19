@@ -3,7 +3,7 @@ import { trustHTML } from "@ember/template";
 import getURL from "discourse/lib/get-url";
 import { i18n } from "discourse-i18n";
 
-export default class WorkflowNotificationsListEmptyState extends Component {
+export default class ProcessNotificationsListEmptyState extends Component {
   get body() {
     return trustHTML(
       i18n("user_menu.no_workflow_notifications_body", {

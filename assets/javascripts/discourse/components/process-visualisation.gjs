@@ -1,4 +1,4 @@
-import Component from "@ember/component";
+import Component from "@glimmer/component";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import { ajax } from "discourse/lib/ajax";
@@ -6,7 +6,7 @@ import { popupAjaxError } from "discourse/lib/ajax-error";
 import loadScript from "discourse/lib/load-script";
 import { i18n } from "discourse-i18n";
 
-export default class WorkflowVisualisationComponent extends Component {
+export default class ProcessVisualisationComponent extends Component {
   ensureD3() {
     return loadScript("/plugins/discourse-workflow/d3/d3.min.js");
   }
@@ -22,7 +22,7 @@ export default class WorkflowVisualisationComponent extends Component {
   @action
   async setup() {
     await this.ensureD3();
-    const result = await this.fetchData(this.model.topic_id);
+    const result = await this.fetchData(this.args.model.topic_id);
 
     const workflowData = {
       lanes: result.lanes,
@@ -40,7 +40,7 @@ export default class WorkflowVisualisationComponent extends Component {
 
     // Select the SVG container
     const svg = window.d3
-      .select("#workflow-visualisation")
+      .select("#process-visualisation")
       .append("svg")
       .attr("viewBox", `0 0 ${width} ${height}`);
 
@@ -228,6 +228,6 @@ export default class WorkflowVisualisationComponent extends Component {
     {{#if @showTitle}}
       <h1>{{this.title}}</h1>
     {{/if}}
-    <div id="workflow-visualisation" {{didInsert this.setup}}></div>
+    <div id="process-visualisation" {{didInsert this.setup}}></div>
   </template>
 }

@@ -1,12 +1,12 @@
+import getURL from "discourse/lib/get-url";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { formatUsername } from "discourse/lib/utilities";
-import getURL from "discourse-common/lib/get-url";
 import { i18n } from "discourse-i18n";
 
 export default {
-  name: "workflow-user-menu",
+  name: "process-user-menu",
   initialize() {
-    withPluginApi("1.3.0", (api) => {
+    withPluginApi((api) => {
       if (api.registerNotificationTypeRenderer) {
         api.registerNotificationTypeRenderer(
           "workflow_topic_arrival",
@@ -57,7 +57,7 @@ export default {
             }
 
             get panelComponent() {
-              return "user-menu/workflow-notifications-list";
+              return "user-menu/process-notifications-list";
             }
 
             get icon() {

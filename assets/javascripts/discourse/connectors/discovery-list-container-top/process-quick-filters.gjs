@@ -15,7 +15,7 @@ import { i18n } from "discourse-i18n";
 
 const STORAGE_KEY = "discourse_workflow_quick_filters";
 
-export default class WorkflowQuickFiltersConnector extends Component {
+export default class ProcessQuickFiltersConnector extends Component {
   @service dialog;
   @service discovery;
   @service router;
@@ -938,7 +938,7 @@ export default class WorkflowQuickFiltersConnector extends Component {
                 {{i18n "discourse_workflow.kanban.title"}}
               </h3>
               {{#if this.kanbanWorkflowName}}
-                <p class="process-kanban__workflow-name">
+                <p class="process-kanban__process-name">
                   {{i18n
                     "discourse_workflow.kanban.workflow_name"
                     workflow_name=this.kanbanWorkflowName

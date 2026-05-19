@@ -15,10 +15,10 @@ import { popupAjaxError } from "discourse/lib/ajax-error";
 import CategoryChooser from "discourse/select-kit/components/category-chooser";
 import not from "discourse/truth-helpers/helpers/not";
 import I18n, { i18n } from "discourse-i18n";
-import WorkflowBackButton from "./workflow-back-button";
-import WorkflowStepOptionListEditor from "./workflow-step-option-list-editor";
+import ProcessBackButton from "./process-back-button";
+import ProcessStepOptionListEditor from "./process-step-option-list-editor";
 
-export default class WorkflowStepEditor extends Component {
+export default class ProcessStepEditor extends Component {
   @service router;
   @service dialog;
   @service toasts;
@@ -125,7 +125,7 @@ export default class WorkflowStepEditor extends Component {
   }
 
   <template>
-    <WorkflowBackButton
+    <ProcessBackButton
       @route="adminPlugins.show.discourse-workflow-workflows.edit"
       @model={{@currentWorkflowStep.workflow_id}}
     />
@@ -208,7 +208,7 @@ export default class WorkflowStepEditor extends Component {
       </div>
       {{#if this.showStepOptions}}
         <div class="control-group">
-          <WorkflowStepOptionListEditor
+          <ProcessStepOptionListEditor
             class="process-editor__steps_options"
             @workflowStep={{@currentWorkflowStep}}
             @workflowSteps={{@workflowSteps}}

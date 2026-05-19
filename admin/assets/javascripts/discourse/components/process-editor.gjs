@@ -14,10 +14,10 @@ import Textarea from "discourse/components/d-textarea";
 import DToggleSwitch from "discourse/components/d-toggle-switch";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import I18n, { i18n } from "discourse-i18n";
-import WorkflowStepListEditor from "./workflow-step-list-editor";
-import WorkflowVisualEditor from "./workflow-visual-editor";
+import ProcessStepListEditor from "./process-step-list-editor";
+import ProcessVisualEditor from "./process-visual-editor";
 
-export default class WorkflowEditor extends Component {
+export default class ProcessEditor extends Component {
   @service adminPluginNavManager;
   @service router;
   @service store;
@@ -313,14 +313,14 @@ export default class WorkflowEditor extends Component {
           </div>
 
           {{#if this.showingStepsList}}
-            <WorkflowStepListEditor
+            <ProcessStepListEditor
               class="process-editor__steps"
               @workflow={{@workflow}}
               @disabled={{this.editingModel.system}}
               @onChange={{this.stepsChanged}}
             />
           {{else}}
-            <WorkflowVisualEditor
+            <ProcessVisualEditor
               @workflow={{@workflow}}
               @disabled={{this.editingModel.system}}
             />

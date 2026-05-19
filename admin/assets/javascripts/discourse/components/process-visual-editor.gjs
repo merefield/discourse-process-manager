@@ -15,7 +15,7 @@ import { bind } from "discourse/lib/decorators";
 import CategoryChooser from "discourse/select-kit/components/category-chooser";
 import { i18n } from "discourse-i18n";
 
-export default class WorkflowVisualEditor extends Component {
+export default class ProcessVisualEditor extends Component {
   @service dialog;
   @service router;
 

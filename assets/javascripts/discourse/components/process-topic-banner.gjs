@@ -4,15 +4,15 @@ import { service } from "@ember/service";
 import DButton from "discourse/components/d-button";
 import bodyClass from "discourse/helpers/body-class";
 import { i18n } from "discourse-i18n";
-import WorkflowButtons from "./workflow-buttons";
-import WorkflowVisualisationModal from "./workflow-visualisation-modal";
+import ProcessButtons from "./process-buttons";
+import ProcessVisualisationModal from "./process-visualisation-modal";
 
-export default class WorkflowButtonsComponent extends Component {
+export default class ProcessButtonsComponent extends Component {
   @service modal;
 
   @action
   showVisualisationModal() {
-    this.modal.show(WorkflowVisualisationModal, {
+    this.modal.show(ProcessVisualisationModal, {
       model: {
         topic_id: this.args.topic_id,
         workflow_name: this.args.workflow_name,
@@ -46,11 +46,11 @@ export default class WorkflowButtonsComponent extends Component {
             "discourse_workflow.topic_banner.title"
           }}</div>
         <div class="process-banner-meta">
-          <div class="process-banner-section process-workflow-name">
-            <div class="process-banner-title process-workflow-name-title">{{i18n
+          <div class="process-banner-section process-process-name">
+            <div class="process-banner-title process-process-name-title">{{i18n
                 "discourse_workflow.topic_banner.workflow_title"
               }}</div>
-            <div class="process-workflow-name-name">{{@workflow_name}}</div>
+            <div class="process-process-name-name">{{@workflow_name}}</div>
           </div>
           <div class="process-banner-section process-step-name">
             <div class="process-banner-title process-step-name-title">{{i18n
@@ -67,7 +67,7 @@ export default class WorkflowButtonsComponent extends Component {
           </div>
           <div class="process-banner-section process-step-actions">
             {{#if @workflow_step_actions}}
-              <WorkflowButtons
+              <ProcessButtons
                 @workflow_step_actions={{@workflow_step_actions}}
                 @workflow_can_act={{@workflow_can_act}}
                 @topic_id={{@topic_id}}

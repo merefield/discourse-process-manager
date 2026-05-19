@@ -12,8 +12,8 @@ import concatClass from "discourse/helpers/concat-class";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { bind } from "discourse/lib/decorators";
 import { i18n } from "discourse-i18n";
-import WorkflowLinkButton from "./workflow-link-button";
-import WorkflowStepOptionEditor from "./workflow-step-option-editor";
+import ProcessLinkButton from "./process-link-button";
+import ProcessStepOptionEditor from "./process-step-option-editor";
 
 export default class WorkflowStepOptionsListEditor extends Component {
   @service store;
@@ -153,7 +153,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
       {{didInsert this.loadStepOptions}}
     >
       {{#if this.currentWorkflowStepOption}}
-        <WorkflowStepOptionEditor
+        <ProcessStepOptionEditor
           @currentWorkflowStepOption={{this.currentWorkflowStepOption}}
           @workflowStep={{@workflowStep}}
           @workflowSteps={{@workflowSteps}}
@@ -262,7 +262,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
             </tbody>
           </table>
         {{/if}}
-        <WorkflowLinkButton
+        <ProcessLinkButton
           @route="adminPlugins.show.discourse-workflow-workflows.steps.options.new"
           @label="admin.discourse_workflow.workflows.steps.options.new"
           @model={{@workflowStep}}

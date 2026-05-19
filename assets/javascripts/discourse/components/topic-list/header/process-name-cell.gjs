@@ -1,6 +1,6 @@
 import SortableColumn from "discourse/components/topic-list/header/sortable-column";
 
-const WorkflowNameCell = <template>
+const ProcessNameCell = <template>
   <SortableColumn
     @sortable={{@sortable}}
     @number="false"
@@ -12,4 +12,4 @@ const WorkflowNameCell = <template>
   />
 </template>;
 
-export default WorkflowNameCell;
+export default ProcessNameCell;

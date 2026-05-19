@@ -10,9 +10,9 @@ import DButton from "discourse/components/d-button";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import DropdownSelectBox from "discourse/select-kit/components/dropdown-select-box";
 import I18n, { i18n } from "discourse-i18n";
-import WorkflowBackButton from "./workflow-back-button";
+import ProcessBackButton from "./process-back-button";
 
-export default class WorkflowStepOptionEditor extends Component {
+export default class ProcessStepOptionEditor extends Component {
   @service router;
   @service dialog;
   @service toasts;
@@ -94,7 +94,7 @@ export default class WorkflowStepOptionEditor extends Component {
   }
 
   <template>
-    <WorkflowBackButton
+    <ProcessBackButton
       @route="adminPlugins.show.discourse-workflow-workflows.steps.edit"
       @model={{@currentWorkflowStepOption.workflow_step_id}}
     />

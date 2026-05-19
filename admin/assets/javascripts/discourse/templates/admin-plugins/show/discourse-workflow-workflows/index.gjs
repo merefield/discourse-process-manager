@@ -1,6 +1,6 @@
 import DPageSubheader from "discourse/components/d-page-subheader";
 import { i18n } from "discourse-i18n";
-import WorkflowListEditor from "../../../../components/workflow-list-editor";
+import ProcessListEditor from "../../../../components/process-list-editor";
 
 export default <template>
   <div class="discourse-process-workflows admin-detail">
@@ -24,7 +24,7 @@ export default <template>
 
     <div class="workflows-list">
       {{#if @controller.model.content.length}}
-        <WorkflowListEditor @workflows={{@controller.model.content}} />
+        <ProcessListEditor @workflows={{@controller.model.content}} />
       {{else}}
         {{i18n "admin.discourse_workflow.workflows.none"}}
       {{/if}}

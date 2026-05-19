@@ -2,7 +2,7 @@
 
 import Component from "@glimmer/component";
 import { i18n } from "discourse-i18n";
-import WorkflowNameLink from "../../components/workflow-name-link";
+import ProcessNameLink from "../../components/process-name-link";
 
 export default class WorkflowLink extends Component {
   get label() {
@@ -14,8 +14,8 @@ export default class WorkflowLink extends Component {
 
   <template>
     {{#if @outletArgs.topic.workflow_name}}
-      <span class="workflow-after-title">
-        <WorkflowNameLink
+      <span class="process-after-title">
+        <ProcessNameLink
           @topic_id={{@outletArgs.topic.id}}
           @workflow_name={{@outletArgs.topic.workflow_name}}
           @label={{this.label}}

@@ -10,7 +10,7 @@ import { extractError } from "discourse/lib/ajax-error";
 import loadChartJS from "discourse/lib/load-chart-js";
 import { i18n } from "discourse-i18n";
 
-export default class WorkflowBurndownChartConnector extends Component {
+export default class ProcessBurndownChartConnector extends Component {
   @service dialog;
   @service discovery;
   @service router;
@@ -348,7 +348,7 @@ export default class WorkflowBurndownChartConnector extends Component {
         </h3>
 
         {{#if this.selectedWorkflowName}}
-          <p class="process-burndown__workflow-name">
+          <p class="process-burndown__process-name">
             {{i18n
               "discourse_workflow.charts.workflow_name"
               workflow_name=this.selectedWorkflowName

@@ -2,14 +2,14 @@ import Component from "@glimmer/component";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
 import DButton from "discourse/components/d-button";
-import WorkflowVisualisationModal from "./workflow-visualisation-modal";
+import ProcessVisualisationModal from "./process-visualisation-modal";
 
-export default class WorkflowButtonsComponent extends Component {
+export default class ProcessButtonsComponent extends Component {
   @service modal;
 
   @action
   showVisualisationModal() {
-    this.modal.show(WorkflowVisualisationModal, {
+    this.modal.show(ProcessVisualisationModal, {
       model: {
         topic_id: this.args.topic_id,
         workflow_name: this.args.workflow_name,

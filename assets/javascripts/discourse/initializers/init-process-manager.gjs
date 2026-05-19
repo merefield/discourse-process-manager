@@ -2,7 +2,7 @@ import SortableColumn from "discourse/components/topic-list/header/sortable-colu
 import { addDiscoveryQueryParam } from "discourse/controllers/discovery/list";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { i18n } from "discourse-i18n";
-import WorkflowNameLink from "./../components/workflow-name-link";
+import ProcessNameLink from "./../components/process-name-link";
 
 const WORKFLOW_LIST_ROUTES = ["discovery.workflow", "discovery.workflowCharts"];
 
@@ -19,8 +19,8 @@ const workflowNameHeader = <template>
 </template>;
 
 const workflowNameCell = <template>
-  <td class="workflow-name">
-    <WorkflowNameLink
+  <td class="process-name">
+    <ProcessNameLink
       @topic_id={{@topic.id}}
       @workflow_name={{@topic.workflow_name}}
       @label={{@topic.workflow_name}}
@@ -42,7 +42,7 @@ const workflowStepPositionHeader = <template>
 
 const workflowStepPositionCell = <template>
   <td class="process-step-position">
-    <WorkflowNameLink
+    <ProcessNameLink
       @topic_id={{@topic.id}}
       @workflow_name={{@topic.workflow_name}}
       @label={{@topic.workflow_step_position}}
@@ -63,8 +63,8 @@ const workflowStepNameHeader = <template>
 </template>;
 
 const workflowStepNameCell = <template>
-  <td class="workflow-step-name">
-    <WorkflowNameLink
+  <td class="process-step-name">
+    <ProcessNameLink
       @topic_id={{@topic.id}}
       @workflow_name={{@topic.workflow_name}}
       @label={{@topic.workflow_step_name}}

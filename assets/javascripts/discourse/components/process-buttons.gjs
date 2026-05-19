@@ -8,7 +8,7 @@ import { ajax } from "discourse/lib/ajax";
 import { extractError } from "discourse/lib/ajax-error";
 import { i18n } from "discourse-i18n";
 
-export default class WorkflowButtonsComponent extends Component {
+export default class ProcessButtonsComponent extends Component {
   @service dialog;
   @service router;
 

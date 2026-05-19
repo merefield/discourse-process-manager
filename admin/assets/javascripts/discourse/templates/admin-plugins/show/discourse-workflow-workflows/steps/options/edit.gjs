@@ -1,7 +1,7 @@
-import WorkflowStepOptionListEditor from "../../../../../../components/workflow-step-option-list-editor";
+import ProcessStepOptionListEditor from "../../../../../../components/process-step-option-list-editor";
 
 export default <template>
-  <WorkflowStepOptionListEditor
+  <ProcessStepOptionListEditor
     @currentWorkflowStepOption={{@controller.model}}
     @workflowStep={{@controller.workflowStep}}
     @workflowSteps={{@controller.workflowSteps}}

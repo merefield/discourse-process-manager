@@ -15,8 +15,8 @@ import concatClass from "discourse/helpers/concat-class";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { bind } from "discourse/lib/decorators";
 import { i18n } from "discourse-i18n";
-import WorkflowLinkButton from "./workflow-link-button";
-import WorkflowStepEditor from "./workflow-step-editor";
+import ProcessLinkButton from "./process-link-button";
+import ProcessStepEditor from "./process-step-editor";
 
 export default class WorkflowStepsListEditor extends Component {
   @service adminPluginNavManager;
@@ -150,7 +150,7 @@ export default class WorkflowStepsListEditor extends Component {
       {{didInsert this.loadSteps}}
     >
       {{#if this.currentWorkflowStep}}
-        <WorkflowStepEditor
+        <ProcessStepEditor
           @currentWorkflowStep={{this.currentWorkflowStep}}
           @workflow={{@workflow}}
           @workflowSteps={{@workflowSteps}}
@@ -194,30 +194,30 @@ export default class WorkflowStepsListEditor extends Component {
                 <tr
                   data-workflow-step-id={{step.position}}
                   class={{concatClass
-                    "workflow-step-list__row d-admin-row__content"
+                    "process-step-list__row d-admin-row__content"
                   }}
                 >
                   <td class="d-admin-row__overview">
-                    <div class="workflow-step-list__position">
+                    <div class="process-step-list__position">
                       <strong>
                         {{step.position}}
                       </strong>
                     </div>
                   </td>
                   <td class="d-admin-row__overview">
-                    <div class="workflow-step-list__name">
+                    <div class="process-step-list__name">
                       <strong>
                         {{step.name}}
                       </strong>
                     </div>
                   </td>
                   <td class="d-admin-row__overview">
-                    <div class="workflow-step-list__category_name">
+                    <div class="process-step-list__category_name">
                       {{categoryLink step.category}}
                     </div>
                   </td>
                   <td class="d-admin-row__overview">
-                    <div class="workflow-step-list__description">
+                    <div class="process-step-list__description">
                       {{step.description}}
                     </div>
                   </td>
@@ -230,7 +230,7 @@ export default class WorkflowStepsListEditor extends Component {
                     />
                   </td>
                   <td class="d-admin-row__overview">
-                    <div class="workflow-step-list__ai_prompt">
+                    <div class="process-step-list__ai_prompt">
                       {{step.ai_prompt}}
                     </div>
                   </td>
@@ -265,7 +265,7 @@ export default class WorkflowStepsListEditor extends Component {
             </tbody>
           </table>
         {{/if}}
-        <WorkflowLinkButton
+        <ProcessLinkButton
           @route="adminPlugins.show.discourse-workflow-workflows.steps.new"
           @label="admin.discourse_workflow.workflows.steps.new"
           @model={{@workflow}}

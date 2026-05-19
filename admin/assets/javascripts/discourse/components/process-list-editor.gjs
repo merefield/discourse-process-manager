@@ -9,9 +9,9 @@ import DToggleSwitch from "discourse/components/d-toggle-switch";
 import concatClass from "discourse/helpers/concat-class";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { i18n } from "discourse-i18n";
-import WorkflowEditor from "./workflow-editor";
+import ProcessEditor from "./process-editor";
 
-export default class WorkflowListEditor extends Component {
+export default class ProcessListEditor extends Component {
   @service adminPluginNavManager;
 
   @action
@@ -35,7 +35,7 @@ export default class WorkflowListEditor extends Component {
     />
     <section class="process-list-editor__current admin-detail pull-left">
       {{#if @currentWorkflow}}
-        <WorkflowEditor
+        <ProcessEditor
           @workflow={{@currentWorkflow}}
           @workflows={{@workflows}}
         />
