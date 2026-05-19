@@ -81,7 +81,7 @@ export default class ProcessListEditor extends Component {
                   </td>
                   <td class="d-admin-row__controls">
                     <LinkTo
-                      @route="adminPlugins.show.discourse-workflow-workflows.edit"
+                      @route="adminPlugins.show.processes.edit"
                       @model={{workflow}}
                       class="btn btn-text btn-small"
                     >{{i18n "admin.discourse_workflow.workflows.edit"}}
@@ -95,7 +95,7 @@ export default class ProcessListEditor extends Component {
           <div class="process-list-editor__empty empty-state">
             <p>{{i18n "admin.discourse_workflow.workflows.none"}}</p>
             <LinkTo
-              @route="adminPlugins.show.discourse-workflow-workflows.new"
+              @route="adminPlugins.show.processes.new"
               class="btn btn-primary process-list-editor__empty-new-button"
             >
               {{i18n "admin.discourse_workflow.workflows.new"}}

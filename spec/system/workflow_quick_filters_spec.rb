@@ -70,7 +70,7 @@ RSpec.describe "Workflow quick filters" do
   end
 
   it "filters workflow topics by step position via workflow query params" do
-    page.visit("/workflow?workflow_step_position=2")
+    page.visit("/workflow?process_step_position=2")
 
     expect(page).to have_content(topic_2.title)
     expect(page).to have_no_content(topic_1.title)
@@ -116,7 +116,7 @@ RSpec.describe "Workflow quick filters" do
     expect(workflow_discovery_page).to have_quick_filters
 
     workflow_discovery_page.set_step_filter(2)
-    expect(page).to have_current_path(%r{/workflow\?.*workflow_step_position=2}, url: true)
+    expect(page).to have_current_path(%r{/workflow\?.*process_step_position=2}, url: true)
     expect(page).to have_content(topic_2.title)
     expect(page).to have_no_content(topic_1.title)
     expect(page).to have_css(".process-quick-filters__apply-step.btn-primary")
@@ -128,7 +128,7 @@ RSpec.describe "Workflow quick filters" do
     expect(page).to have_css(".process-quick-filters__apply-step.btn-default")
 
     workflow_discovery_page.set_step_filter(2)
-    expect(page).to have_current_path(%r{/workflow\?.*workflow_step_position=2}, url: true)
+    expect(page).to have_current_path(%r{/workflow\?.*process_step_position=2}, url: true)
     expect(page).to have_css(".process-quick-filters__apply-step.btn-primary")
 
     workflow_discovery_page.set_step_filter(2)
@@ -139,7 +139,7 @@ RSpec.describe "Workflow quick filters" do
   it "does not redirect repeatedly when saved filters contain empty values" do
     page.visit("/")
     page.execute_script(
-      "localStorage.setItem('discourse_workflow_quick_filters', JSON.stringify({ my_categories: null, overdue_days: null, workflow_step_position: '' }))",
+      "localStorage.setItem('process_manager_quick_filters', JSON.stringify({ my_categories: null, overdue_days: null, process_step_position: '' }))",
     )
 
     workflow_discovery_page.visit_workflow
@@ -183,8 +183,8 @@ RSpec.describe "Workflow quick filters" do
   it "shows kanban toggle only when the current list is a single compatible workflow" do
     workflow_discovery_page.visit_workflow
 
-    expect(workflow_discovery_page).to have_workflow_view_toggle
-    expect(workflow_discovery_page).to have_no_workflow_view_option("Chart")
+    expect(workflow_discovery_page).to have_process_view_toggle
+    expect(workflow_discovery_page).to have_no_process_view_option("Chart")
   end
 
   it "toggles between workflow list and kanban board view" do
@@ -192,9 +192,9 @@ RSpec.describe "Workflow quick filters" do
     expect(page).to have_css(".topic-list")
     expect(page).to have_no_css(".process-kanban")
 
-    workflow_discovery_page.toggle_workflow_view
+    workflow_discovery_page.toggle_process_view
 
-    expect(page).to have_current_path(%r{/workflow\?.*workflow_view=kanban}, url: true)
+    expect(page).to have_current_path(%r{/workflow\?.*process_view=kanban}, url: true)
     expect(workflow_discovery_page).to have_kanban_board
     expect(workflow_discovery_page).to have_kanban_column_for_step(1)
     expect(workflow_discovery_page).to have_kanban_column_for_step(2)
@@ -202,19 +202,19 @@ RSpec.describe "Workflow quick filters" do
     expect(workflow_discovery_page).to have_kanban_card_for_topic(topic_1.id)
     expect(workflow_discovery_page).to have_kanban_card_for_topic(topic_2.id)
     expect(page).to have_no_css(".topic-list")
-    expect(workflow_discovery_page.workflow_view_value).to eq("kanban")
+    expect(workflow_discovery_page.process_view_value).to eq("kanban")
 
-    workflow_discovery_page.toggle_workflow_view
+    workflow_discovery_page.toggle_process_view
 
     expect(page).to have_current_path("/workflow", url: false)
     expect(page).to have_css(".topic-list")
     expect(page).to have_no_css(".process-kanban")
-    expect(workflow_discovery_page.workflow_view_value).to eq("list")
+    expect(workflow_discovery_page.process_view_value).to eq("list")
   end
 
   it "supports drag-drop transitions with legal and illegal column highlighting" do
     workflow_discovery_page.visit_workflow
-    workflow_discovery_page.toggle_workflow_view
+    workflow_discovery_page.toggle_process_view
 
     expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 1)
     expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_2.id, 2)
@@ -237,7 +237,7 @@ RSpec.describe "Workflow quick filters" do
 
   it "supports keyboard arrow transitions for focused kanban cards when legal" do
     workflow_discovery_page.visit_workflow
-    workflow_discovery_page.toggle_workflow_view
+    workflow_discovery_page.toggle_process_view
 
     expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 1)
 
@@ -254,7 +254,7 @@ RSpec.describe "Workflow quick filters" do
     category_3.update_columns(color: "778899")
 
     workflow_discovery_page.visit_workflow
-    workflow_discovery_page.toggle_workflow_view
+    workflow_discovery_page.toggle_process_view
 
     expect(workflow_discovery_page.kanban_column_border_color(1)).to eq(
       css_rgb_for_hex(category_1.reload.color),
@@ -269,7 +269,7 @@ RSpec.describe "Workflow quick filters" do
 
   it "refreshes kanban view after stale transition errors to re-sync backend state" do
     workflow_discovery_page.visit_workflow
-    workflow_discovery_page.toggle_workflow_view
+    workflow_discovery_page.toggle_process_view
 
     expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 1)
 
@@ -290,13 +290,13 @@ RSpec.describe "Workflow quick filters" do
 
   it "shows kanban card tags when enabled on the workflow and hides them when disabled" do
     workflow_discovery_page.visit_workflow
-    workflow_discovery_page.toggle_workflow_view
+    workflow_discovery_page.toggle_process_view
 
     expect(workflow_discovery_page).to have_kanban_tag_for_topic(topic_1.id, "kanban-tag")
 
     workflow.update!(show_kanban_tags: false)
     workflow_discovery_page.visit_workflow
-    workflow_discovery_page.toggle_workflow_view
+    workflow_discovery_page.toggle_process_view
 
     expect(workflow_discovery_page).to have_no_kanban_tag_for_topic(topic_1.id, "kanban-tag")
   end
@@ -320,7 +320,7 @@ RSpec.describe "Workflow quick filters" do
 
     workflow_discovery_page.visit_workflow
 
-    expect(workflow_discovery_page).to have_no_workflow_view_toggle
+    expect(workflow_discovery_page).to have_no_process_view_toggle
   end
 
   def css_rgb_for_hex(hex)

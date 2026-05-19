@@ -4,7 +4,7 @@ import { withPluginApi } from "discourse/lib/plugin-api";
 import { i18n } from "discourse-i18n";
 import ProcessNameLink from "./../components/process-name-link";
 
-const WORKFLOW_LIST_ROUTES = ["discovery.workflow", "discovery.workflowCharts"];
+const WORKFLOW_LIST_ROUTES = ["discovery.workflow", "discovery.processCharts"];
 
 const workflowNameHeader = <template>
   <SortableColumn
@@ -106,11 +106,11 @@ export default {
       replace: true,
       refreshModel: true,
     });
-    addDiscoveryQueryParam("workflow_step_position", {
+    addDiscoveryQueryParam("process_step_position", {
       replace: true,
       refreshModel: true,
     });
-    addDiscoveryQueryParam("workflow_view", {
+    addDiscoveryQueryParam("process_view", {
       replace: true,
       refreshModel: false,
     });
@@ -123,7 +123,7 @@ export default {
       api.addAdminPluginConfigurationNav("discourse-workflow", [
         {
           label: "admin.discourse_workflow.workflows.title",
-          route: "adminPlugins.show.discourse-workflow-workflows",
+          route: "adminPlugins.show.processes",
         },
       ]);
 

@@ -84,17 +84,17 @@ export default class ProcessBurndownChartConnector extends Component {
     );
   }
 
-  get isWorkflowChartsRoute() {
+  get isProcessChartsRoute() {
     return (
-      this.router.currentRouteName === "discovery.workflowCharts" ||
+      this.router.currentRouteName === "discovery.processCharts" ||
       this.currentPathname.startsWith("/workflow/charts")
     );
   }
 
   get isChartView() {
     return (
-      this.currentSearchParams.get("workflow_view") === "chart" ||
-      this.isWorkflowChartsRoute
+      this.currentSearchParams.get("process_view") === "chart" ||
+      this.isProcessChartsRoute
     );
   }
 
@@ -197,15 +197,15 @@ export default class ProcessBurndownChartConnector extends Component {
 
     if (!this.canUseChartView) {
       const params = Object.fromEntries(this.currentSearchParams.entries());
-      delete params.workflow_view;
+      delete params.process_view;
       this.router.transitionTo("discovery.workflow", {
         queryParams: {
           my_categories: params.my_categories || null,
           overdue: params.overdue || null,
           overdue_days: params.overdue_days || null,
-          workflow_step_position: params.workflow_step_position || null,
+          process_step_position: params.process_step_position || null,
           chart_weeks: params.chart_weeks || null,
-          workflow_view: null,
+          process_view: null,
         },
       });
       return;

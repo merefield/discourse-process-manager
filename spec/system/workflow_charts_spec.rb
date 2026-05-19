@@ -88,9 +88,9 @@ RSpec.describe "Workflow charts" do
     expect(workflow_discovery_page).to have_workflow_burndown_chart
     expect(workflow_discovery_page).to have_workflow_burndown_chart_canvas
     expect(page).to have_css(".process-burndown__process-name", text: "Process: #{workflow.name}")
-    expect(workflow_discovery_page).to have_workflow_view_option("Chart")
+    expect(workflow_discovery_page).to have_process_view_option("Chart")
     expect(workflow_discovery_page).to have_workflow_chart_weeks_selector
-    expect(workflow_discovery_page).to have_no_workflow_view_option("Kanban")
+    expect(workflow_discovery_page).to have_no_process_view_option("Kanban")
     expect(workflow_discovery_page).to have_workflow_chart_legend_step("Queue")
     expect(workflow_discovery_page).to have_workflow_chart_legend_step("Review")
     expect(workflow_discovery_page).to have_workflow_chart_legend_step("Approval")
@@ -106,7 +106,7 @@ RSpec.describe "Workflow charts" do
     workflow_discovery_page.select_chart_weeks(12)
 
     expect(page).to have_current_path(%r{/workflow\?.*chart_weeks=12}, url: true)
-    expect(page).to have_current_path(%r{/workflow\?.*workflow_view=chart}, url: true)
+    expect(page).to have_current_path(%r{/workflow\?.*process_view=chart}, url: true)
     expect(workflow_discovery_page.workflow_chart_point_count).to eq(84)
   end
 
@@ -121,9 +121,9 @@ RSpec.describe "Workflow charts" do
 
   it "supports switching chart mode from workflow discovery view dropdown" do
     workflow_discovery_page.visit_workflow
-    workflow_discovery_page.select_workflow_view("Chart")
+    workflow_discovery_page.select_process_view("Chart")
 
-    expect(page).to have_current_path(%r{/workflow\?.*workflow_view=chart}, url: true)
+    expect(page).to have_current_path(%r{/workflow\?.*process_view=chart}, url: true)
     expect(workflow_discovery_page).to have_workflow_burndown_chart
   end
 

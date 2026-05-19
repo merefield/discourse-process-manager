@@ -14,7 +14,7 @@ export default <template>
         <actions.Primary
           @label="admin.discourse_workflow.workflows.new"
           @title="admin.discourse_workflow.workflows.new"
-          @route="adminPlugins.show.discourse-workflow-workflows.new"
+          @route="adminPlugins.show.processes.new"
           @routeModels="discourse-workflow"
           @icon="plus"
           class="admin-workflows-new"

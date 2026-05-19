@@ -1,18 +1,16 @@
 import DiscourseRoute from "discourse/routes/discourse";
 import { i18n } from "discourse-i18n";
 
-export default class AdminPluginsShowDiscourseWorkflowWorkflowStepOptions extends DiscourseRoute {
+export default class AdminPluginsShowProcessesStepOptions extends DiscourseRoute {
   async model(params) {
-    const workflowSteps = this.modelFor(
-      "adminPlugins.show.discourse-workflow-workflows.steps"
-    );
+    const workflowSteps = this.modelFor("adminPlugins.show.processes.steps");
     const id = parseInt(params.step_id, 10);
     const workflowStep = workflowSteps.findBy("id", id);
     const workflow_id = workflowStep.workflow_id;
     const allWorkflowStepOptions = await this.store.findAll(
       "workflow-step-option",
       { workflow_step_id: workflowStep.id, workflow_id }
-    ); // this.modelFor("adminPlugins.show.discourse-workflow-workflows");
+    ); // this.modelFor("adminPlugins.show.processes");
     return allWorkflowStepOptions.content;
   }
 

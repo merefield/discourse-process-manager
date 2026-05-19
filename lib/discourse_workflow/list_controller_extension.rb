@@ -47,11 +47,11 @@ module DiscourseWorkflow
         workflow_filters_applied = true
       end
 
-      if params[:workflow_step_position].present? && params[:workflow_step_position].to_i > 0
+      if params[:process_step_position].present? && params[:process_step_position].to_i > 0
         workflow_topic_ids_scope =
           workflow_topic_ids_scope.joins(:workflow_step).where(
             workflow_steps: {
-              position: params[:workflow_step_position].to_i,
+              position: params[:process_step_position].to_i,
             },
           )
         workflow_filters_applied = true

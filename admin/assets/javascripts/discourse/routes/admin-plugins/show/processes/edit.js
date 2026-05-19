@@ -1,6 +1,6 @@
 import DiscourseRoute from "discourse/routes/discourse";
 
-export default class AdminPluginsShowDiscourseWorkflowWorkflowEdit extends DiscourseRoute {
+export default class AdminPluginsShowProcessesEdit extends DiscourseRoute {
   queryParams = {
     refresh: { refreshModel: true },
   };
@@ -14,7 +14,7 @@ export default class AdminPluginsShowDiscourseWorkflowWorkflowEdit extends Disco
     super.setupController(controller, model);
     controller.set(
       "allWorkflows",
-      this.modelFor("adminPlugins.show.discourse-workflow-workflows")
+      this.modelFor("adminPlugins.show.processes")
     );
   }
 }

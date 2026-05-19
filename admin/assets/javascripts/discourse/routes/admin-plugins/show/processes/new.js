@@ -1,6 +1,6 @@
 import DiscourseRoute from "discourse/routes/discourse";
 
-export default class AdminPluginsShowDiscourseWorkflowWorkflowNew extends DiscourseRoute {
+export default class AdminPluginsShowProcessesNew extends DiscourseRoute {
   async model() {
     const record = this.store.createRecord("workflow");
     return record;
@@ -10,7 +10,7 @@ export default class AdminPluginsShowDiscourseWorkflowWorkflowNew extends Discou
     super.setupController(controller, model);
     controller.set(
       "allWorkflows",
-      this.modelFor("adminPlugins.show.discourse-workflow-workflows")
+      this.modelFor("adminPlugins.show.processes")
     );
   }
 }

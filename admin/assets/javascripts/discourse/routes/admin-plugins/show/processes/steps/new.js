@@ -1,6 +1,6 @@
 import DiscourseRoute from "discourse/routes/discourse";
 
-export default class AdminPluginsShowDiscourseWorkflowWorkflowStepsNew extends DiscourseRoute {
+export default class AdminPluginsShowProcessesStepsNew extends DiscourseRoute {
   queryParams = {
     category_id: {
       refreshModel: true,
@@ -9,9 +9,7 @@ export default class AdminPluginsShowDiscourseWorkflowWorkflowStepsNew extends D
 
   async model(params) {
     // Get the parent workflow
-    const workflow = this.modelFor(
-      "adminPlugins.show.discourse-workflow-workflows.steps"
-    );
+    const workflow = this.modelFor("adminPlugins.show.processes.steps");
 
     const sortedSteps = [...workflow.workflow_steps].sort(
       (a, b) => a.position - b.position

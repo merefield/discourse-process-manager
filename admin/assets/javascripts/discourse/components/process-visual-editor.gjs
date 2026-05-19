@@ -2280,7 +2280,7 @@ export default class ProcessVisualEditor extends Component {
   @action
   addStepToLane(lane) {
     this.router.transitionTo(
-      "adminPlugins.show.discourse-workflow-workflows.steps.new",
+      "adminPlugins.show.processes.steps.new",
       this.args.workflow,
       {
         queryParams: {

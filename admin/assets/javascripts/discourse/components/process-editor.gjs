@@ -68,7 +68,7 @@ export default class ProcessEditor extends Component {
         duration: 2000,
       });
       this.router.transitionTo(
-        "adminPlugins.show.discourse-workflow-workflows",
+        "adminPlugins.show.processes",
         this.store.findAll("workflow")
       );
     } catch (e) {
@@ -88,7 +88,7 @@ export default class ProcessEditor extends Component {
       didConfirm: () => {
         return this.args.workflow.destroyRecord().then(() => {
           this.router.transitionTo(
-            "adminPlugins.show.discourse-workflow-workflows",
+            "adminPlugins.show.processes",
             this.store.findAll("workflow")
           );
         });
@@ -178,7 +178,7 @@ export default class ProcessEditor extends Component {
       @label={{i18n "admin.discourse_workflow.workflows.workflow.short_title"}}
     />
     <BackButton
-      @route="adminPlugins.show.discourse-workflow-workflows"
+      @route="adminPlugins.show.processes"
       @label="admin.discourse_workflow.workflows.back"
     />
     {{#if @workflow.name}}

@@ -107,7 +107,7 @@ For each directed edge, Kanban drag/keyboard transitions are option-agnostic and
 
 Chart view is shown when the current process discovery context resolves to a single process.
 
-- Route support: `/workflow/charts` and chart mode in `/workflow` via `workflow_view=chart`
+- Route support: `/workflow/charts` and chart mode in `/workflow` via `process_view=chart`
 - View selector behavior: `Chart` is only shown when the user can view charts and the current discovery context is a single process
 - Period selection: `1` to `12` weeks
 - Time windows: complete weeks (Sunday through Saturday)

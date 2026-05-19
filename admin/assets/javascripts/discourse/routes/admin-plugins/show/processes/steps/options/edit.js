@@ -1,9 +1,9 @@
 import DiscourseRoute from "discourse/routes/discourse";
 
-export default class AdminPluginsShowDiscourseWorkflowWorkflowStepOptionsEdit extends DiscourseRoute {
+export default class AdminPluginsShowProcessesStepOptionsEdit extends DiscourseRoute {
   async model(params) {
     const allWorkflowStepOptions = await this.modelFor(
-      "adminPlugins.show.discourse-workflow-workflows.steps.options"
+      "adminPlugins.show.processes.steps.options"
     );
     const id = parseInt(params.option_id, 10);
     const workflowStepOption = allWorkflowStepOptions.findBy("id", id);

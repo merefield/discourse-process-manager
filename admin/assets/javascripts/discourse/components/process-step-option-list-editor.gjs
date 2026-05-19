@@ -247,7 +247,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
                       />
                     {{/unless}}
                     <LinkTo
-                      @route="adminPlugins.show.discourse-workflow-workflows.steps.options.edit"
+                      @route="adminPlugins.show.processes.steps.options.edit"
                       @models={{array
                         @workflowStep.workflow_id
                         @workflowStep.id
@@ -263,7 +263,7 @@ export default class WorkflowStepOptionsListEditor extends Component {
           </table>
         {{/if}}
         <ProcessLinkButton
-          @route="adminPlugins.show.discourse-workflow-workflows.steps.options.new"
+          @route="adminPlugins.show.processes.steps.options.new"
           @label="admin.discourse_workflow.workflows.steps.options.new"
           @model={{@workflowStep}}
         />

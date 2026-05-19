@@ -17,16 +17,16 @@ module PageObjects
         has_css?(".process-quick-filters")
       end
 
-      def select_workflow_view(view_label)
+      def select_process_view(view_label)
         find(".process-quick-filters__view-select").select(view_label)
         self
       end
 
-      def has_workflow_view_option?(view_label)
+      def has_process_view_option?(view_label)
         has_css?(".process-quick-filters__view-select option", text: view_label)
       end
 
-      def has_no_workflow_view_option?(view_label)
+      def has_no_process_view_option?(view_label)
         has_no_css?(".process-quick-filters__view-select option", text: view_label)
       end
 
@@ -108,21 +108,21 @@ module PageObjects
         self
       end
 
-      def has_workflow_view_toggle?
+      def has_process_view_toggle?
         has_css?(".process-quick-filters__view-select")
       end
 
-      def has_no_workflow_view_toggle?
+      def has_no_process_view_toggle?
         has_no_css?(".process-quick-filters__view-select")
       end
 
-      def toggle_workflow_view
+      def toggle_process_view
         select = find(".process-quick-filters__view-select")
         select.select(select.value == "kanban" ? "List" : "Kanban")
         self
       end
 
-      def workflow_view_value
+      def process_view_value
         find(".process-quick-filters__view-select").value
       end
 

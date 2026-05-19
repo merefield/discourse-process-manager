@@ -13,7 +13,7 @@ import { ajax } from "discourse/lib/ajax";
 import { extractError } from "discourse/lib/ajax-error";
 import { i18n } from "discourse-i18n";
 
-const STORAGE_KEY = "discourse_workflow_quick_filters";
+const STORAGE_KEY = "process_manager_quick_filters";
 
 export default class ProcessQuickFiltersConnector extends Component {
   @service dialog;
@@ -66,15 +66,15 @@ export default class ProcessQuickFiltersConnector extends Component {
       sanitized.overdue_days = String(filters.overdue_days);
     }
 
-    if (filters?.workflow_step_position) {
-      sanitized.workflow_step_position = String(filters.workflow_step_position);
+    if (filters?.process_step_position) {
+      sanitized.process_step_position = String(filters.process_step_position);
     }
 
     if (
-      filters?.workflow_view === "kanban" ||
-      filters?.workflow_view === "chart"
+      filters?.process_view === "kanban" ||
+      filters?.process_view === "chart"
     ) {
-      sanitized.workflow_view = filters.workflow_view;
+      sanitized.process_view = filters.process_view;
     }
 
     if (filters?.chart_weeks) {
@@ -152,9 +152,9 @@ export default class ProcessQuickFiltersConnector extends Component {
     );
   }
 
-  get isWorkflowChartsRoute() {
+  get isProcessChartsRoute() {
     return (
-      this.router.currentRouteName === "discovery.workflowCharts" ||
+      this.router.currentRouteName === "discovery.processCharts" ||
       this.currentPathname.startsWith("/workflow/charts")
     );
   }
@@ -172,7 +172,7 @@ export default class ProcessQuickFiltersConnector extends Component {
   }
 
   get hasStepFilter() {
-    return !!this.currentSearchParams.get("workflow_step_position");
+    return !!this.currentSearchParams.get("process_step_position");
   }
 
   get isKanbanView() {
@@ -180,7 +180,7 @@ export default class ProcessQuickFiltersConnector extends Component {
   }
 
   get isChartView() {
-    return this.workflowView === "chart" || this.isWorkflowChartsRoute;
+    return this.workflowView === "chart" || this.isProcessChartsRoute;
   }
 
   get canUseKanbanView() {
@@ -362,7 +362,7 @@ export default class ProcessQuickFiltersConnector extends Component {
         .map((topic) => ({
           id: get(topic, "id"),
           title: get(topic, "title"),
-          workflow_step_position: Number(
+          process_step_position: Number(
             get(topic, "workflow_step_position") ||
               get(topic, "workflowStepPosition")
           ),
@@ -404,12 +404,12 @@ export default class ProcessQuickFiltersConnector extends Component {
   @action
   initializeFilters() {
     const params = this.currentSearchParams;
-    this.stepPosition = params.get("workflow_step_position") || "";
+    this.stepPosition = params.get("process_step_position") || "";
     this.workflowView =
-      params.get("workflow_view") ||
-      (this.isWorkflowChartsRoute ? "chart" : null);
+      params.get("process_view") ||
+      (this.isProcessChartsRoute ? "chart" : null);
 
-    if (this.isWorkflowChartsRoute) {
+    if (this.isProcessChartsRoute) {
       return;
     }
 
@@ -417,8 +417,8 @@ export default class ProcessQuickFiltersConnector extends Component {
       params.has("my_categories") ||
       params.has("overdue") ||
       params.has("overdue_days") ||
-      params.has("workflow_step_position") ||
-      params.has("workflow_view") ||
+      params.has("process_step_position") ||
+      params.has("process_view") ||
       params.has("chart_weeks")
     ) {
       return;
@@ -456,8 +456,8 @@ export default class ProcessQuickFiltersConnector extends Component {
       my_categories: sanitized.my_categories || null,
       overdue: sanitized.overdue || null,
       overdue_days: sanitized.overdue_days || null,
-      workflow_step_position: sanitized.workflow_step_position || null,
-      workflow_view: sanitized.workflow_view || null,
+      process_step_position: sanitized.process_step_position || null,
+      process_view: sanitized.process_view || null,
       chart_weeks: sanitized.chart_weeks || null,
     };
     const currentParams = this.currentSearchParams;
@@ -467,10 +467,10 @@ export default class ProcessQuickFiltersConnector extends Component {
       (currentParams.get("overdue") || null) === queryParams.overdue &&
       (currentParams.get("overdue_days") || null) ===
         queryParams.overdue_days &&
-      (currentParams.get("workflow_step_position") || null) ===
-        queryParams.workflow_step_position &&
-      (currentParams.get("workflow_view") || null) ===
-        queryParams.workflow_view &&
+      (currentParams.get("process_step_position") || null) ===
+        queryParams.process_step_position &&
+      (currentParams.get("process_view") || null) ===
+        queryParams.process_view &&
       (currentParams.get("chart_weeks") || null) === queryParams.chart_weeks;
 
     if (unchanged) {
@@ -499,7 +499,7 @@ export default class ProcessQuickFiltersConnector extends Component {
       my_categories: params.get("my_categories"),
       overdue: params.get("overdue"),
       overdue_days: params.get("overdue_days"),
-      workflow_step_position: params.get("workflow_step_position"),
+      process_step_position: params.get("process_step_position"),
     });
     this.navigateWithFilters(Object.fromEntries(params.entries()));
   }
@@ -520,7 +520,7 @@ export default class ProcessQuickFiltersConnector extends Component {
       my_categories: params.get("my_categories"),
       overdue: params.get("overdue"),
       overdue_days: params.get("overdue_days"),
-      workflow_step_position: params.get("workflow_step_position"),
+      process_step_position: params.get("process_step_position"),
     });
     this.navigateWithFilters(Object.fromEntries(params.entries()));
   }
@@ -529,21 +529,21 @@ export default class ProcessQuickFiltersConnector extends Component {
   applyStepFilter() {
     const params = new URLSearchParams(this.currentSearchParams.toString());
     const nextStepPosition = this.stepPosition.trim();
-    const currentStepPosition = params.get("workflow_step_position") || "";
+    const currentStepPosition = params.get("process_step_position") || "";
 
     if (nextStepPosition && nextStepPosition === currentStepPosition) {
-      params.delete("workflow_step_position");
+      params.delete("process_step_position");
     } else if (nextStepPosition) {
-      params.set("workflow_step_position", nextStepPosition);
+      params.set("process_step_position", nextStepPosition);
     } else {
-      params.delete("workflow_step_position");
+      params.delete("process_step_position");
     }
 
     this.persistFilters({
       my_categories: params.get("my_categories"),
       overdue: params.get("overdue"),
       overdue_days: params.get("overdue_days"),
-      workflow_step_position: params.get("workflow_step_position"),
+      process_step_position: params.get("process_step_position"),
     });
     this.navigateWithFilters(Object.fromEntries(params.entries()));
   }
@@ -561,7 +561,7 @@ export default class ProcessQuickFiltersConnector extends Component {
     const params = new URLSearchParams(this.currentSearchParams.toString());
 
     if (nextView === "list") {
-      params.delete("workflow_view");
+      params.delete("process_view");
       this.workflowView = null;
     } else if (nextView === "kanban") {
       if (!this.canUseKanbanView) {
@@ -569,7 +569,7 @@ export default class ProcessQuickFiltersConnector extends Component {
         return;
       }
 
-      params.set("workflow_view", "kanban");
+      params.set("process_view", "kanban");
       this.workflowView = "kanban";
     } else if (nextView === "chart") {
       if (!this.canUseChartView) {
@@ -577,7 +577,7 @@ export default class ProcessQuickFiltersConnector extends Component {
         return;
       }
 
-      params.set("workflow_view", "chart");
+      params.set("process_view", "chart");
       if (!params.get("chart_weeks")) {
         params.set("chart_weeks", "2");
       }
@@ -587,14 +587,14 @@ export default class ProcessQuickFiltersConnector extends Component {
     this.syncBodyClass();
     const nextFilters = Object.fromEntries(params.entries());
 
-    if (this.isWorkflowChartsRoute) {
+    if (this.isProcessChartsRoute) {
       this.router.transitionTo("discovery.workflow", {
         queryParams: {
           my_categories: nextFilters.my_categories || null,
           overdue: nextFilters.overdue || null,
           overdue_days: nextFilters.overdue_days || null,
-          workflow_step_position: nextFilters.workflow_step_position || null,
-          workflow_view: nextFilters.workflow_view || null,
+          process_step_position: nextFilters.process_step_position || null,
+          process_view: nextFilters.process_view || null,
           chart_weeks: nextFilters.chart_weeks || null,
         },
       });
@@ -613,7 +613,7 @@ export default class ProcessQuickFiltersConnector extends Component {
     }
 
     const params = new URLSearchParams(this.currentSearchParams.toString());
-    params.set("workflow_view", "chart");
+    params.set("process_view", "chart");
     params.set("chart_weeks", String(weeks));
     this.navigateWithFilters(Object.fromEntries(params.entries()));
   }
@@ -626,7 +626,7 @@ export default class ProcessQuickFiltersConnector extends Component {
     }
 
     this.draggedTopicId = Number(topic.id);
-    this.draggedFromPosition = Number(topic.workflow_step_position);
+    this.draggedFromPosition = Number(topic.process_step_position);
     event.dataTransfer.setData("text/plain", String(topic.id));
     event.dataTransfer.dropEffect = "move";
     event.dataTransfer.effectAllowed = "move";
@@ -674,7 +674,7 @@ export default class ProcessQuickFiltersConnector extends Component {
       return;
     }
 
-    const fromPosition = Number(topic.workflow_step_position);
+    const fromPosition = Number(topic.process_step_position);
     const direction = event.key === "ArrowRight" ? 1 : -1;
     const targetPosition = this.adjacentStepPosition(fromPosition, direction);
     const topicId = Number(topic.id);
@@ -728,6 +728,8 @@ export default class ProcessQuickFiltersConnector extends Component {
       }
 
       set(topic, "workflow_step_position", targetPosition);
+      set(topic, "workflowStepPosition", targetPosition);
+      set(topic, "process_step_position", targetPosition);
       set(topic, "workflow_step_name", this.kanbanStepNames[targetPosition]);
       set(topic, "workflow_overdue", false);
     });
@@ -793,14 +795,14 @@ export default class ProcessQuickFiltersConnector extends Component {
   @action
   syncStepPositionFromUrl() {
     const params = this.currentSearchParams;
-    this.stepPosition = params.get("workflow_step_position") || "";
+    this.stepPosition = params.get("process_step_position") || "";
     this.workflowView =
-      params.get("workflow_view") ||
-      (this.isWorkflowChartsRoute ? "chart" : null);
+      params.get("process_view") ||
+      (this.isProcessChartsRoute ? "chart" : null);
 
     if (this.isChartView && !this.canUseChartView) {
       const fallback = Object.fromEntries(params.entries());
-      delete fallback.workflow_view;
+      delete fallback.process_view;
       delete fallback.chart_weeks;
       this.workflowView = null;
       this.navigateWithFilters(fallback);

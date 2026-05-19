@@ -51,7 +51,7 @@ export default class ProcessStepOptionEditor extends Component {
         duration: 2000,
       });
       this.router.transitionTo(
-        "adminPlugins.show.discourse-workflow-workflows.steps.edit",
+        "adminPlugins.show.processes.steps.edit",
         this.args.currentWorkflowStepOption.workflow_step_id
       );
     } catch (e) {
@@ -77,7 +77,7 @@ export default class ProcessStepOptionEditor extends Component {
             duration: 2000,
           });
           this.router.transitionTo(
-            "adminPlugins.show.discourse-workflow-workflows.edit",
+            "adminPlugins.show.processes.edit",
             this.args.currentWorkflowStepOption.workflow_id
           );
         });
@@ -95,7 +95,7 @@ export default class ProcessStepOptionEditor extends Component {
 
   <template>
     <ProcessBackButton
-      @route="adminPlugins.show.discourse-workflow-workflows.steps.edit"
+      @route="adminPlugins.show.processes.steps.edit"
       @model={{@currentWorkflowStepOption.workflow_step_id}}
     />
     {{#if @currentWorkflowStepOption.id}}

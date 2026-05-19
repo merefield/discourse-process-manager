@@ -71,7 +71,7 @@ RSpec.describe "Workflow list filters", type: :request do
   end
 
   it "filters workflow topics by workflow step position" do
-    get "/workflow.json", params: { workflow_step_position: "2" }
+    get "/workflow.json", params: { process_step_position: "2" }
 
     topic_ids = response.parsed_body.dig("topic_list", "topics").map { |t| t["id"] }
     expect(topic_ids).to include(topic_b.id)
@@ -146,7 +146,7 @@ RSpec.describe "Workflow list filters", type: :request do
             params: {
               my_categories: "1",
               overdue: "1",
-              workflow_step_position: "1",
+              process_step_position: "1",
             }
       end.select do |query|
         query.match?(/SELECT\s+"workflow_states"\."topic_id"/) &&
