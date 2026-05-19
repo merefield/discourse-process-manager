@@ -57,7 +57,7 @@ export default class ProcessStepEditor extends Component {
       });
       this.router.transitionTo(
         "adminPlugins.show.processes.edit",
-        this.args.currentProcessStep.workflow_id,
+        this.args.currentProcessStep.process_id,
         { queryParams: { refresh: true } }
       );
     } catch (e) {
@@ -86,7 +86,7 @@ export default class ProcessStepEditor extends Component {
           // this.args.currentProcessSteps.removeObject(this.args.currentProcessStep);
           this.router.transitionTo(
             "adminPlugins.show.processes.edit",
-            this.args.currentProcessStep.workflow_id,
+            this.args.currentProcessStep.process_id,
             { queryParams: { refresh: true } }
           );
         });
@@ -127,12 +127,12 @@ export default class ProcessStepEditor extends Component {
   <template>
     <ProcessBackButton
       @route="adminPlugins.show.processes.edit"
-      @model={{@currentProcessStep.workflow_id}}
+      @model={{@currentProcessStep.process_id}}
     />
     {{#if @currentProcessStep.id}}
       <h2>{{I18n.t
           "admin.discourse_workflow.workflows.workflow.step.editing.title"
-          workflow_step_name=this.editingModel.name
+          process_step_name=this.editingModel.name
         }}</h2>
     {{else}}
       <h2>{{I18n.t

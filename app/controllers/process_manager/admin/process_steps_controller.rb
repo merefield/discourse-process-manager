@@ -19,17 +19,17 @@ module ProcessManager
           records: @process_steps,
           associations: [:category, { workflow_step_options: :workflow_option }],
         ).call
-        workflow_categories = visual_categories_for(@process_steps)
+        process_categories = visual_categories_for(@process_steps)
         render_json_dump(
           {
-            workflow_steps:
+            process_steps:
               ActiveModel::ArraySerializer.new(
                 @process_steps,
                 each_serializer: ProcessManager::ProcessStepSerializer,
               ),
-            workflow_categories:
+            process_categories:
               ActiveModel::ArraySerializer.new(
-                workflow_categories,
+                process_categories,
                 each_serializer: ProcessManager::ProcessCategorySerializer,
               ),
           },
@@ -43,7 +43,7 @@ module ProcessManager
         workflow_step = ProcessStep.new(process_step_params)
         if workflow_step.save
           render json: {
-                   workflow_step: ProcessStepSerializer.new(workflow_step, root: false),
+                   process_step: ProcessStepSerializer.new(workflow_step, root: false),
                  },
                  status: :created
         else
@@ -64,7 +64,7 @@ module ProcessManager
         end
         if workflow_step.save
           render json: {
-                   workflow_step: ProcessStepSerializer.new(workflow_step, root: false),
+                   process_step: ProcessStepSerializer.new(workflow_step, root: false),
                  },
                  status: :created
           # redirect_to edit_workflow_workflow_step_path(workflow_id: workflow_step.workflow_id, id: workflow_step.id)
@@ -79,7 +79,7 @@ module ProcessManager
       def update
         if @process_step.update(process_step_params)
           render json: {
-                   workflow_step: ProcessStepSerializer.new(@process_step, root: false),
+                   process_step: ProcessStepSerializer.new(@process_step, root: false),
                  },
                  status: :ok
         else
@@ -101,7 +101,7 @@ module ProcessManager
         end
 
         render json: {
-                 workflow_step: ProcessStepSerializer.new(@process_step, root: false),
+                 process_step: ProcessStepSerializer.new(@process_step, root: false),
                },
                status: :ok
       rescue ActiveRecord::RecordInvalid => err
@@ -139,20 +139,24 @@ module ProcessManager
       end
 
       def process_step_params
-        params.require(:workflow_step).permit(
-          :workflow_id,
-          :position,
-          :name,
-          :description,
-          :category_id,
-          :ai_enabled,
-          :ai_prompt,
-          :overdue_days,
-        )
+        permitted =
+          params.require(:process_step).permit(
+            :process_id,
+            :position,
+            :name,
+            :description,
+            :category_id,
+            :ai_enabled,
+            :ai_prompt,
+            :overdue_days,
+          )
+
+        permitted[:workflow_id] = permitted.delete(:process_id) if permitted.key?(:process_id)
+        permitted
       end
 
       def process_step_reorder_params
-        params.require(:workflow_step).permit(:position, :category_id)
+        params.require(:process_step).permit(:position, :category_id)
       end
 
       def visual_categories_for(workflow_steps)

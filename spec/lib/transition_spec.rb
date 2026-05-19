@@ -79,7 +79,7 @@ describe ::ProcessManager::Transition do
 
     target_step_lookup_queries =
       sql_queries.select do |query|
-        query.include?('FROM "workflow_steps"') && query.include?('"workflow_steps"."id" =') &&
+        query.include?('FROM "process_steps"') && query.include?('"process_steps"."id" =') &&
           query.include?("LIMIT 1")
       end
 

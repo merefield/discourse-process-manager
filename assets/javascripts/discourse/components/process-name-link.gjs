@@ -12,7 +12,7 @@ export default class ProcessButtonsComponent extends Component {
     this.modal.show(ProcessVisualisationModal, {
       model: {
         topic_id: this.args.topic_id,
-        workflow_name: this.args.workflow_name,
+        process_name: this.args.process_name,
       },
     });
   }

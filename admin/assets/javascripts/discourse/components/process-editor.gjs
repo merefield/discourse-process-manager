@@ -184,7 +184,7 @@ export default class ProcessEditor extends Component {
     {{#if @workflow.name}}
       <h2>{{I18n.t
           "admin.discourse_workflow.workflows.workflow.editing.title"
-          workflow_name=@workflow.name
+          process_name=@workflow.name
         }}</h2>
     {{else}}
       <h2>{{I18n.t

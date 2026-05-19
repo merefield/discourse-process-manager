@@ -27,7 +27,7 @@ export default class ProcessStepOptionsListEditor extends Component {
 
   get newStepOption() {
     return this.store.createRecord("process-step-option", {
-      workflow_step_id: this.args.processStep.id,
+      process_step_id: this.args.processStep.id,
     });
   }
 
@@ -36,8 +36,8 @@ export default class ProcessStepOptionsListEditor extends Component {
     if (!this.args.currentProcessStepOption && this.args.processStep.id) {
       this.store
         .find("process-step-option", {
-          workflow_id: this.args.processStep.workflow_id,
-          workflow_step_id: this.args.processStep.id,
+          process_id: this.args.processStep.process_id,
+          process_step_id: this.args.processStep.id,
         })
         .then((options) => {
           this.processStepOptions = options.content;
@@ -49,7 +49,7 @@ export default class ProcessStepOptionsListEditor extends Component {
 
   localizedStepOptionName(stepOption) {
     return i18n(
-      `admin.discourse_workflow.workflows.steps.options.actions.${stepOption.workflow_option.slug}`
+      `admin.discourse_workflow.workflows.steps.options.actions.${stepOption.process_option.slug}`
     );
   }
 
@@ -189,7 +189,7 @@ export default class ProcessStepOptionsListEditor extends Component {
             <tbody>
               {{#each this.processStepOptions as |stepOption|}}
                 <tr
-                  data-workflow-step-option-id={{stepOption.workflow_step_option_id}}
+                  data-process-step-option-id={{stepOption.id}}
                   class={{concatClass
                     "process-step-option-list__row d-admin-row__content"
                   }}
@@ -249,7 +249,7 @@ export default class ProcessStepOptionsListEditor extends Component {
                     <LinkTo
                       @route="adminPlugins.show.processes.steps.options.edit"
                       @models={{array
-                        @processStep.workflow_id
+                        @processStep.process_id
                         @processStep.id
                         stepOption
                       }}

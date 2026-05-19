@@ -16,15 +16,15 @@ export default class AdminPluginsShowProcessesStepOptionsEdit extends DiscourseR
     const processOptions = await this.store.findAll("process-option");
     controller.set("processOptions", processOptions.content);
 
-    const workflow_id = model.workflow_id;
+    const process_id = model.process_id;
     const processSteps = await this.store.findAll("process-step", {
-      workflow_id,
+      process_id,
     });
     const stepCollection = processSteps.content || processSteps;
     controller.set("processSteps", stepCollection);
 
     const processStep = stepCollection.find((step) => {
-      return Number(step.id) === Number(model.workflow_step_id);
+      return Number(step.id) === Number(model.process_step_id);
     });
     controller.set("processStep", processStep);
   }

@@ -136,9 +136,9 @@ RSpec.describe "Process overdue thresholds", type: :request do
     topics = response.parsed_body.dig("topic_list", "topics")
     topic_by_id = topics.index_by { |topic| topic["id"] }
 
-    expect(topic_by_id[topic_global_default.id]["workflow_overdue"]).to eq(true)
-    expect(topic_by_id[topic_workflow_override.id]["workflow_overdue"]).to eq(false)
-    expect(topic_by_id[topic_step_override.id]["workflow_overdue"]).to eq(true)
-    expect(topic_by_id[topic_disabled.id]["workflow_overdue"]).to eq(false)
+    expect(topic_by_id[topic_global_default.id]["process_overdue"]).to eq(true)
+    expect(topic_by_id[topic_workflow_override.id]["process_overdue"]).to eq(false)
+    expect(topic_by_id[topic_step_override.id]["process_overdue"]).to eq(true)
+    expect(topic_by_id[topic_disabled.id]["process_overdue"]).to eq(false)
   end
 end

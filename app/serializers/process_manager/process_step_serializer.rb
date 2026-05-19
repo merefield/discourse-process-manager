@@ -3,7 +3,7 @@
 module ProcessManager
   class ProcessStepSerializer < ApplicationSerializer
     attributes :id,
-               :workflow_id,
+               :process_id,
                :category_id,
                :position,
                :slug,
@@ -16,8 +16,12 @@ module ProcessManager
     has_many :workflow_step_options,
              serializer: ProcessStepOptionSerializer,
              embed: :object,
-             key: :workflow_step_options
+             key: :process_step_options
     has_one :category, serializer: ProcessCategorySerializer, embed: :object
+
+    def process_id
+      object.workflow_id
+    end
 
     def category
       object.category

@@ -185,7 +185,7 @@ export default class ProcessQuickFiltersConnector extends Component {
 
   get canUseKanbanView() {
     try {
-      return this.topicListMetadata?.workflow_kanban_compatible === true;
+      return this.topicListMetadata?.process_kanban_compatible === true;
     } catch {
       return false;
     }
@@ -194,8 +194,8 @@ export default class ProcessQuickFiltersConnector extends Component {
   get canUseChartView() {
     try {
       return (
-        this.topicListMetadata?.workflow_can_view_charts === true &&
-        Number(this.topicListMetadata?.workflow_single_workflow_id) > 0
+        this.topicListMetadata?.process_can_view_charts === true &&
+        Number(this.topicListMetadata?.process_single_process_id) > 0
       );
     } catch {
       return false;
@@ -203,7 +203,7 @@ export default class ProcessQuickFiltersConnector extends Component {
   }
 
   get showKanbanTags() {
-    return this.topicListMetadata?.workflow_kanban_show_tags !== false;
+    return this.topicListMetadata?.process_kanban_show_tags !== false;
   }
 
   get currentProcessView() {
@@ -243,7 +243,7 @@ export default class ProcessQuickFiltersConnector extends Component {
 
   get kanbanProcessName() {
     try {
-      return this.topicListMetadata?.workflow_kanban_workflow_name;
+      return this.topicListMetadata?.process_kanban_process_name;
     } catch {
       return null;
     }
@@ -251,7 +251,7 @@ export default class ProcessQuickFiltersConnector extends Component {
 
   get kanbanSteps() {
     try {
-      const steps = this.topicListMetadata?.workflow_kanban_steps || [];
+      const steps = this.topicListMetadata?.process_kanban_steps || [];
       return [...steps].sort((left, right) => left.position - right.position);
     } catch {
       return [];
@@ -261,7 +261,7 @@ export default class ProcessQuickFiltersConnector extends Component {
   get kanbanTransitionMap() {
     try {
       const transitions =
-        this.topicListMetadata?.workflow_kanban_transitions || [];
+        this.topicListMetadata?.process_kanban_transitions || [];
       const transitionMap = new Map();
 
       transitions.forEach((transition) => {
@@ -355,7 +355,7 @@ export default class ProcessQuickFiltersConnector extends Component {
         .filter(
           (topic) =>
             Number(
-              get(topic, "workflow_step_position") ||
+              get(topic, "process_step_position") ||
                 get(topic, "workflowStepPosition")
             ) === position
         )
@@ -363,11 +363,11 @@ export default class ProcessQuickFiltersConnector extends Component {
           id: get(topic, "id"),
           title: get(topic, "title"),
           process_step_position: Number(
-            get(topic, "workflow_step_position") ||
+            get(topic, "process_step_position") ||
               get(topic, "workflowStepPosition")
           ),
-          workflow_overdue: !!get(topic, "workflow_overdue"),
-          workflow_can_act: !!get(topic, "workflow_can_act"),
+          process_overdue: !!get(topic, "process_overdue"),
+          process_can_act: !!get(topic, "process_can_act"),
           tags: get(topic, "tags") || [],
           workflow_topic_url:
             get(topic, "url") ||
@@ -620,7 +620,7 @@ export default class ProcessQuickFiltersConnector extends Component {
 
   @action
   cardDragStart(topic, event) {
-    if (!topic.workflow_can_act || this.transitionInFlightTopicId) {
+    if (!topic.process_can_act || this.transitionInFlightTopicId) {
       event.preventDefault();
       return;
     }
@@ -670,7 +670,7 @@ export default class ProcessQuickFiltersConnector extends Component {
 
     event.preventDefault();
 
-    if (!topic.workflow_can_act || this.transitionInFlightTopicId) {
+    if (!topic.process_can_act || this.transitionInFlightTopicId) {
       return;
     }
 
@@ -727,11 +727,11 @@ export default class ProcessQuickFiltersConnector extends Component {
         return;
       }
 
-      set(topic, "workflow_step_position", targetPosition);
+      set(topic, "process_step_position", targetPosition);
       set(topic, "workflowStepPosition", targetPosition);
       set(topic, "process_step_position", targetPosition);
-      set(topic, "workflow_step_name", this.kanbanStepNames[targetPosition]);
-      set(topic, "workflow_overdue", false);
+      set(topic, "process_step_name", this.kanbanStepNames[targetPosition]);
+      set(topic, "process_overdue", false);
     });
   }
 
@@ -942,8 +942,8 @@ export default class ProcessQuickFiltersConnector extends Component {
               {{#if this.kanbanProcessName}}
                 <p class="process-kanban__process-name">
                   {{i18n
-                    "discourse_workflow.kanban.workflow_name"
-                    workflow_name=this.kanbanProcessName
+                    "discourse_workflow.kanban.process_name"
+                    process_name=this.kanbanProcessName
                   }}
                 </p>
               {{/if}}
@@ -975,7 +975,7 @@ export default class ProcessQuickFiltersConnector extends Component {
                       {{#each column.topics key="id" as |topic|}}
                         <div
                           class={{if
-                            topic.workflow_can_act
+                            topic.process_can_act
                             (if
                               topic.is_dragging
                               "process-kanban__card process-kanban__card--draggable process-kanban__card--dragging"
@@ -989,7 +989,7 @@ export default class ProcessQuickFiltersConnector extends Component {
                           }}
                           data-topic-id={{topic.id}}
                           draggable={{if
-                            topic.workflow_can_act
+                            topic.process_can_act
                             (if topic.is_transitioning false true)
                             false
                           }}
@@ -1017,7 +1017,7 @@ export default class ProcessQuickFiltersConnector extends Component {
                               }}
                             {{/if}}
                           {{/if}}
-                          {{#if topic.workflow_overdue}}
+                          {{#if topic.process_overdue}}
                             <span class="process-kanban__card-overdue">
                               {{i18n "discourse_workflow.overdue_indicator"}}
                             </span>

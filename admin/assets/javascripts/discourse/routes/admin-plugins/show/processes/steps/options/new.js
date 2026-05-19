@@ -8,11 +8,11 @@ export default class AdminPluginsShowProcessesStepOptionsNew extends DiscourseRo
     );
     // Create a new workflow step record
     const record = this.store.createRecord("process-step-option", {
-      workflow_step_id: processStep.id,
+      process_step_id: processStep.id,
       position:
-        processStep.workflow_step_options.length > 0
-          ? processStep.workflow_step_options[
-              processStep.workflow_step_options.length - 1
+        processStep.process_step_options.length > 0
+          ? processStep.process_step_options[
+              processStep.process_step_options.length - 1
             ].position + 1
           : 1,
     });
@@ -29,7 +29,7 @@ export default class AdminPluginsShowProcessesStepOptionsNew extends DiscourseRo
     const processOptions = await this.store.findAll("process-option");
     controller.set("processOptions", processOptions.content);
     const processSteps = await this.store.findAll("process-step", {
-      workflow_id: this.currentModel.processStep.workflow_id,
+      process_id: this.currentModel.processStep.process_id,
     });
     controller.set("processSteps", processSteps.content);
   }

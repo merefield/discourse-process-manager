@@ -31,7 +31,7 @@ export default class ProcessStepsListEditor extends Component {
 
   get newStep() {
     return this.store.createRecord("process-step", {
-      workflow_id: this.args.workflow.id,
+      process_id: this.args.workflow.id,
     });
   }
 
@@ -53,7 +53,7 @@ export default class ProcessStepsListEditor extends Component {
   loadSteps() {
     if (!this.args.currentProcessStep && this.args.workflow.id) {
       this.store
-        .find("process-step", { workflow_id: this.args.workflow.id })
+        .find("process-step", { process_id: this.args.workflow.id })
         .then((steps) => {
           this.processSteps = steps.content;
           this.processStepsPresent = steps.content.length > 0 ? true : false;

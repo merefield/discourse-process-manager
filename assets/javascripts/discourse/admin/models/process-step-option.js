@@ -1,8 +1,8 @@
 import RestModel from "discourse/models/rest";
 
 const CREATE_ATTRIBUTES = [
-  "workflow_step_id",
-  "workflow_option_id",
+  "process_step_id",
+  "process_option_id",
   "position",
   "target_step_id",
 ];

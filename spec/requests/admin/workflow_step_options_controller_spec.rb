@@ -31,9 +31,9 @@ describe ProcessManager::Admin::ProcessStepOptionsController do
     expect do
       post "/admin/plugins/discourse-workflow/process_step_options.json",
            params: {
-             workflow_step_option: {
-               workflow_step_id: step_1.id,
-               workflow_option_id: new_option.id,
+             process_step_option: {
+               process_step_id: step_1.id,
+               process_option_id: new_option.id,
                target_step_id: step_2.id,
              },
            }
@@ -46,9 +46,9 @@ describe ProcessManager::Admin::ProcessStepOptionsController do
   it "updates the workflow option used by a step option" do
     put "/admin/plugins/discourse-workflow/process_step_options/#{step_option.id}.json",
         params: {
-          workflow_step_option: {
-            workflow_step_id: step_1.id,
-            workflow_option_id: new_option.id,
+          process_step_option: {
+            process_step_id: step_1.id,
+            process_option_id: new_option.id,
             target_step_id: step_2.id,
             position: step_option.position,
           },

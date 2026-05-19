@@ -114,7 +114,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
     get "/discourse-workflow/charts.json"
 
     expect(response.status).to eq(200)
-    expect(response.parsed_body["selected_workflow_id"]).to eq(workflow.id)
+    expect(response.parsed_body["selected_process_id"]).to eq(workflow.id)
   end
 
   it "allows admins to query process chart data" do
@@ -123,7 +123,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
     get "/discourse-workflow/charts.json"
 
     expect(response.status).to eq(200)
-    expect(response.parsed_body["selected_workflow_id"]).to eq(workflow.id)
+    expect(response.parsed_body["selected_process_id"]).to eq(workflow.id)
   end
 
   it "serves the process charts discovery route for authorized users" do
@@ -145,7 +145,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   it "returns full-week daily labels and per-step series for 2 weeks by default" do
     sign_in(admin)
 
-    get "/discourse-workflow/charts.json", params: { workflow_id: workflow.id }
+    get "/discourse-workflow/charts.json", params: { process_id: workflow.id }
 
     payload = response.parsed_body
     labels = payload["labels"]
@@ -171,16 +171,16 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   it "supports up to 12 weeks and returns selected process metadata only" do
     sign_in(admin)
 
-    get "/discourse-workflow/charts.json", params: { workflow_id: other_workflow.id, weeks: 12 }
+    get "/discourse-workflow/charts.json", params: { process_id: other_workflow.id, weeks: 12 }
 
     payload = response.parsed_body
 
     expect(response.status).to eq(200)
     expect(payload["weeks"]).to eq(12)
     expect(payload["labels"].length).to eq(84)
-    expect(payload["selected_workflow_id"]).to eq(other_workflow.id)
-    expect(payload["selected_workflow_name"]).to eq(other_workflow.name)
-    expect(payload).not_to have_key("workflows")
+    expect(payload["selected_process_id"]).to eq(other_workflow.id)
+    expect(payload["selected_process_name"]).to eq(other_workflow.name)
+    expect(payload).not_to have_key("processes")
   end
 
   it "loads chart process step data only for the selected process" do
@@ -188,16 +188,16 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
 
     workflow_queries, workflow_steps_queries =
       track_sql_queries do
-        get "/discourse-workflow/charts.json", params: { workflow_id: workflow.id, weeks: 1 }
-      end.partition { |query| query.include?('FROM "workflows"') }
+        get "/discourse-workflow/charts.json", params: { process_id: workflow.id, weeks: 1 }
+      end.partition { |query| query.include?('FROM "processes"') }
 
     workflow_steps_queries.select! do |query|
-      query.include?('FROM "workflow_steps"') && query.include?('"workflow_steps"."workflow_id"')
+      query.include?('FROM "process_steps"') && query.include?('"process_steps"."process_id"')
     end
 
     unscoped_workflow_query =
       workflow_queries.any? do |query|
-        query.include?('"workflows"."enabled" = TRUE') && !query.include?('"workflows"."id" =')
+        query.include?('"processes"."enabled" = TRUE') && !query.include?('"processes"."id" =')
       end
 
     expect(response.status).to eq(200)
@@ -210,7 +210,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   it "supports a one-week horizon when requested" do
     sign_in(admin)
 
-    get "/discourse-workflow/charts.json", params: { workflow_id: workflow.id, weeks: 1 }
+    get "/discourse-workflow/charts.json", params: { process_id: workflow.id, weeks: 1 }
 
     payload = response.parsed_body
     expect(response.status).to eq(200)
@@ -222,7 +222,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
     freeze_time(Time.zone.parse("2026-02-18 10:00:00 UTC")) do
       sign_in(admin)
 
-      get "/discourse-workflow/charts.json", params: { workflow_id: workflow.id, weeks: 1 }
+      get "/discourse-workflow/charts.json", params: { process_id: workflow.id, weeks: 1 }
 
       payload = response.parsed_body
       labels = payload["labels"]

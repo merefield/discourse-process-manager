@@ -19,8 +19,8 @@ module ProcessManager
           labels: date_range.map(&:iso8601),
           range_start: date_range.first.iso8601,
           range_end: date_range.last.iso8601,
-          selected_workflow_id: selected_process&.id,
-          selected_workflow_name: selected_process&.name,
+          selected_process_id: selected_process&.id,
+          selected_process_name: selected_process&.name,
           series: build_series(selected_process, date_range),
         },
       )
@@ -52,7 +52,7 @@ module ProcessManager
 
     def selected_chart_process
       workflow_scope = ::ProcessManager::Process.where(enabled: true).ordered
-      selected_id = params[:workflow_id].to_i
+      selected_id = params[:process_id].to_i
 
       if selected_id > 0
         selected_process = load_chart_process(workflow_scope.where(id: selected_id))

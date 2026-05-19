@@ -9,10 +9,10 @@ export default class AdminPluginsShowProcessesStepsEdit extends DiscourseRoute {
     const processStep = allProcessSteps.findBy("id", id);
 
     const processSteps = await this.store.findAll("process-step", {
-      workflow_id: processStep.workflow_id,
+      process_id: processStep.process_id,
     });
     processStep.set("processSteps", processSteps.content);
-    const process = await this.store.find("process", processStep.workflow_id);
+    const process = await this.store.find("process", processStep.process_id);
     processStep.set("workflow", process);
     return processStep;
   }
@@ -21,7 +21,7 @@ export default class AdminPluginsShowProcessesStepsEdit extends DiscourseRoute {
     super.setupController(controller, model);
 
     const processSteps = await this.store.findAll("process-step", {
-      workflow_id: this.currentModel.workflow_id,
+      process_id: this.currentModel.process_id,
     });
     controller.set("processSteps", processSteps.content);
   }

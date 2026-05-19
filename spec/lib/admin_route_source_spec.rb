@@ -23,7 +23,7 @@ describe "Admin workflow route source contracts" do
       )
     source = File.read(route_path)
 
-    expect(source).to include("model.workflow_id")
+    expect(source).to include("model.process_id")
     expect(source).not_to include("this.router.currentRoute.parent.parent")
   end
 end

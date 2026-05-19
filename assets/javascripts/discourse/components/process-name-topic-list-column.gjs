@@ -4,8 +4,8 @@ const ProcessNameTopicListColumn = <template>
   <td class="process-name">
     <ProcessNameLink
       @topic_id={{@topic.id}}
-      @workflow_name={{@topic.workflow_name}}
-      @label={{@topic.workflow_name}}
+      @process_name={{@topic.process_name}}
+      @label={{@topic.process_name}}
     />
   </td>
 </template>;

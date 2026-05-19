@@ -82,33 +82,33 @@ RSpec.describe "Process list filters", type: :request do
     get "/processes.json"
 
     topic_list = response.parsed_body["topic_list"]
-    steps = topic_list["workflow_kanban_steps"]
-    step_positions = topic_list["workflow_kanban_steps"].map { |step| step["position"] }
+    steps = topic_list["process_kanban_steps"]
+    step_positions = topic_list["process_kanban_steps"].map { |step| step["position"] }
     steps_by_position = steps.index_by { |step| step["position"] }
     transitions =
-      topic_list["workflow_kanban_transitions"].map do |transition|
+      topic_list["process_kanban_transitions"].map do |transition|
         [transition["from_position"], transition["to_position"], transition["option_slug"]]
       end
     topics_by_id = topic_list["topics"].index_by { |topic| topic["id"] }
 
-    expect(topic_list["workflow_kanban_compatible"]).to eq(true)
-    expect(topic_list["workflow_kanban_workflow_name"]).to eq(workflow.name)
-    expect(topic_list["workflow_kanban_show_tags"]).to eq(true)
+    expect(topic_list["process_kanban_compatible"]).to eq(true)
+    expect(topic_list["process_kanban_process_name"]).to eq(workflow.name)
+    expect(topic_list["process_kanban_show_tags"]).to eq(true)
     expect(step_positions).to eq([1, 2])
     expect(steps_by_position[1]["category_color"]).to eq(category_a.color)
     expect(steps_by_position[2]["category_color"]).to eq(category_b.color)
     expect(transitions).to contain_exactly([1, 2, "next"])
-    expect(topics_by_id[topic_a.id]["workflow_can_act"]).to eq(true)
-    expect(topics_by_id[topic_b.id]["workflow_can_act"]).to eq(false)
+    expect(topics_by_id[topic_a.id]["process_can_act"]).to eq(true)
+    expect(topics_by_id[topic_b.id]["process_can_act"]).to eq(false)
   end
 
-  it "serializes workflow_kanban_show_tags false when disabled on the process" do
+  it "serializes process_kanban_show_tags false when disabled on the process" do
     workflow.update!(show_kanban_tags: false)
 
     get "/processes.json"
 
     topic_list = response.parsed_body["topic_list"]
-    expect(topic_list["workflow_kanban_show_tags"]).to eq(false)
+    expect(topic_list["process_kanban_show_tags"]).to eq(false)
   end
 
   it "does not mark kanban compatibility when multiple processes are visible" do
@@ -131,10 +131,10 @@ RSpec.describe "Process list filters", type: :request do
     get "/processes.json"
 
     topic_list = response.parsed_body["topic_list"]
-    expect(topic_list["workflow_kanban_compatible"]).to eq(false)
-    expect(topic_list["workflow_kanban_workflow_name"]).to be_nil
-    expect(topic_list["workflow_kanban_steps"]).to eq([])
-    expect(topic_list["workflow_kanban_transitions"]).to eq([])
+    expect(topic_list["process_kanban_compatible"]).to eq(false)
+    expect(topic_list["process_kanban_process_name"]).to be_nil
+    expect(topic_list["process_kanban_steps"]).to eq([])
+    expect(topic_list["process_kanban_transitions"]).to eq([])
   end
 
   it "does not materialize process topic ids when combining quick filters" do
@@ -164,10 +164,10 @@ RSpec.describe "Process list filters", type: :request do
 
     topic_list = response.parsed_body["topic_list"]
 
-    expect(topic_list).not_to have_key("workflow_kanban_compatible")
-    expect(topic_list).not_to have_key("workflow_kanban_workflow_name")
-    expect(topic_list).not_to have_key("workflow_kanban_steps")
-    expect(topic_list).not_to have_key("workflow_kanban_transitions")
-    expect(topic_list).not_to have_key("workflow_can_view_charts")
+    expect(topic_list).not_to have_key("process_kanban_compatible")
+    expect(topic_list).not_to have_key("process_kanban_process_name")
+    expect(topic_list).not_to have_key("process_kanban_steps")
+    expect(topic_list).not_to have_key("process_kanban_transitions")
+    expect(topic_list).not_to have_key("process_can_view_charts")
   end
 end

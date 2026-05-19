@@ -52,7 +52,7 @@ export default class ProcessStepOptionEditor extends Component {
       });
       this.router.transitionTo(
         "adminPlugins.show.processes.steps.edit",
-        this.args.currentProcessStepOption.workflow_step_id
+        this.args.currentProcessStepOption.process_step_id
       );
     } catch (e) {
       this.args.currentProcessStepOption.setProperties(backupModel);
@@ -78,7 +78,7 @@ export default class ProcessStepOptionEditor extends Component {
           });
           this.router.transitionTo(
             "adminPlugins.show.processes.edit",
-            this.args.currentProcessStepOption.workflow_id
+            this.args.currentProcessStepOption.process_id
           );
         });
       },
@@ -96,7 +96,7 @@ export default class ProcessStepOptionEditor extends Component {
   <template>
     <ProcessBackButton
       @route="adminPlugins.show.processes.steps.edit"
-      @model={{@currentProcessStepOption.workflow_step_id}}
+      @model={{@currentProcessStepOption.process_step_id}}
     />
     {{#if @currentProcessStepOption.id}}
       <h2>{{I18n.t
@@ -116,9 +116,9 @@ export default class ProcessStepOptionEditor extends Component {
       <div class="control-group">
         <label>{{I18n.t "admin.discourse_workflow.workflows.name"}}</label>
         <DropdownSelectBox
-          @value={{this.editingModel.workflow_option_id}}
+          @value={{this.editingModel.process_option_id}}
           @content={{@processOptions}}
-          @onChange={{fn (mut this.editingModel.workflow_option_id)}}
+          @onChange={{fn (mut this.editingModel.process_option_id)}}
           @options={{hash
             disabled=this.editingModel.system
             none="admin.discourse_workflow.workflows.steps.options.select_an_option"

@@ -45,8 +45,8 @@ RSpec.describe "Process topic view", type: :request do
     get "#{topic.relative_url}.json"
 
     expect(response.status).to eq(200)
-    expect(response.parsed_body["workflow_name"]).to eq(workflow.name)
-    expect(response.parsed_body["workflow_step_name"]).to eq(step_1.name)
-    expect(response.parsed_body["workflow_step_actions"]).to be_present
+    expect(response.parsed_body["process_name"]).to eq(workflow.name)
+    expect(response.parsed_body["process_step_name"]).to eq(step_1.name)
+    expect(response.parsed_body["process_step_actions"]).to be_present
   end
 end

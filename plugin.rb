@@ -52,11 +52,11 @@ after_initialize do
     { use_new_show_route: true },
   )
 
-  add_to_class(:category, :workflow_enabled) do
+  add_to_class(:category, :process_enabled) do
     ProcessManager::ProcessStep.find_by(category_id: self.id)&.step_id == 1 || false
   end
 
-  add_to_class(:category, :workflow_slug) do
+  add_to_class(:category, :process_slug) do
     ProcessManager::Process
       .joins(:workflow_steps)
       .where(workflow_steps: { category_id: self.id })
@@ -85,17 +85,17 @@ after_initialize do
     end
   end
 
-  add_to_class(:topic, :workflow_slug) { workflow_state&.workflow&.slug }
+  add_to_class(:topic, :process_slug) { workflow_state&.workflow&.slug }
 
-  add_to_class(:topic, :workflow_name) { workflow_state&.workflow&.name }
+  add_to_class(:topic, :process_name) { workflow_state&.workflow&.name }
 
-  add_to_class(:topic, :workflow_step_slug) { workflow_state&.workflow_step&.slug }
+  add_to_class(:topic, :process_step_slug) { workflow_state&.workflow_step&.slug }
 
-  add_to_class(:topic, :workflow_step_name) { workflow_state&.workflow_step&.name }
+  add_to_class(:topic, :process_step_name) { workflow_state&.workflow_step&.name }
 
-  add_to_class(:topic, :workflow_step_position) { workflow_state&.workflow_step&.position }
+  add_to_class(:topic, :process_step_position) { workflow_state&.workflow_step&.position }
 
-  add_to_class(:topic, :workflow_step_options) do
+  add_to_class(:topic, :process_step_options) do
     step = workflow_state&.workflow_step
     return [] unless step
 
@@ -106,7 +106,7 @@ after_initialize do
       .map { |wso| wso.workflow_option.slug }
   end
 
-  add_to_class(:topic, :workflow_step_actions) do
+  add_to_class(:topic, :process_step_actions) do
     step = workflow_state&.workflow_step
     return [] unless step
 
@@ -130,40 +130,40 @@ after_initialize do
     end
   end
 
-  add_to_class(:topic, :workflow_step_entered_at) { workflow_state&.updated_at }
+  add_to_class(:topic, :process_step_entered_at) { workflow_state&.updated_at }
 
-  add_to_class(:topic, :workflow_overdue_days_threshold) do
+  add_to_class(:topic, :process_overdue_days_threshold) do
     state = workflow_state
     return nil if state.blank?
 
     step_overdue_days = state.workflow_step&.overdue_days
-    workflow_overdue_days = state.workflow&.overdue_days
+    process_overdue_days = state.workflow&.overdue_days
 
     if !step_overdue_days.nil?
       step_overdue_days.to_i
-    elsif !workflow_overdue_days.nil?
-      workflow_overdue_days.to_i
+    elsif !process_overdue_days.nil?
+      process_overdue_days.to_i
     else
       SiteSetting.process_manager_overdue_days_default.to_i
     end
   end
 
-  add_to_class(:topic, :workflow_overdue) do
-    threshold_days = workflow_overdue_days_threshold
+  add_to_class(:topic, :process_overdue) do
+    threshold_days = process_overdue_days_threshold
     return false if threshold_days.blank? || threshold_days <= 0
 
-    entered_at = workflow_step_entered_at
+    entered_at = process_step_entered_at
     return false if entered_at.blank?
 
     entered_at <= threshold_days.days.ago
   end
 
-  add_to_class(:topic_list, :workflow_kanban_workflow) do
-    return @workflow_kanban_workflow if defined?(@workflow_kanban_workflow)
+  add_to_class(:topic_list, :process_kanban_process) do
+    return @process_kanban_process if defined?(@process_kanban_process)
 
     workflow_ids = topics.map { |topic| topic.workflow_state&.workflow_id }.compact.uniq
 
-    @workflow_kanban_workflow =
+    @process_kanban_process =
       if workflow_ids.length == 1
         ProcessManager::Process.includes(
           workflow_steps: [
@@ -174,30 +174,30 @@ after_initialize do
       end
   end
 
-  add_to_class(:topic_list, :has_workflow_topics?) do
+  add_to_class(:topic_list, :has_process_topics?) do
     return @has_workflow_topics if defined?(@has_workflow_topics)
 
     @has_workflow_topics = topics.any? { |topic| topic.workflow_state.present? }
   end
 
-  add_to_class(:topic_list, :workflow_kanban_compatible) do
-    workflow = workflow_kanban_workflow
+  add_to_class(:topic_list, :process_kanban_compatible) do
+    workflow = process_kanban_process
     workflow.present? && workflow.kanban_compatible?
   end
 
-  add_to_class(:topic_list, :workflow_kanban_show_tags) do
-    workflow = workflow_kanban_workflow
+  add_to_class(:topic_list, :process_kanban_show_tags) do
+    workflow = process_kanban_process
     workflow.present? && workflow.show_kanban_tags != false
   end
 
-  add_to_class(:topic_list, :workflow_single_workflow_id) { workflow_kanban_workflow&.id }
+  add_to_class(:topic_list, :process_single_process_id) { process_kanban_process&.id }
 
-  add_to_class(:topic_list, :workflow_single_workflow_name) { workflow_kanban_workflow&.name }
+  add_to_class(:topic_list, :process_single_process_name) { process_kanban_process&.name }
 
-  add_to_class(:topic_list, :workflow_kanban_steps) do
-    return [] if !workflow_kanban_compatible
+  add_to_class(:topic_list, :process_kanban_steps) do
+    return [] if !process_kanban_compatible
 
-    workflow_kanban_workflow
+    process_kanban_process
       .workflow_steps
       .order(:position)
       .map do |step|
@@ -211,10 +211,10 @@ after_initialize do
       end
   end
 
-  add_to_class(:topic_list, :workflow_kanban_transitions) do
-    return [] if !workflow_kanban_compatible
+  add_to_class(:topic_list, :process_kanban_transitions) do
+    return [] if !process_kanban_compatible
 
-    workflow = workflow_kanban_workflow
+    workflow = process_kanban_process
     steps = workflow.workflow_steps.to_a
     steps_by_id = steps.index_by(&:id)
     first_option_for_edge = {}
@@ -242,59 +242,59 @@ after_initialize do
 
   add_to_serializer(
     :topic_view,
-    :workflow_slug,
-    include_condition: -> { object.topic.workflow_slug.present? },
-  ) { object.topic.workflow_slug }
+    :process_slug,
+    include_condition: -> { object.topic.process_slug.present? },
+  ) { object.topic.process_slug }
 
   add_to_serializer(
     :topic_view,
-    :workflow_name,
-    include_condition: -> { object.topic.workflow_name.present? },
-  ) { object.topic.workflow_name }
+    :process_name,
+    include_condition: -> { object.topic.process_name.present? },
+  ) { object.topic.process_name }
 
   add_to_serializer(
     :topic_view,
-    :workflow_step_slug,
-    include_condition: -> { object.topic.workflow_step_slug.present? },
-  ) { object.topic.workflow_step_slug }
+    :process_step_slug,
+    include_condition: -> { object.topic.process_step_slug.present? },
+  ) { object.topic.process_step_slug }
 
   add_to_serializer(
     :topic_view,
-    :workflow_step_name,
-    include_condition: -> { object.topic.workflow_step_name.present? },
-  ) { object.topic.workflow_step_name }
+    :process_step_name,
+    include_condition: -> { object.topic.process_step_name.present? },
+  ) { object.topic.process_step_name }
 
   add_to_serializer(
     :topic_view,
-    :workflow_step_position,
-    include_condition: -> { object.topic.workflow_step_position.present? },
-  ) { object.topic.workflow_step_position }
+    :process_step_position,
+    include_condition: -> { object.topic.process_step_position.present? },
+  ) { object.topic.process_step_position }
 
   add_to_serializer(
     :topic_view,
-    :workflow_step_options,
+    :process_step_options,
     include_condition: -> do
-      @workflow_step_options ||= object.topic.workflow_step_options
-      @workflow_step_options.present?
+      @process_step_options ||= object.topic.process_step_options
+      @process_step_options.present?
     end,
   ) do
-    @workflow_step_options ||= object.topic.workflow_step_options
-    @workflow_step_options
+    @process_step_options ||= object.topic.process_step_options
+    @process_step_options
   end
 
   add_to_serializer(
     :topic_view,
-    :workflow_step_actions,
+    :process_step_actions,
     include_condition: -> do
-      @workflow_step_actions ||= object.topic.workflow_step_actions
-      @workflow_step_actions.present?
+      @process_step_actions ||= object.topic.process_step_actions
+      @process_step_actions.present?
     end,
-  ) { @workflow_step_actions ||= object.topic.workflow_step_actions }
+  ) { @process_step_actions ||= object.topic.process_step_actions }
 
   add_to_serializer(
     :topic_view,
-    :workflow_can_act,
-    include_condition: -> { object.topic.workflow_name.present? },
+    :process_can_act,
+    include_condition: -> { object.topic.process_name.present? },
   ) do
     begin
       scope.ensure_can_create_topic_on_category!(object.topic.category_id)
@@ -306,43 +306,43 @@ after_initialize do
 
   add_to_serializer(
     :topic_view,
-    :workflow_step_entered_at,
-    include_condition: -> { object.topic.workflow_step_entered_at.present? },
-  ) { object.topic.workflow_step_entered_at }
+    :process_step_entered_at,
+    include_condition: -> { object.topic.process_step_entered_at.present? },
+  ) { object.topic.process_step_entered_at }
 
   add_to_serializer(
     :topic_list_item,
-    :workflow_name,
-    include_condition: -> { object.workflow_name.present? },
-  ) { object.workflow_name }
+    :process_name,
+    include_condition: -> { object.process_name.present? },
+  ) { object.process_name }
 
   add_to_serializer(
     :topic_list_item,
-    :workflow_step_position,
-    include_condition: -> { object.workflow_step_position.present? },
-  ) { object.workflow_step_position.to_i }
+    :process_step_position,
+    include_condition: -> { object.process_step_position.present? },
+  ) { object.process_step_position.to_i }
 
   add_to_serializer(
     :topic_list_item,
-    :workflow_step_name,
-    include_condition: -> { object.workflow_step_name.present? },
-  ) { object.workflow_step_name }
+    :process_step_name,
+    include_condition: -> { object.process_step_name.present? },
+  ) { object.process_step_name }
 
   add_to_serializer(
     :topic_list_item,
-    :workflow_overdue,
-    include_condition: -> { object.workflow_name.present? },
-  ) { object.workflow_overdue }
+    :process_overdue,
+    include_condition: -> { object.process_name.present? },
+  ) { object.process_overdue }
 
   add_to_serializer(
     :topic_list_item,
-    :workflow_can_act,
-    include_condition: -> { object.workflow_name.present? },
+    :process_can_act,
+    include_condition: -> { object.process_name.present? },
   ) do
     # Cache permission checks per category on the scope to avoid repeated work
     permissions_cache =
-      scope.instance_variable_get(:@workflow_can_act_category_permissions) ||
-        scope.instance_variable_set(:@workflow_can_act_category_permissions, {})
+      scope.instance_variable_get(:@process_can_act_category_permissions) ||
+        scope.instance_variable_set(:@process_can_act_category_permissions, {})
 
     category_id = object.category_id
 
@@ -360,45 +360,45 @@ after_initialize do
 
   add_to_serializer(
     :topic_list,
-    :workflow_kanban_compatible,
-    include_condition: -> { object.has_workflow_topics? },
-  ) { object.workflow_kanban_compatible }
+    :process_kanban_compatible,
+    include_condition: -> { object.has_process_topics? },
+  ) { object.process_kanban_compatible }
 
   add_to_serializer(
     :topic_list,
-    :workflow_kanban_workflow_name,
-    include_condition: -> { object.workflow_single_workflow_name.present? },
-  ) { object.workflow_kanban_workflow.name }
+    :process_kanban_process_name,
+    include_condition: -> { object.process_single_process_name.present? },
+  ) { object.process_kanban_process.name }
 
   add_to_serializer(
     :topic_list,
-    :workflow_single_workflow_id,
-    include_condition: -> { object.has_workflow_topics? },
-  ) { object.workflow_single_workflow_id }
+    :process_single_process_id,
+    include_condition: -> { object.has_process_topics? },
+  ) { object.process_single_process_id }
 
   add_to_serializer(
     :topic_list,
-    :workflow_can_view_charts,
-    include_condition: -> { object.has_workflow_topics? },
+    :process_can_view_charts,
+    include_condition: -> { object.has_process_topics? },
   ) { ProcessManager::ChartsPermissions.can_view?(scope.user) }
 
   add_to_serializer(
     :topic_list,
-    :workflow_kanban_show_tags,
-    include_condition: -> { object.has_workflow_topics? },
-  ) { object.workflow_kanban_show_tags }
+    :process_kanban_show_tags,
+    include_condition: -> { object.has_process_topics? },
+  ) { object.process_kanban_show_tags }
 
   add_to_serializer(
     :topic_list,
-    :workflow_kanban_steps,
-    include_condition: -> { object.has_workflow_topics? },
-  ) { object.workflow_kanban_steps }
+    :process_kanban_steps,
+    include_condition: -> { object.has_process_topics? },
+  ) { object.process_kanban_steps }
 
   add_to_serializer(
     :topic_list,
-    :workflow_kanban_transitions,
-    include_condition: -> { object.has_workflow_topics? },
-  ) { object.workflow_kanban_transitions }
+    :process_kanban_transitions,
+    include_condition: -> { object.has_process_topics? },
+  ) { object.process_kanban_transitions }
 
   on(:topic_created) do |*params|
     topic, opts = params

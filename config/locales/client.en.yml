@@ -12,10 +12,10 @@ en:
           one: "Process notifications - %{count} unread notification"
           other: "Process notifications - %{count} unread notifications"
     notifications:
-      workflow_topic_arrival_label: "Arrival in: %{workflow_name}"
-      workflow_topic_arrival_description: "Author: %{username}, step: %{workflow_step_name}"
+      workflow_topic_arrival_label: "Arrival in: %{process_name}"
+      workflow_topic_arrival_description: "Author: %{username}, step: %{process_step_name}"
       titles:
-        workflow_topic_arrival: "A topic titled %{topic_title} has arrived in step: %{workflow_step_name} of the process: %{workflow_name}, authored by %{username}"
+        workflow_topic_arrival: "A topic titled %{topic_title} has arrived in step: %{process_step_name} of the process: %{process_name}, authored by %{username}"
     action_codes:
       workflow_transition: "acted upon topic in a process %{when}"
     topics:
@@ -32,12 +32,12 @@ en:
         title: "Processes"
         help: "topics involved in a managed process"
     discourse_workflow:
-      workflow_link: "%{workflow_name}: %{workflow_step_name}"
+      workflow_link: "%{process_name}: %{process_step_name}"
       topic_banner:
         title: "Process manager"
         step_title: "Step:"
         workflow_title: "Process:"
-        step: "%{workflow_step_position}. %{workflow_step_name}"
+        step: "%{workflow_step_position}. %{process_step_name}"
         step_age_less_than_day: "In this step for less than a day"
         step_age_days:
           one: "In this step for %{count} day"
@@ -46,7 +46,7 @@ en:
         transition_target: "-> %{target_step_name}"
         blocked_reason_create_permission: "You can reply in this step, but only users with topic creation permission in this category can transition it."
         visualisation_button: "Visualise"
-        visualisation_title: "Process: %{workflow_name}"
+        visualisation_title: "Process: %{process_name}"
       quick_filters:
         view_label: "Process view"
         my_categories: "My categories"
@@ -64,12 +64,12 @@ en:
           one: "%{count} week"
           other: "%{count} weeks"
         workflow_label: "Process"
-        workflow_name: "Process: %{workflow_name}"
+        process_name: "Process: %{process_name}"
         loading: "Loading chart data..."
         y_axis_count: "Topics in step"
       kanban:
         title: "Process Kanban"
-        workflow_name: "Process: %{workflow_name}"
+        process_name: "Process: %{process_name}"
         empty_step: "No topics in this step"
         topic_count:
           one: "%{count} topic"
@@ -149,12 +149,12 @@ en:
           workflow:
             short_title: "Process"
             editing:
-              title: "Editing process: %{workflow_name}"
+              title: "Editing process: %{process_name}"
             new:
               title: "Create a new process"
             step:
               editing:
-                title: "Editing step: %{workflow_step_name}"
+                title: "Editing step: %{process_step_name}"
               new:
                 title: "Add a new step"
               option:

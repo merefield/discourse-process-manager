@@ -17,7 +17,7 @@ describe ProcessManager::ProcessSerializer do
   it "serializes process step count and boundary categories from workflow_steps" do
     serializer = described_class.new(workflow, scope: Guardian.new(admin))
 
-    expect(serializer.workflow_steps_count).to eq(2)
+    expect(serializer.process_steps_count).to eq(2)
     expect(serializer.starting_category_id).to eq(category_1.id)
     expect(serializer.final_category_id).to eq(category_2.id)
     expect(serializer.kanban_compatible).to eq(false)

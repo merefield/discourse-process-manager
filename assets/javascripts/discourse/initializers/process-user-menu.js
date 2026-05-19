@@ -16,16 +16,16 @@ export default {
               linkTitle = i18n("notifications.titles.workflow_topic_arrival", {
                 username: formatUsername(this.notification.data.username),
                 topic_title: this.notification.data.topic_title,
-                workflow_name: this.notification.data.workflow_name,
-                workflow_step_name: this.notification.data.workflow_step_name,
+                process_name: this.notification.data.process_name,
+                process_step_name: this.notification.data.process_step_name,
               });
               description = i18n(
                 "notifications.workflow_topic_arrival_description",
                 {
                   username: formatUsername(this.notification.data.username),
                   topic_title: this.notification.data.topic_title,
-                  workflow_name: this.notification.data.workflow_name,
-                  workflow_step_name: this.notification.data.workflow_step_name,
+                  process_name: this.notification.data.process_name,
+                  process_step_name: this.notification.data.process_step_name,
                 }
               );
 
@@ -35,8 +35,8 @@ export default {
                 return i18n("notifications.workflow_topic_arrival_label", {
                   username: formatUsername(data.username),
                   topic_title: data.topic_title,
-                  workflow_name: data.workflow_name,
-                  workflow_step_name: data.workflow_step_name,
+                  process_name: data.process_name,
+                  process_step_name: data.process_step_name,
                 });
               }
 

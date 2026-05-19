@@ -29,8 +29,8 @@ module ProcessManager
         topic_id: post.topic_id,
         user_id: post.user.id,
         username: post.user.username,
-        workflow_name: workflow_state.workflow.name,
-        workflow_step_name: workflow_state.workflow_step.name,
+        process_name: workflow_state.workflow.name,
+        process_step_name: workflow_state.workflow_step.name,
         topic_title: post.topic.title,
       }
 

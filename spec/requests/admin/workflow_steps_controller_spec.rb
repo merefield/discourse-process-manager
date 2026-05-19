@@ -68,7 +68,7 @@ describe ProcessManager::Admin::ProcessStepsController do
 
     get "/admin/plugins/discourse-workflow/processes/#{workflow.id}/process_steps.json"
 
-    category_ids = response.parsed_body["workflow_categories"].map { |category| category["id"] }
+    category_ids = response.parsed_body["process_categories"].map { |category| category["id"] }
 
     expect(category_ids).to contain_exactly(category_1.id, category_2.id)
     expect(category_ids).not_to include(unrelated_root_category.id)
@@ -86,7 +86,7 @@ describe ProcessManager::Admin::ProcessStepsController do
 
     get "/admin/plugins/discourse-workflow/processes/#{workflow.id}/process_steps.json"
 
-    category_ids = response.parsed_body["workflow_categories"].map { |category| category["id"] }
+    category_ids = response.parsed_body["process_categories"].map { |category| category["id"] }
 
     expect(category_ids).to include(subcategory_1.id, subcategory_2.id, unused_sibling.id)
     expect(category_ids).not_to include(parent_category.id)
@@ -153,7 +153,7 @@ describe ProcessManager::Admin::ProcessStepsController do
   it "reorders a workflow step and displaced step atomically" do
     put "/admin/plugins/discourse-workflow/process_steps/#{step_1.id}/reorder.json",
         params: {
-          workflow_step: {
+          process_step: {
             category_id: category_2.id,
             position: 2,
           },
@@ -180,7 +180,7 @@ describe ProcessManager::Admin::ProcessStepsController do
 
     put "/admin/plugins/discourse-workflow/process_steps/#{step_1.id}/reorder.json",
         params: {
-          workflow_step: {
+          process_step: {
             category_id: category_2.id,
             position: 2,
           },

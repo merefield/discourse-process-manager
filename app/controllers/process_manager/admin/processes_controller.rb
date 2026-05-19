@@ -17,7 +17,7 @@ module ProcessManager
         ).call
         render_json_dump(
           {
-            workflows:
+            processes:
               ActiveModel::ArraySerializer.new(
                 @processes,
                 each_serializer: ProcessManager::ProcessSerializer,
@@ -66,7 +66,7 @@ module ProcessManager
 
       def process_params
         permitted =
-          params.require(:workflow).permit(
+          params.require(:process).permit(
             :name,
             :description,
             :enabled,

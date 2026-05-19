@@ -220,7 +220,7 @@ export default class ProcessVisualisationComponent extends Component {
 
   get title() {
     return i18n("discourse_workflow.topic_banner.visualisation_title", {
-      workflow_name: this.model.workflow_name,
+      process_name: this.model.process_name,
     });
   }
 

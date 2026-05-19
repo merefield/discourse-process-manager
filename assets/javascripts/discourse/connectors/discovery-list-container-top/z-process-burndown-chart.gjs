@@ -99,12 +99,12 @@ export default class ProcessBurndownChartConnector extends Component {
   }
 
   get singleProcessId() {
-    return Number(this.topicListMetadata?.workflow_single_workflow_id) || null;
+    return Number(this.topicListMetadata?.process_single_process_id) || null;
   }
 
   get canUseChartView() {
     return (
-      this.topicListMetadata?.workflow_can_view_charts === true &&
+      this.topicListMetadata?.process_can_view_charts === true &&
       this.singleProcessId !== null
     );
   }
@@ -132,7 +132,7 @@ export default class ProcessBurndownChartConnector extends Component {
   }
 
   get selectedProcessName() {
-    return this.chartPayload?.selected_workflow_name || null;
+    return this.chartPayload?.selected_process_name || null;
   }
 
   normalizedWeeks(value) {
@@ -230,7 +230,7 @@ export default class ProcessBurndownChartConnector extends Component {
       this.chartPayload = await ajax("/discourse-workflow/charts.json", {
         data: {
           weeks: this.selectedWeeks,
-          workflow_id: this.singleProcessId,
+          process_id: this.singleProcessId,
         },
       });
 
@@ -350,8 +350,8 @@ export default class ProcessBurndownChartConnector extends Component {
         {{#if this.selectedProcessName}}
           <p class="process-burndown__process-name">
             {{i18n
-              "discourse_workflow.charts.workflow_name"
-              workflow_name=this.selectedProcessName
+              "discourse_workflow.charts.process_name"
+              process_name=this.selectedProcessName
             }}
           </p>
         {{/if}}

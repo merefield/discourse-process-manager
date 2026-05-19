@@ -6,7 +6,7 @@ import ProcessVisualisation from "./process-visualisation";
 export default class ProcessVisualisationModalComponent extends Component {
   get title() {
     return i18n("discourse_workflow.topic_banner.visualisation_title", {
-      workflow_name: this.args.model.workflow_name,
+      process_name: this.args.model.process_name,
     });
   }
 

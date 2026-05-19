@@ -62,7 +62,7 @@ RSpec.describe "Process topic banner" do
 
     actions =
       page.evaluate_script(
-        "Discourse.__container__.lookup('controller:topic').model.workflow_step_actions",
+        "Discourse.__container__.lookup('controller:topic').model.process_step_actions",
       )
 
     expect(actions.first["target_step_name"]).to eq(step_2.name)
@@ -74,7 +74,7 @@ RSpec.describe "Process topic banner" do
 
     can_act =
       page.evaluate_script(
-        "Discourse.__container__.lookup('controller:topic').model.workflow_can_act",
+        "Discourse.__container__.lookup('controller:topic').model.process_can_act",
       )
 
     expect(can_act).to eq(false)
@@ -87,7 +87,7 @@ RSpec.describe "Process topic banner" do
 
     entered_at =
       page.evaluate_script(
-        "Discourse.__container__.lookup('controller:topic').model.workflow_step_entered_at",
+        "Discourse.__container__.lookup('controller:topic').model.process_step_entered_at",
       )
 
     expect(Time.zone.parse(entered_at)).to be < 2.days.ago

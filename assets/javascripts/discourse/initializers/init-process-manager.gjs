@@ -22,8 +22,8 @@ const processNameCell = <template>
   <td class="process-name">
     <ProcessNameLink
       @topic_id={{@topic.id}}
-      @workflow_name={{@topic.workflow_name}}
-      @label={{@topic.workflow_name}}
+      @process_name={{@topic.process_name}}
+      @label={{@topic.process_name}}
     />
   </td>
 </template>;
@@ -44,8 +44,8 @@ const processStepPositionCell = <template>
   <td class="process-step-position">
     <ProcessNameLink
       @topic_id={{@topic.id}}
-      @workflow_name={{@topic.workflow_name}}
-      @label={{@topic.workflow_step_position}}
+      @process_name={{@topic.process_name}}
+      @label={{@topic.process_step_position}}
     />
   </td>
 </template>;
@@ -66,8 +66,8 @@ const processStepNameCell = <template>
   <td class="process-step-name">
     <ProcessNameLink
       @topic_id={{@topic.id}}
-      @workflow_name={{@topic.workflow_name}}
-      @label={{@topic.workflow_step_name}}
+      @process_name={{@topic.process_name}}
+      @label={{@topic.process_step_name}}
     />
   </td>
 </template>;
@@ -80,7 +80,7 @@ const workflowOverdueHeader = <template>
 
 const workflowOverdueCell = <template>
   <td class="process-overdue">
-    {{#if @topic.workflow_overdue}}
+    {{#if @topic.process_overdue}}
       <span class="process-overdue-indicator">{{i18n
           "discourse_workflow.overdue_indicator"
         }}</span>
@@ -120,6 +120,8 @@ export default {
     });
 
     withPluginApi((api) => {
+      api.addStorePluralization("process", "processes");
+
       api.addAdminPluginConfigurationNav("discourse-workflow", [
         {
           label: "admin.discourse_workflow.workflows.title",

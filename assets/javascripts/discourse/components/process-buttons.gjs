@@ -29,7 +29,7 @@ export default class ProcessButtonsComponent extends Component {
   };
 
   get actionsDisabled() {
-    return !this.args.workflow_can_act || this.transitioningOption !== null;
+    return !this.args.process_can_act || this.transitioningOption !== null;
   }
 
   @action
@@ -69,7 +69,7 @@ export default class ProcessButtonsComponent extends Component {
       {{i18n "discourse_workflow.topic_banner.actions_intro"}}
     </div>
     <div class="process-action-buttons">
-      {{#each @workflow_step_actions as |workflowAction|}}
+      {{#each @process_step_actions as |workflowAction|}}
         <div class="process-action-button">
           <DButton
             class="btn-primary"

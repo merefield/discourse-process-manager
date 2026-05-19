@@ -127,7 +127,7 @@ export default class ProcessVisualEditor extends Component {
 
   @bind
   stepOptions(step) {
-    return [...(step.workflow_step_options || [])].sort((a, b) => {
+    return [...(step.process_step_options || [])].sort((a, b) => {
       return (a.position || 0) - (b.position || 0);
     });
   }
@@ -152,7 +152,7 @@ export default class ProcessVisualEditor extends Component {
 
   @bind
   isProcessOptionSelected(stepOption, processOption) {
-    return stepOption.workflow_option_id === processOption.id;
+    return stepOption.process_option_id === processOption.id;
   }
 
   @bind
@@ -290,8 +290,8 @@ export default class ProcessVisualEditor extends Component {
       {
         type: "PUT",
         data: {
-          workflow_step: {
-            workflow_id: step.workflow_id,
+          process_step: {
+            process_id: step.process_id,
             position: step.position,
             name: step.name,
             description: step.description,
@@ -312,7 +312,7 @@ export default class ProcessVisualEditor extends Component {
       {
         type: "PUT",
         data: {
-          workflow_step: attributes,
+          process_step: attributes,
         },
       }
     );
@@ -351,10 +351,10 @@ export default class ProcessVisualEditor extends Component {
       {
         type: "PUT",
         data: {
-          workflow_step_option: {
+          process_step_option: {
             position: stepOption.position,
-            workflow_step_id: stepOption.workflow_step_id,
-            workflow_option_id: stepOption.workflow_option_id,
+            process_step_id: stepOption.process_step_id,
+            process_option_id: stepOption.process_option_id,
             target_step_id: stepOption.target_step_id,
             ...attributes,
           },
@@ -412,13 +412,13 @@ export default class ProcessVisualEditor extends Component {
         processOptionsRequest,
       ]);
 
-      this.processSteps = processStepsResult.workflow_steps || [];
+      this.processSteps = processStepsResult.process_steps || [];
       if (processOptionsResult) {
-        this.processOptions = processOptionsResult.workflow_options || [];
+        this.processOptions = processOptionsResult.process_options || [];
       }
       this.mergeProcessCategories(
         this.processSteps,
-        processStepsResult.workflow_categories || []
+        processStepsResult.process_categories || []
       );
       this.scheduleEdgeLayout();
     } catch (err) {
@@ -2204,9 +2204,9 @@ export default class ProcessVisualEditor extends Component {
     await ajax("/admin/plugins/discourse-workflow/process_step_options.json", {
       type: "POST",
       data: {
-        workflow_step_option: {
-          workflow_step_id: sourceStep.id,
-          workflow_option_id: processOptionId,
+        process_step_option: {
+          process_step_id: sourceStep.id,
+          process_option_id: processOptionId,
           target_step_id: targetStepId,
           position: this.stepOptions(sourceStep).length + 1,
         },
@@ -2229,7 +2229,7 @@ export default class ProcessVisualEditor extends Component {
 
   async retargetOption(targetStepId) {
     const stepOption = this.processSteps
-      .flatMap((step) => step.workflow_step_options || [])
+      .flatMap((step) => step.process_step_options || [])
       .find((option) => option.id === this.draggedOptionId);
 
     if (!stepOption || stepOption.target_step_id === targetStepId) {
@@ -2242,10 +2242,10 @@ export default class ProcessVisualEditor extends Component {
 
   async retargetOptionSource(sourceStepId) {
     const stepOption = this.processSteps
-      .flatMap((step) => step.workflow_step_options || [])
+      .flatMap((step) => step.process_step_options || [])
       .find((option) => option.id === this.draggedOptionId);
 
-    if (!stepOption || stepOption.workflow_step_id === sourceStepId) {
+    if (!stepOption || stepOption.process_step_id === sourceStepId) {
       return;
     }
 
@@ -2254,7 +2254,7 @@ export default class ProcessVisualEditor extends Component {
     );
 
     await this.updateStepOption(stepOption, {
-      workflow_step_id: sourceStepId,
+      process_step_id: sourceStepId,
       position: sourceStep ? this.stepOptions(sourceStep).length + 1 : 1,
     });
     await this.reloadGraphInPlace();
@@ -2264,7 +2264,7 @@ export default class ProcessVisualEditor extends Component {
   async updateStepOptionName(stepOption, event) {
     try {
       await this.updateStepOption(stepOption, {
-        workflow_option_id: parseInt(event.target.value, 10),
+        process_option_id: parseInt(event.target.value, 10),
       });
       await this.reloadGraphInPlace();
     } catch (err) {
@@ -2300,8 +2300,8 @@ export default class ProcessVisualEditor extends Component {
       await ajax("/admin/plugins/discourse-workflow/process_steps.json", {
         type: "POST",
         data: {
-          workflow_step: {
-            workflow_id: this.args.workflow.id,
+          process_step: {
+            process_id: this.args.workflow.id,
             name:
               this.newStepName ||
               i18n(
@@ -2407,7 +2407,7 @@ export default class ProcessVisualEditor extends Component {
                   title={{i18n
                     "admin.discourse_workflow.workflows.visual.change_connector_option"
                   }}
-                  value={{edge.step_option.workflow_option_id}}
+                  value={{edge.step_option.process_option_id}}
                   {{on
                     "change"
                     (fn this.updateStepOptionName edge.step_option)

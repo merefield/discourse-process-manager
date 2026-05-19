@@ -20,7 +20,7 @@ describe ProcessManager::Admin::ProcessesController do
     get "/admin/plugins/discourse-workflow/processes.json"
 
     expect(response.status).to eq(200)
-    payload = response.parsed_body["workflows"].find { |w| w["id"] == workflow.id }
+    payload = response.parsed_body["processes"].find { |w| w["id"] == workflow.id }
     expect(payload["kanban_compatible"]).to eq(false)
     expect(payload["show_kanban_tags"]).to eq(true)
   end
@@ -37,14 +37,14 @@ describe ProcessManager::Admin::ProcessesController do
     get "/admin/plugins/discourse-workflow/processes.json"
 
     expect(response.status).to eq(200)
-    payload = response.parsed_body["workflows"].find { |w| w["id"] == workflow.id }
+    payload = response.parsed_body["processes"].find { |w| w["id"] == workflow.id }
     expect(payload["kanban_compatible"]).to eq(true)
   end
 
   it "updates show_kanban_tags on a workflow" do
     put "/admin/plugins/discourse-workflow/processes/#{workflow.id}.json",
         params: {
-          workflow: {
+          process: {
             show_kanban_tags: false,
           },
         }

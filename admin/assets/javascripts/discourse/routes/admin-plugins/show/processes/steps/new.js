@@ -11,18 +11,18 @@ export default class AdminPluginsShowProcessesStepsNew extends DiscourseRoute {
     // Get the parent workflow
     const workflow = this.modelFor("adminPlugins.show.processes.steps");
 
-    const sortedSteps = [...workflow.workflow_steps].sort(
+    const sortedSteps = [...workflow.process_steps].sort(
       (a, b) => a.position - b.position
     );
 
     // Create a new workflow step record
     // Asign a default position to be the last existing step + 1
     const record = this.store.createRecord("process-step", {
-      workflow_id: workflow.id,
+      process_id: workflow.id,
       category_id: params.category_id ? parseInt(params.category_id, 10) : null,
       position:
         sortedSteps.length > 0
-          ? sortedSteps[workflow.workflow_steps.length - 1].position + 1
+          ? sortedSteps[workflow.process_steps.length - 1].position + 1
           : 1,
     });
 

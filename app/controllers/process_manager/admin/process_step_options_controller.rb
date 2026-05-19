@@ -21,7 +21,7 @@ module ProcessManager
         ).call
         render_json_dump(
           {
-            workflow_step_options:
+            process_step_options:
               ActiveModel::ArraySerializer.new(
                 @process_step_options,
                 each_serializer: ProcessManager::ProcessStepOptionSerializer,
@@ -37,7 +37,7 @@ module ProcessManager
         workflow_step_option = ProcessStepOption.new(process_step_option_params)
         if workflow_step_option.save
           render json: {
-                   workflow_step_option:
+                   process_step_option:
                      ProcessStepOptionSerializer.new(workflow_step_option, root: false),
                  },
                  status: :created
@@ -64,7 +64,7 @@ module ProcessManager
         end
         if workflow_step_option.save
           render json: {
-                   workflow_step_option:
+                   process_step_option:
                      ProcessStepOptionSerializer.new(workflow_step_option, root: false),
                  },
                  status: :created
@@ -79,7 +79,7 @@ module ProcessManager
       def update
         if @process_step_option.update(process_step_option_params)
           render json: {
-                   workflow_step_option:
+                   process_step_option:
                      ProcessStepOptionSerializer.new(@process_step_option, root: false),
                  },
                  status: :ok
@@ -112,12 +112,20 @@ module ProcessManager
       end
 
       def process_step_option_params
-        params.require(:workflow_step_option).permit(
-          :position,
-          :workflow_step_id,
-          :workflow_option_id,
-          :target_step_id,
+        permitted =
+          params.require(:process_step_option).permit(
+            :position,
+            :process_step_id,
+            :process_option_id,
+            :target_step_id,
+          )
+        permitted[:workflow_step_id] = permitted.delete(:process_step_id) if permitted.key?(
+          :process_step_id,
         )
+        permitted[:workflow_option_id] = permitted.delete(:process_option_id) if permitted.key?(
+          :process_option_id,
+        )
+        permitted
       end
 
       def ensure_admin

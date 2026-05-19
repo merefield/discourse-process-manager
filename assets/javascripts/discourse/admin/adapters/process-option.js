@@ -15,6 +15,6 @@ export default class Adapter extends RestAdapter {
   }
 
   apiNameFor() {
-    return "workflow_option";
+    return "process_option";
   }
 }

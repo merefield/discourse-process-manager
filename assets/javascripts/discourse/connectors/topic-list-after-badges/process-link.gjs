@@ -5,17 +5,17 @@ import ProcessNameLink from "../../components/process-name-link";
 export default class ProcessLink extends Component {
   get label() {
     return i18n("discourse_workflow.workflow_link", {
-      workflow_name: this.args.outletArgs.topic.workflow_name,
-      workflow_step_name: this.args.outletArgs.topic.workflow_step_name,
+      process_name: this.args.outletArgs.topic.process_name,
+      process_step_name: this.args.outletArgs.topic.process_step_name,
     });
   }
 
   <template>
-    {{#if @outletArgs.topic.workflow_name}}
+    {{#if @outletArgs.topic.process_name}}
       <span class="process-after-title">
         <ProcessNameLink
           @topic_id={{@outletArgs.topic.id}}
-          @workflow_name={{@outletArgs.topic.workflow_name}}
+          @process_name={{@outletArgs.topic.process_name}}
           @label={{this.label}}
           @icon="right-left"
         />

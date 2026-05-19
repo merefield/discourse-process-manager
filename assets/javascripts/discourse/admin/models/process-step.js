@@ -2,7 +2,7 @@ import { ajax } from "discourse/lib/ajax";
 import RestModel from "discourse/models/rest";
 
 const CREATE_ATTRIBUTES = [
-  "workflow_id",
+  "process_id",
   "position",
   "name",
   "category_id",
@@ -17,7 +17,7 @@ export default class ProcessStep extends RestModel {
     const result = await ajax(
       `/admin/plugins/discourse-workflow/processes/${processId}/process_steps.json`
     );
-    return result.workflow_steps;
+    return result.process_steps;
   }
 
   updateProperties() {

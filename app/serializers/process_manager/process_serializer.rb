@@ -2,7 +2,7 @@
 
 module ProcessManager
   class ProcessSerializer < ApplicationSerializer
-    root "workflow"
+    root "process"
 
     attributes :id,
                :name,
@@ -11,17 +11,14 @@ module ProcessManager
                :overdue_days,
                :show_kanban_tags,
                :kanban_compatible,
-               :workflow_steps_count,
+               :process_steps_count,
                :starting_category_id,
                :final_category_id,
                :validation_warnings
 
-    has_many :workflow_steps,
-             serializer: ProcessStepSerializer,
-             embed: :object,
-             key: :workflow_steps
+    has_many :workflow_steps, serializer: ProcessStepSerializer, embed: :object, key: :process_steps
 
-    def workflow_steps_count
+    def process_steps_count
       ordered_workflow_steps.length
     end
 
