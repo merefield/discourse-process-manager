@@ -6,7 +6,7 @@ module ProcessManager
 
     def types
       super.merge(
-        workflow_topic_arrival: 1001, # Add a new notification type
+        process_topic_arrival: 1001, # Add a new notification type
       )
     end
   end

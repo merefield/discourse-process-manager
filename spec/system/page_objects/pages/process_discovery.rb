@@ -3,7 +3,7 @@
 module PageObjects
   module Pages
     class ProcessDiscovery < PageObjects::Pages::Base
-      def visit_workflow
+      def visit_processes
         page.visit("/processes")
         self
       end
@@ -30,23 +30,23 @@ module PageObjects
         has_no_css?(".process-quick-filters__view-select option", text: view_label)
       end
 
-      def has_workflow_burndown_chart?
+      def has_process_burndown_chart?
         has_css?(".process-burndown")
       end
 
-      def has_workflow_burndown_chart_canvas?
+      def has_process_burndown_chart_canvas?
         has_css?(".process-burndown__chart canvas")
       end
 
-      def has_workflow_chart_legend_step?(step_name)
+      def has_process_chart_legend_step?(step_name)
         has_css?(".process-burndown__legend .process-burndown__legend-step", text: step_name)
       end
 
-      def has_no_workflow_chart_legend_step?(step_name)
+      def has_no_process_chart_legend_step?(step_name)
         has_no_css?(".process-burndown__legend .process-burndown__legend-step", text: step_name)
       end
 
-      def has_workflow_chart_weeks_selector?
+      def has_process_chart_weeks_selector?
         has_css?(".process-quick-filters__chart-weeks-select")
       end
 
@@ -73,7 +73,7 @@ module PageObjects
           JS
       end
 
-      def has_workflow_chart_workflow_selector?
+      def has_process_chart_process_selector?
         has_css?(".process-burndown__workflow-select")
       end
 
@@ -88,7 +88,7 @@ module PageObjects
         self
       end
 
-      def workflow_chart_point_count
+      def process_chart_point_count
         find(".process-burndown__chart").native["data-point-count"].to_i
       end
 

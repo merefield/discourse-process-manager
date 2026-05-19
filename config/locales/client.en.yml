@@ -1,43 +1,43 @@
 en:
   js:
     user_menu:
-      no_workflow_notifications_title: "You don’t have any process notifications yet"
-      no_workflow_notifications_body: >
+      no_process_notifications_title: "You don’t have any process notifications yet"
+      no_process_notifications_body: >
         You will be notified in this panel when a topic enters a process step for which you are Watching the First Post of the category. Notifications will also be sent to your email when you haven’t logged in for a while.
         <br><br>
         For more, see your <a href='%{preferencesUrl}'>notification preferences</a>.
       tabs:
-        workflow_notifications: "Process notifications"
-        workflow_notifications_with_unread:
+        process_notifications: "Process notifications"
+        process_notifications_with_unread:
           one: "Process notifications - %{count} unread notification"
           other: "Process notifications - %{count} unread notifications"
     notifications:
-      workflow_topic_arrival_label: "Arrival in: %{process_name}"
-      workflow_topic_arrival_description: "Author: %{username}, step: %{process_step_name}"
+      process_topic_arrival_label: "Arrival in: %{process_name}"
+      process_topic_arrival_description: "Author: %{username}, step: %{process_step_name}"
       titles:
-        workflow_topic_arrival: "A topic titled %{topic_title} has arrived in step: %{process_step_name} of the process: %{process_name}, authored by %{username}"
+        process_topic_arrival: "A topic titled %{topic_title} has arrived in step: %{process_step_name} of the process: %{process_name}, authored by %{username}"
     action_codes:
-      workflow_transition: "acted upon topic in a process %{when}"
+      process_transition: "acted upon topic in a process %{when}"
     topics:
       bottom:
-        workflow: Currently, there are no more viewable process topics.
+        processes: Currently, there are no more viewable process topics.
       none:
-        workflow: Currently, there are no viewable process topics.
-    workflow-name: "Process"
-    workflow-step-name: "Step name"
-    workflow-step-position: "Step"
-    workflow-overdue: "Overdue"
+        processes: Currently, there are no viewable process topics.
+    process-name: "Process"
+    process-step-name: "Step name"
+    process-step-position: "Step"
+    process-overdue: "Overdue"
     filters:
-      workflow:
+      processes:
         title: "Processes"
         help: "topics involved in a managed process"
     discourse_workflow:
-      workflow_link: "%{process_name}: %{process_step_name}"
+      process_link: "%{process_name}: %{process_step_name}"
       topic_banner:
         title: "Process manager"
         step_title: "Step:"
-        workflow_title: "Process:"
-        step: "%{workflow_step_position}. %{process_step_name}"
+        process_title: "Process:"
+        step: "%{process_step_position}. %{process_step_name}"
         step_age_less_than_day: "In this step for less than a day"
         step_age_days:
           one: "In this step for %{count} day"

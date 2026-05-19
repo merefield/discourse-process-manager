@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "Process quick filters" do
-  fab!(:workflow_discovery_page) { PageObjects::Pages::ProcessDiscovery.new }
+  fab!(:process_discovery_page) { PageObjects::Pages::ProcessDiscovery.new }
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
   fab!(:workflow) { Fabricate(:workflow, name: "Quick Filter Process") }
   fab!(:kanban_tag) { Fabricate(:tag, name: "kanban-tag") }
@@ -91,10 +91,10 @@ RSpec.describe "Process quick filters" do
   end
 
   it "applies my categories from the quick filter controls" do
-    workflow_discovery_page.visit_workflow
-    expect(workflow_discovery_page).to have_quick_filters
+    process_discovery_page.visit_processes
+    expect(process_discovery_page).to have_quick_filters
 
-    workflow_discovery_page.toggle_my_categories
+    process_discovery_page.toggle_my_categories
 
     expect(page).to have_current_path(%r{/processes\?.*my_categories=1}, url: true)
     expect(page).to have_content(topic_1.title)
@@ -102,20 +102,20 @@ RSpec.describe "Process quick filters" do
   end
 
   it "applies overdue quick filter from controls" do
-    workflow_discovery_page.visit_workflow
-    expect(workflow_discovery_page).to have_quick_filters
+    process_discovery_page.visit_processes
+    expect(process_discovery_page).to have_quick_filters
 
-    workflow_discovery_page.toggle_overdue
+    process_discovery_page.toggle_overdue
     expect(page).to have_current_path(%r{/processes\?.*overdue=1}, url: true)
     expect(page).to have_content(topic_1.title)
     expect(page).to have_no_content(topic_2.title)
   end
 
   it "applies step quick filter from controls" do
-    workflow_discovery_page.visit_workflow
-    expect(workflow_discovery_page).to have_quick_filters
+    process_discovery_page.visit_processes
+    expect(process_discovery_page).to have_quick_filters
 
-    workflow_discovery_page.set_step_filter(2)
+    process_discovery_page.set_step_filter(2)
     expect(page).to have_current_path(%r{/processes\?.*process_step_position=2}, url: true)
     expect(page).to have_content(topic_2.title)
     expect(page).to have_no_content(topic_1.title)
@@ -123,15 +123,15 @@ RSpec.describe "Process quick filters" do
   end
 
   it "toggles step quick filter and active state on repeated apply" do
-    workflow_discovery_page.visit_workflow
-    expect(workflow_discovery_page).to have_quick_filters
+    process_discovery_page.visit_processes
+    expect(process_discovery_page).to have_quick_filters
     expect(page).to have_css(".process-quick-filters__apply-step.btn-default")
 
-    workflow_discovery_page.set_step_filter(2)
+    process_discovery_page.set_step_filter(2)
     expect(page).to have_current_path(%r{/processes\?.*process_step_position=2}, url: true)
     expect(page).to have_css(".process-quick-filters__apply-step.btn-primary")
 
-    workflow_discovery_page.set_step_filter(2)
+    process_discovery_page.set_step_filter(2)
     expect(page).to have_current_path("/processes", url: false)
     expect(page).to have_css(".process-quick-filters__apply-step.btn-default")
   end
@@ -142,38 +142,38 @@ RSpec.describe "Process quick filters" do
       "localStorage.setItem('process_manager_quick_filters', JSON.stringify({ my_categories: null, overdue_days: null, process_step_position: '' }))",
     )
 
-    workflow_discovery_page.visit_workflow
+    process_discovery_page.visit_processes
 
     expect(page).to have_current_path("/processes", url: false)
-    expect(workflow_discovery_page).to have_quick_filters
+    expect(process_discovery_page).to have_quick_filters
   end
 
   it "updates filters without a full page reload" do
-    workflow_discovery_page.visit_workflow
-    page.execute_script("window.__workflowNoReloadMarker = 'alive'")
+    process_discovery_page.visit_processes
+    page.execute_script("window.__processNoReloadMarker = 'alive'")
 
-    workflow_discovery_page.toggle_my_categories
+    process_discovery_page.toggle_my_categories
 
     expect(page).to have_current_path(%r{/processes\?.*my_categories=1}, url: true)
-    expect(page.evaluate_script("window.__workflowNoReloadMarker")).to eq("alive")
+    expect(page.evaluate_script("window.__processNoReloadMarker")).to eq("alive")
   end
 
   it "toggles quick filter button state and query params on repeated click" do
-    workflow_discovery_page.visit_workflow
+    process_discovery_page.visit_processes
 
     expect(page).to have_css(".process-quick-filters__my-categories.btn-default")
 
-    workflow_discovery_page.toggle_my_categories
+    process_discovery_page.toggle_my_categories
     expect(page).to have_current_path(%r{/processes\?.*my_categories=1}, url: true)
     expect(page).to have_css(".process-quick-filters__my-categories.btn-primary")
 
-    workflow_discovery_page.toggle_my_categories
+    process_discovery_page.toggle_my_categories
     expect(page).to have_current_path("/processes", url: false)
     expect(page).to have_css(".process-quick-filters__my-categories.btn-default")
   end
 
   it "shows overdue state in a dedicated process list column" do
-    workflow_discovery_page.visit_workflow
+    process_discovery_page.visit_processes
 
     expect(page).to have_css("th.process-overdue-column")
     expect(page).to have_css("tr[data-topic-id='#{topic_1.id}'] .process-overdue-indicator")
@@ -181,71 +181,71 @@ RSpec.describe "Process quick filters" do
   end
 
   it "shows kanban toggle only when the current list is a single compatible process" do
-    workflow_discovery_page.visit_workflow
+    process_discovery_page.visit_processes
 
-    expect(workflow_discovery_page).to have_process_view_toggle
-    expect(workflow_discovery_page).to have_no_process_view_option("Chart")
+    expect(process_discovery_page).to have_process_view_toggle
+    expect(process_discovery_page).to have_no_process_view_option("Chart")
   end
 
   it "toggles between process list and kanban board view" do
-    workflow_discovery_page.visit_workflow
+    process_discovery_page.visit_processes
     expect(page).to have_css(".topic-list")
     expect(page).to have_no_css(".process-kanban")
 
-    workflow_discovery_page.toggle_process_view
+    process_discovery_page.toggle_process_view
 
     expect(page).to have_current_path(%r{/processes\?.*process_view=kanban}, url: true)
-    expect(workflow_discovery_page).to have_kanban_board
-    expect(workflow_discovery_page).to have_kanban_column_for_step(1)
-    expect(workflow_discovery_page).to have_kanban_column_for_step(2)
-    expect(workflow_discovery_page).to have_kanban_column_for_step(3)
-    expect(workflow_discovery_page).to have_kanban_card_for_topic(topic_1.id)
-    expect(workflow_discovery_page).to have_kanban_card_for_topic(topic_2.id)
+    expect(process_discovery_page).to have_kanban_board
+    expect(process_discovery_page).to have_kanban_column_for_step(1)
+    expect(process_discovery_page).to have_kanban_column_for_step(2)
+    expect(process_discovery_page).to have_kanban_column_for_step(3)
+    expect(process_discovery_page).to have_kanban_card_for_topic(topic_1.id)
+    expect(process_discovery_page).to have_kanban_card_for_topic(topic_2.id)
     expect(page).to have_no_css(".topic-list")
-    expect(workflow_discovery_page.process_view_value).to eq("kanban")
+    expect(process_discovery_page.process_view_value).to eq("kanban")
 
-    workflow_discovery_page.toggle_process_view
+    process_discovery_page.toggle_process_view
 
     expect(page).to have_current_path("/processes", url: false)
     expect(page).to have_css(".topic-list")
     expect(page).to have_no_css(".process-kanban")
-    expect(workflow_discovery_page.process_view_value).to eq("list")
+    expect(process_discovery_page.process_view_value).to eq("list")
   end
 
   it "supports drag-drop transitions with legal and illegal column highlighting" do
-    workflow_discovery_page.visit_workflow
-    workflow_discovery_page.toggle_process_view
+    process_discovery_page.visit_processes
+    process_discovery_page.toggle_process_view
 
-    expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 1)
-    expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_2.id, 2)
+    expect(process_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 1)
+    expect(process_discovery_page).to have_kanban_card_for_topic_in_step(topic_2.id, 2)
 
-    workflow_discovery_page.start_drag_on_kanban_card(topic_1.id)
+    process_discovery_page.start_drag_on_kanban_card(topic_1.id)
 
-    expect(workflow_discovery_page).to have_kanban_legal_drop_target_for_step(2)
-    expect(workflow_discovery_page).to have_kanban_illegal_drop_target_for_step(3)
+    expect(process_discovery_page).to have_kanban_legal_drop_target_for_step(2)
+    expect(process_discovery_page).to have_kanban_illegal_drop_target_for_step(3)
 
-    workflow_discovery_page.end_drag_on_kanban_card(topic_1.id)
-    workflow_discovery_page.drag_kanban_card_to_step(topic_1.id, 3)
+    process_discovery_page.end_drag_on_kanban_card(topic_1.id)
+    process_discovery_page.drag_kanban_card_to_step(topic_1.id, 3)
 
-    expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 1)
+    expect(process_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 1)
 
-    workflow_discovery_page.drag_kanban_card_to_step(topic_1.id, 2)
+    process_discovery_page.drag_kanban_card_to_step(topic_1.id, 2)
 
-    expect(workflow_discovery_page).to have_no_kanban_card_for_topic_in_step(topic_1.id, 1)
-    expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 2)
+    expect(process_discovery_page).to have_no_kanban_card_for_topic_in_step(topic_1.id, 1)
+    expect(process_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 2)
   end
 
   it "supports keyboard arrow transitions for focused kanban cards when legal" do
-    workflow_discovery_page.visit_workflow
-    workflow_discovery_page.toggle_process_view
+    process_discovery_page.visit_processes
+    process_discovery_page.toggle_process_view
 
-    expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 1)
+    expect(process_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 1)
 
-    workflow_discovery_page.move_kanban_card_with_key(topic_1.id, "ArrowRight")
-    expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 2)
+    process_discovery_page.move_kanban_card_with_key(topic_1.id, "ArrowRight")
+    expect(process_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 2)
 
-    workflow_discovery_page.move_kanban_card_with_key(topic_1.id, "ArrowLeft")
-    expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 2)
+    process_discovery_page.move_kanban_card_with_key(topic_1.id, "ArrowLeft")
+    expect(process_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 2)
   end
 
   it "uses step category colors for kanban column borders" do
@@ -253,30 +253,30 @@ RSpec.describe "Process quick filters" do
     category_2.update_columns(color: "445566")
     category_3.update_columns(color: "778899")
 
-    workflow_discovery_page.visit_workflow
-    workflow_discovery_page.toggle_process_view
+    process_discovery_page.visit_processes
+    process_discovery_page.toggle_process_view
 
-    expect(workflow_discovery_page.kanban_column_border_color(1)).to eq(
+    expect(process_discovery_page.kanban_column_border_color(1)).to eq(
       css_rgb_for_hex(category_1.reload.color),
     )
-    expect(workflow_discovery_page.kanban_column_border_color(2)).to eq(
+    expect(process_discovery_page.kanban_column_border_color(2)).to eq(
       css_rgb_for_hex(category_2.reload.color),
     )
-    expect(workflow_discovery_page.kanban_column_border_color(3)).to eq(
+    expect(process_discovery_page.kanban_column_border_color(3)).to eq(
       css_rgb_for_hex(category_3.reload.color),
     )
   end
 
   it "refreshes kanban view after stale transition errors to re-sync backend state" do
-    workflow_discovery_page.visit_workflow
-    workflow_discovery_page.toggle_process_view
+    process_discovery_page.visit_processes
+    process_discovery_page.toggle_process_view
 
-    expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 1)
+    expect(process_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 1)
 
     # Simulate another actor advancing this item after the client has loaded.
     workflow_state_1.update_columns(workflow_step_id: step_2.id)
 
-    workflow_discovery_page.drag_kanban_card_to_step(topic_1.id, 2)
+    process_discovery_page.drag_kanban_card_to_step(topic_1.id, 2)
 
     expect(page).to have_css(
       ".dialog-body",
@@ -284,21 +284,21 @@ RSpec.describe "Process quick filters" do
         "Transition Failed: probably due to stale UI state - please try again after refresh - refreshing!",
     )
     find("#dialog-holder .btn-primary").click
-    expect(workflow_discovery_page).to have_no_kanban_card_for_topic_in_step(topic_1.id, 1)
-    expect(workflow_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 2)
+    expect(process_discovery_page).to have_no_kanban_card_for_topic_in_step(topic_1.id, 1)
+    expect(process_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 2)
   end
 
   it "shows kanban card tags when enabled on the process and hides them when disabled" do
-    workflow_discovery_page.visit_workflow
-    workflow_discovery_page.toggle_process_view
+    process_discovery_page.visit_processes
+    process_discovery_page.toggle_process_view
 
-    expect(workflow_discovery_page).to have_kanban_tag_for_topic(topic_1.id, "kanban-tag")
+    expect(process_discovery_page).to have_kanban_tag_for_topic(topic_1.id, "kanban-tag")
 
     workflow.update!(show_kanban_tags: false)
-    workflow_discovery_page.visit_workflow
-    workflow_discovery_page.toggle_process_view
+    process_discovery_page.visit_processes
+    process_discovery_page.toggle_process_view
 
-    expect(workflow_discovery_page).to have_no_kanban_tag_for_topic(topic_1.id, "kanban-tag")
+    expect(process_discovery_page).to have_no_kanban_tag_for_topic(topic_1.id, "kanban-tag")
   end
 
   it "does not show kanban toggle when the process list includes multiple processes" do
@@ -318,9 +318,9 @@ RSpec.describe "Process quick filters" do
       workflow_step_id: other_step.id,
     )
 
-    workflow_discovery_page.visit_workflow
+    process_discovery_page.visit_processes
 
-    expect(workflow_discovery_page).to have_no_process_view_toggle
+    expect(process_discovery_page).to have_no_process_view_toggle
   end
 
   def css_rgb_for_hex(hex)

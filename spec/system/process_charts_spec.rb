@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "Process charts" do
-  fab!(:workflow_discovery_page) { PageObjects::Pages::ProcessDiscovery.new }
+  fab!(:process_discovery_page) { PageObjects::Pages::ProcessDiscovery.new }
   fab!(:admin, :admin)
   fab!(:allowed_group, :group)
 
@@ -82,49 +82,49 @@ RSpec.describe "Process charts" do
   end
 
   it "renders a burn down chart on /processes/charts with weeks selector" do
-    workflow_discovery_page.visit_process_charts
+    process_discovery_page.visit_process_charts
 
     expect(page).to have_current_path("/processes/charts", url: false)
-    expect(workflow_discovery_page).to have_workflow_burndown_chart
-    expect(workflow_discovery_page).to have_workflow_burndown_chart_canvas
+    expect(process_discovery_page).to have_process_burndown_chart
+    expect(process_discovery_page).to have_process_burndown_chart_canvas
     expect(page).to have_css(".process-burndown__process-name", text: "Process: #{workflow.name}")
-    expect(workflow_discovery_page).to have_process_view_option("Chart")
-    expect(workflow_discovery_page).to have_workflow_chart_weeks_selector
-    expect(workflow_discovery_page).to have_no_process_view_option("Kanban")
-    expect(workflow_discovery_page).to have_workflow_chart_legend_step("Queue")
-    expect(workflow_discovery_page).to have_workflow_chart_legend_step("Review")
-    expect(workflow_discovery_page).to have_workflow_chart_legend_step("Approval")
-    expect(workflow_discovery_page).to have_workflow_chart_legend_step("Done")
-    expect(workflow_discovery_page.workflow_chart_point_count).to eq(14)
-    expect(workflow_discovery_page).to have_chart_weeks_option(1)
-    expect(workflow_discovery_page).to have_view_then_period_order
+    expect(process_discovery_page).to have_process_view_option("Chart")
+    expect(process_discovery_page).to have_process_chart_weeks_selector
+    expect(process_discovery_page).to have_no_process_view_option("Kanban")
+    expect(process_discovery_page).to have_process_chart_legend_step("Queue")
+    expect(process_discovery_page).to have_process_chart_legend_step("Review")
+    expect(process_discovery_page).to have_process_chart_legend_step("Approval")
+    expect(process_discovery_page).to have_process_chart_legend_step("Done")
+    expect(process_discovery_page.process_chart_point_count).to eq(14)
+    expect(process_discovery_page).to have_chart_weeks_option(1)
+    expect(process_discovery_page).to have_view_then_period_order
   end
 
   it "updates chart horizon when weeks filter changes up to 12 weeks" do
-    workflow_discovery_page.visit_process_charts
+    process_discovery_page.visit_process_charts
 
-    workflow_discovery_page.select_chart_weeks(12)
+    process_discovery_page.select_chart_weeks(12)
 
     expect(page).to have_current_path(%r{/processes\?.*chart_weeks=12}, url: true)
     expect(page).to have_current_path(%r{/processes\?.*process_view=chart}, url: true)
-    expect(workflow_discovery_page.workflow_chart_point_count).to eq(84)
+    expect(process_discovery_page.process_chart_point_count).to eq(84)
   end
 
   it "supports a one-week period in chart mode" do
-    workflow_discovery_page.visit_process_charts
+    process_discovery_page.visit_process_charts
 
-    workflow_discovery_page.select_chart_weeks(1)
+    process_discovery_page.select_chart_weeks(1)
 
     expect(page).to have_current_path(%r{/processes\?.*chart_weeks=1}, url: true)
-    expect(workflow_discovery_page.workflow_chart_point_count).to eq(7)
+    expect(process_discovery_page.process_chart_point_count).to eq(7)
   end
 
   it "supports switching chart mode from process discovery view dropdown" do
-    workflow_discovery_page.visit_workflow
-    workflow_discovery_page.select_process_view("Chart")
+    process_discovery_page.visit_processes
+    process_discovery_page.select_process_view("Chart")
 
     expect(page).to have_current_path(%r{/processes\?.*process_view=chart}, url: true)
-    expect(workflow_discovery_page).to have_workflow_burndown_chart
+    expect(process_discovery_page).to have_process_burndown_chart
   end
 
   def create_stats_history_for(workflow_record, steps, base_count: nil)

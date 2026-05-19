@@ -46,20 +46,20 @@ describe ProcessManager::PostNotificationHandler do
     other_notifications_before =
       watching_other_category_user
         .notifications
-        .where(notification_type: Notification.types[:workflow_topic_arrival])
+        .where(notification_type: Notification.types[:process_topic_arrival])
         .count
 
     expect do described_class.new(post, []).handle end.to change {
       watching_same_category_user
         .notifications
-        .where(notification_type: Notification.types[:workflow_topic_arrival])
+        .where(notification_type: Notification.types[:process_topic_arrival])
         .count
     }.by(1)
 
     expect(
       watching_other_category_user
         .notifications
-        .where(notification_type: Notification.types[:workflow_topic_arrival])
+        .where(notification_type: Notification.types[:process_topic_arrival])
         .count,
     ).to eq(other_notifications_before)
   end
@@ -69,7 +69,7 @@ describe ProcessManager::PostNotificationHandler do
     post = Fabricate(:post, topic: topic, user: topic_owner, post_number: 2)
 
     expect do described_class.new(post, []).handle end.not_to change {
-      Notification.where(notification_type: Notification.types[:workflow_topic_arrival]).count
+      Notification.where(notification_type: Notification.types[:process_topic_arrival]).count
     }
   end
 

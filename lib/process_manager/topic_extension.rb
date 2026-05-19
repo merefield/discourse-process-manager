@@ -10,7 +10,7 @@ module ProcessManager
       validates_with NotMidwayValidator, on: :create
     end
 
-    def is_workflow_topic?
+    def is_process_topic?
       workflow_state.present?
     end
   end

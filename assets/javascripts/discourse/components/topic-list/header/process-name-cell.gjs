@@ -4,11 +4,11 @@ const ProcessNameCell = <template>
   <SortableColumn
     @sortable={{@sortable}}
     @number="false"
-    @order="workflow-name"
+    @order="process-name"
     @activeOrder={{@activeOrder}}
     @changeSort={{@changeSort}}
     @ascending={{@ascending}}
-    @name="workflow-name"
+    @name="process-name"
   />
 </template>;
 

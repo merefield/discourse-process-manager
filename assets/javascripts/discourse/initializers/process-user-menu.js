@@ -9,18 +9,18 @@ export default {
     withPluginApi((api) => {
       if (api.registerNotificationTypeRenderer) {
         api.registerNotificationTypeRenderer(
-          "workflow_topic_arrival",
+          "process_topic_arrival",
           (NotificationItemBase) => {
             return class extends NotificationItemBase {
               icon = "right-left";
-              linkTitle = i18n("notifications.titles.workflow_topic_arrival", {
+              linkTitle = i18n("notifications.titles.process_topic_arrival", {
                 username: formatUsername(this.notification.data.username),
                 topic_title: this.notification.data.topic_title,
                 process_name: this.notification.data.process_name,
                 process_step_name: this.notification.data.process_step_name,
               });
               description = i18n(
-                "notifications.workflow_topic_arrival_description",
+                "notifications.process_topic_arrival_description",
                 {
                   username: formatUsername(this.notification.data.username),
                   topic_title: this.notification.data.topic_title,
@@ -32,7 +32,7 @@ export default {
               get label() {
                 const data = this.notification.data;
 
-                return i18n("notifications.workflow_topic_arrival_label", {
+                return i18n("notifications.process_topic_arrival_label", {
                   username: formatUsername(data.username),
                   topic_title: data.topic_title,
                   process_name: data.process_name,
@@ -53,7 +53,7 @@ export default {
         api.registerUserMenuTab((UserMenuTab) => {
           return class extends UserMenuTab {
             get id() {
-              return "workflow-notifications";
+              return "process-notifications";
             }
 
             get panelComponent() {
@@ -65,11 +65,11 @@ export default {
             }
 
             get count() {
-              return this.getUnreadCountForType("workflow_topic_arrival");
+              return this.getUnreadCountForType("process_topic_arrival");
             }
 
             get notificationTypes() {
-              return ["workflow_topic_arrival"];
+              return ["process_topic_arrival"];
             }
           };
         });

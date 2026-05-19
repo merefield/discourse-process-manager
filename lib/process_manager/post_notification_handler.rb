@@ -19,7 +19,7 @@ module ProcessManager
       return false if post.post_type == Post.types[:whisper]
       return false if post.topic.blank?
       return false if post.topic.private_message?
-      return false if !post.topic.is_workflow_topic?
+      return false if !post.topic.is_process_topic?
       return false if !post.is_first_post?
 
       workflow_state = ProcessManager::ProcessState.find_by(topic_id: post.topic.id)
@@ -39,7 +39,7 @@ module ProcessManager
         .each do |category_user|
           ::Notification.create!(
             user_id: category_user.user_id,
-            notification_type: ::Notification.types[:workflow_topic_arrival],
+            notification_type: ::Notification.types[:process_topic_arrival],
             high_priority: true,
             data: data.to_json,
           )

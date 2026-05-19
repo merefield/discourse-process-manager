@@ -48,7 +48,7 @@ export default class ProcessButtonsComponent extends Component {
         <div class="process-banner-meta">
           <div class="process-banner-section process-process-name">
             <div class="process-banner-title process-process-name-title">{{i18n
-                "discourse_workflow.topic_banner.workflow_title"
+                "discourse_workflow.topic_banner.process_title"
               }}</div>
             <div class="process-process-name-name">{{@process_name}}</div>
           </div>

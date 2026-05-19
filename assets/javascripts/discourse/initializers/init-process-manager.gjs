@@ -4,17 +4,17 @@ import { withPluginApi } from "discourse/lib/plugin-api";
 import { i18n } from "discourse-i18n";
 import ProcessNameLink from "./../components/process-name-link";
 
-const WORKFLOW_LIST_ROUTES = ["discovery.processes", "discovery.processCharts"];
+const PROCESS_LIST_ROUTES = ["discovery.processes", "discovery.processCharts"];
 
 const processNameHeader = <template>
   <SortableColumn
     @sortable={{@sortable}}
     @number="false"
-    @order="workflow-name"
+    @order="process-name"
     @activeOrder={{@activeOrder}}
     @changeSort={{@changeSort}}
     @ascending={{@ascending}}
-    @name="workflow-name"
+    @name="process-name"
   />
 </template>;
 
@@ -54,11 +54,11 @@ const processStepNameHeader = <template>
   <SortableColumn
     @sortable={{@sortable}}
     @number="false"
-    @order="workflow-step-name"
+    @order="process-step-name"
     @activeOrder={{@activeOrder}}
     @changeSort={{@changeSort}}
     @ascending={{@ascending}}
-    @name="workflow-step-name"
+    @name="process-step-name"
   />
 </template>;
 
@@ -72,13 +72,13 @@ const processStepNameCell = <template>
   </td>
 </template>;
 
-const workflowOverdueHeader = <template>
+const processOverdueHeader = <template>
   <th class="topic-list-data process-overdue-column">
     {{i18n "process-overdue"}}
   </th>
 </template>;
 
-const workflowOverdueCell = <template>
+const processOverdueCell = <template>
   <td class="process-overdue">
     {{#if @topic.process_overdue}}
       <span class="process-overdue-indicator">{{i18n
@@ -135,7 +135,7 @@ export default {
       });
 
       api.registerValueTransformer("topic-list-item-class", ({ value }) => {
-        if (WORKFLOW_LIST_ROUTES.includes(router.currentRouteName)) {
+        if (PROCESS_LIST_ROUTES.includes(router.currentRouteName)) {
           value.push("process-list");
         }
         return value;
@@ -144,8 +144,8 @@ export default {
       api.registerValueTransformer(
         "topic-list-columns",
         ({ value: columns }) => {
-          if (WORKFLOW_LIST_ROUTES.includes(router.currentRouteName)) {
-            columns.add("workflow-name", {
+          if (PROCESS_LIST_ROUTES.includes(router.currentRouteName)) {
+            columns.add("process-name", {
               header: processNameHeader,
               item: processNameCell,
               after: "activity",
@@ -158,11 +158,11 @@ export default {
       api.registerValueTransformer(
         "topic-list-columns",
         ({ value: columns }) => {
-          if (WORKFLOW_LIST_ROUTES.includes(router.currentRouteName)) {
+          if (PROCESS_LIST_ROUTES.includes(router.currentRouteName)) {
             columns.add("process-step-position", {
               header: processStepPositionHeader,
               item: processStepPositionCell,
-              after: "workflow-name",
+              after: "process-name",
             });
           }
           return columns;
@@ -172,8 +172,8 @@ export default {
       api.registerValueTransformer(
         "topic-list-columns",
         ({ value: columns }) => {
-          if (WORKFLOW_LIST_ROUTES.includes(router.currentRouteName)) {
-            columns.add("workflow-step-name", {
+          if (PROCESS_LIST_ROUTES.includes(router.currentRouteName)) {
+            columns.add("process-step-name", {
               header: processStepNameHeader,
               item: processStepNameCell,
               after: "process-step-position",
@@ -186,18 +186,18 @@ export default {
       api.registerValueTransformer(
         "topic-list-columns",
         ({ value: columns }) => {
-          if (WORKFLOW_LIST_ROUTES.includes(router.currentRouteName)) {
+          if (PROCESS_LIST_ROUTES.includes(router.currentRouteName)) {
             columns.add("process-overdue", {
-              header: workflowOverdueHeader,
-              item: workflowOverdueCell,
-              after: "workflow-step-name",
+              header: processOverdueHeader,
+              item: processOverdueCell,
+              after: "process-step-name",
             });
           }
           return columns;
         }
       );
 
-      api.addPostSmallActionIcon("workflow_transition", "right-left");
+      api.addPostSmallActionIcon("process_transition", "right-left");
     });
   },
 };

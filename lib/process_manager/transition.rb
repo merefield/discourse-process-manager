@@ -81,7 +81,7 @@ module ProcessManager
               step_option_name: step_option_name,
             ),
           post_type: Post.types[:small_action],
-          action_code: "workflow_transition",
+          action_code: "process_transition",
         )
 
         success = true
