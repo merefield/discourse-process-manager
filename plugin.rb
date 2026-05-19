@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # name: discourse-workflow
-# about: A topic-based workflow engine for Discourse
+# about: A process management plugin for Discourse
 # version: 0.5.0
 # authors: Robert Barrow
 # contact_emails: robert@pavilion.tech
