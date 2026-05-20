@@ -64,7 +64,7 @@ describe ProcessManager::Admin::ProcessStepsController do
 
   it "does not include every root category as a visual lane for top-level process steps" do
     unrelated_root_category = Fabricate(:category)
-    child_of_workflow_category = Fabricate(:category, parent_category_id: category_1.id)
+    child_of_process_category = Fabricate(:category, parent_category_id: category_1.id)
 
     get "/admin/plugins/discourse-process-manager/processes/#{process.id}/process_steps.json"
 
@@ -72,7 +72,7 @@ describe ProcessManager::Admin::ProcessStepsController do
 
     expect(category_ids).to contain_exactly(category_1.id, category_2.id)
     expect(category_ids).not_to include(unrelated_root_category.id)
-    expect(category_ids).not_to include(child_of_workflow_category.id)
+    expect(category_ids).not_to include(child_of_process_category.id)
   end
 
   it "includes sibling subcategory lanes for process steps under a shared parent category" do

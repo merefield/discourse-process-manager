@@ -16,16 +16,19 @@ describe ProcessManager::Admin::ProcessesController do
 
   before { sign_in(admin) }
 
-  it "serializes kanban compatibility for incompatible workflows" do
+  it "serializes kanban compatibility for incompatible processes" do
     get "/admin/plugins/discourse-process-manager/processes.json"
 
     expect(response.status).to eq(200)
-    payload = response.parsed_body["processes"].find { |w| w["id"] == process.id }
+    payload =
+      response.parsed_body["processes"].find do |process_payload|
+        process_payload["id"] == process.id
+      end
     expect(payload["kanban_compatible"]).to eq(false)
     expect(payload["show_kanban_tags"]).to eq(true)
   end
 
-  it "serializes kanban compatibility for compatible workflows" do
+  it "serializes kanban compatibility for compatible processes" do
     option = Fabricate(:process_option, slug: "next", name: "Next")
     Fabricate(
       :process_step_option,
@@ -37,7 +40,10 @@ describe ProcessManager::Admin::ProcessesController do
     get "/admin/plugins/discourse-process-manager/processes.json"
 
     expect(response.status).to eq(200)
-    payload = response.parsed_body["processes"].find { |w| w["id"] == process.id }
+    payload =
+      response.parsed_body["processes"].find do |process_payload|
+        process_payload["id"] == process.id
+      end
     expect(payload["kanban_compatible"]).to eq(true)
   end
 
