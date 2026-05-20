@@ -10,7 +10,7 @@ RSpec.describe ProcessManager::ProcessSerializer do
   fab!(:step_1) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_1.id,
       position: 1,
       name: "Start",
@@ -19,7 +19,7 @@ RSpec.describe ProcessManager::ProcessSerializer do
   fab!(:step_2) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_2.id,
       position: 1,
       name: "Duplicate Position",
@@ -28,12 +28,12 @@ RSpec.describe ProcessManager::ProcessSerializer do
   fab!(:option_with_missing_label) do
     Fabricate(:process_option, slug: "missing_translation_slug", name: "Missing Label")
   end
-  fab!(:step_option_with_orphan_target) do
+  fab!(:process_step_option_with_orphan_target) do
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_1.id,
-      workflow_option_id: option_with_missing_label.id,
-      target_step_id: 999_999,
+      process_step_id: step_1.id,
+      process_option_id: option_with_missing_label.id,
+      target_process_step_id: 999_999,
       position: 1,
     )
   end

@@ -7,10 +7,10 @@ describe "Process topic lifecycle behavior" do
   fab!(:start_category, :category)
   fab!(:mid_category, :category)
   fab!(:step_1) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: start_category.id, position: 1)
+    Fabricate(:process_step, process_id: process.id, category_id: start_category.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: mid_category.id, position: 2)
+    Fabricate(:process_step, process_id: process.id, category_id: mid_category.id, position: 2)
   end
 
   it "does not initialize process_state for topics when process is disabled" do

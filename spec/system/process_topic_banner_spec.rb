@@ -10,7 +10,7 @@ RSpec.describe "Process topic banner" do
   fab!(:step_1) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: start_category.id,
       position: 1,
       name: "Triage",
@@ -19,7 +19,7 @@ RSpec.describe "Process topic banner" do
   fab!(:step_2) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: next_category.id,
       position: 2,
       name: "Review",
@@ -29,9 +29,9 @@ RSpec.describe "Process topic banner" do
   fab!(:step_option) do
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_1.id,
-      workflow_option_id: option_accept.id,
-      target_step_id: step_2.id,
+      process_step_id: step_1.id,
+      process_option_id: option_accept.id,
+      target_process_step_id: step_2.id,
       position: 1,
     )
   end
@@ -40,8 +40,8 @@ RSpec.describe "Process topic banner" do
     Fabricate(
       :process_state,
       topic_id: topic.id,
-      workflow_id: process.id,
-      workflow_step_id: step_1.id,
+      process_id: process.id,
+      process_step_id: step_1.id,
     )
   end
 

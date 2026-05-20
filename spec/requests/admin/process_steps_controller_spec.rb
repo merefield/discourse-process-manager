@@ -9,17 +9,17 @@ describe ProcessManager::Admin::ProcessStepsController do
   fab!(:category_2, :category)
   fab!(:option) { Fabricate(:process_option, slug: "next-step") }
   fab!(:step_1) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: category_1.id, position: 1)
+    Fabricate(:process_step, process_id: process.id, category_id: category_1.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: category_2.id, position: 2)
+    Fabricate(:process_step, process_id: process.id, category_id: category_2.id, position: 2)
   end
-  fab!(:step_option_1) do
+  fab!(:process_step_option_1) do
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_1.id,
-      workflow_option_id: option.id,
-      target_step_id: step_2.id,
+      process_step_id: step_1.id,
+      process_option_id: option.id,
+      target_process_step_id: step_2.id,
       position: 1,
     )
   end
@@ -39,15 +39,15 @@ describe ProcessManager::Admin::ProcessStepsController do
       extra_step =
         Fabricate(
           :process_step,
-          workflow_id: process.id,
+          process_id: process.id,
           category_id: extra_category.id,
           position: index + 3,
         )
       Fabricate(
         :process_step_option,
-        workflow_step_id: extra_step.id,
-        workflow_option_id: option.id,
-        target_step_id: step_1.id,
+        process_step_id: extra_step.id,
+        process_option_id: option.id,
+        target_process_step_id: step_1.id,
         position: 1,
       )
     end
@@ -95,43 +95,43 @@ describe ProcessManager::Admin::ProcessStepsController do
   it "deletes incoming and outgoing step options when destroying a process step" do
     category_3 = Fabricate(:category)
     step_3 =
-      Fabricate(:process_step, workflow_id: process.id, category_id: category_3.id, position: 3)
+      Fabricate(:process_step, process_id: process.id, category_id: category_3.id, position: 3)
     incoming_step_option =
       Fabricate(
         :process_step_option,
-        workflow_step_id: step_2.id,
-        workflow_option_id: option.id,
-        target_step_id: step_1.id,
+        process_step_id: step_2.id,
+        process_option_id: option.id,
+        target_process_step_id: step_1.id,
         position: 1,
       )
     unrelated_step_option =
       Fabricate(
         :process_step_option,
-        workflow_step_id: step_2.id,
-        workflow_option_id: option.id,
-        target_step_id: step_3.id,
+        process_step_id: step_2.id,
+        process_option_id: option.id,
+        target_process_step_id: step_3.id,
         position: 2,
       )
-    outgoing_step_option_id = step_option_1.id
-    incoming_step_option_id = incoming_step_option.id
-    unrelated_step_option_id = unrelated_step_option.id
+    outgoing_process_step_option_id = process_step_option_1.id
+    incoming_process_step_option_id = incoming_step_option.id
+    unrelated_process_step_option_id = unrelated_step_option.id
 
     delete "/admin/plugins/discourse-process-manager/process_steps/#{step_1.id}.json"
 
     expect(response.status).to eq(204)
     expect(ProcessManager::ProcessStep.exists?(step_1.id)).to eq(false)
-    expect(ProcessManager::ProcessStepOption.exists?(outgoing_step_option_id)).to eq(false)
-    expect(ProcessManager::ProcessStepOption.exists?(incoming_step_option_id)).to eq(false)
-    expect(ProcessManager::ProcessStepOption.exists?(unrelated_step_option_id)).to eq(true)
+    expect(ProcessManager::ProcessStepOption.exists?(outgoing_process_step_option_id)).to eq(false)
+    expect(ProcessManager::ProcessStepOption.exists?(incoming_process_step_option_id)).to eq(false)
+    expect(ProcessManager::ProcessStepOption.exists?(unrelated_process_step_option_id)).to eq(true)
   end
 
   it "rolls back step option deletion when process step destroy raises" do
     incoming_step_option =
       Fabricate(
         :process_step_option,
-        workflow_step_id: step_2.id,
-        workflow_option_id: option.id,
-        target_step_id: step_1.id,
+        process_step_id: step_2.id,
+        process_option_id: option.id,
+        target_process_step_id: step_1.id,
         position: 2,
       )
 
@@ -146,7 +146,7 @@ describe ProcessManager::Admin::ProcessStepsController do
 
     expect(response.status).to eq(422)
     expect(ProcessManager::ProcessStep.exists?(step_1.id)).to eq(true)
-    expect(ProcessManager::ProcessStepOption.exists?(step_option_1.id)).to eq(true)
+    expect(ProcessManager::ProcessStepOption.exists?(process_step_option_1.id)).to eq(true)
     expect(ProcessManager::ProcessStepOption.exists?(incoming_step_option.id)).to eq(true)
   end
 

@@ -8,14 +8,14 @@ module ProcessManager
       topic = Topic.find(params[:topic_id])
 
       if topic.present?
-        workflow_state = ProcessManager::ProcessState.find_by(topic_id: topic.id)
-        workflow = workflow_state&.workflow
+        process_state = ProcessManager::ProcessState.find_by(topic_id: topic.id)
+        process = process_state&.process
 
-        raise Discourse::NotFound unless workflow
+        raise Discourse::NotFound unless process
 
-        # Preload steps + options (and their workflow_option) to avoid extra queries when iterating
+        # Preload steps + options (and their process_option) to avoid extra queries when iterating
         steps =
-          workflow.workflow_steps.order(:position).includes(workflow_step_options: :workflow_option)
+          process.process_steps.order(:position).includes(process_step_options: :process_option)
 
         # Build category lookup hash to avoid N+1 queries
         category_ids = steps.map(&:category_id).compact.uniq
@@ -48,7 +48,7 @@ module ProcessManager
               {
                 id: step.name,
                 lane: lane_index_by_name[category_name],
-                active: step.id == workflow_state.workflow_step_id,
+                active: step.id == process_state.process_step_id,
               }
             end
             .compact
@@ -60,14 +60,14 @@ module ProcessManager
         steps_by_id = steps.index_by(&:id)
 
         steps.each do |step|
-          step.workflow_step_options.each do |option|
-            target_step = steps_by_id[option.target_step_id]
+          step.process_step_options.each do |option|
+            target_step = steps_by_id[option.target_process_step_id]
             next unless target_step
 
             links << {
               source: step.name,
               target: target_step.name,
-              action: option.workflow_option.name,
+              action: option.process_option.name,
             }
           end
         end

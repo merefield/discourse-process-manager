@@ -11,30 +11,32 @@ describe ::ProcessManager::Transition do
   fab!(:step_1) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_1.id,
       name: "Step 1",
       description: "Step 1 Description",
+      position: 1,
     )
   end
   fab!(:step_2) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_2.id,
       name: "Step 2",
       description: "Step 2 Description",
+      position: 2,
     )
   end
 
   fab!(:option_1, :process_option)
 
-  fab!(:step_option_1) do
+  fab!(:process_step_option_1) do
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_1.id,
-      workflow_option_id: option_1.id,
-      target_step_id: step_2.id,
+      process_step_id: step_1.id,
+      process_option_id: option_1.id,
+      target_process_step_id: step_2.id,
     )
   end
 
@@ -44,8 +46,8 @@ describe ::ProcessManager::Transition do
     Fabricate(
       :process_state,
       topic_id: topic.id,
-      workflow_id: process.id,
-      workflow_step_id: step_1.id,
+      process_id: process.id,
+      process_step_id: step_1.id,
     )
   end
 
@@ -79,8 +81,8 @@ describe ::ProcessManager::Transition do
 
     target_step_lookup_queries =
       sql_queries.select do |query|
-        query.include?('FROM "process_steps"') && query.include?('"process_steps"."id" =') &&
-          query.include?("LIMIT 1")
+        query.include?('FROM "process_manager_process_steps"') &&
+          query.include?('"process_manager_process_steps"."id" =') && query.include?("LIMIT 1")
       end
 
     expect(target_step_lookup_queries).to eq([])

@@ -8,18 +8,18 @@ RSpec.describe "Process list filters", type: :request do
   fab!(:category_a, :category)
   fab!(:category_b, :category)
   fab!(:step_1) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: category_a.id, position: 1)
+    Fabricate(:process_step, process_id: process.id, category_id: category_a.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: category_b.id, position: 2)
+    Fabricate(:process_step, process_id: process.id, category_id: category_b.id, position: 2)
   end
   fab!(:next_option) { Fabricate(:process_option, slug: "next", name: "Next") }
   fab!(:step_transition) do
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_1.id,
-      workflow_option_id: next_option.id,
-      target_step_id: step_2.id,
+      process_step_id: step_1.id,
+      process_option_id: next_option.id,
+      target_process_step_id: step_2.id,
     )
   end
   fab!(:topic_a) { Fabricate(:topic, category: category_a) }
@@ -28,16 +28,16 @@ RSpec.describe "Process list filters", type: :request do
     Fabricate(
       :process_state,
       topic_id: topic_a.id,
-      workflow_id: process.id,
-      workflow_step_id: step_1.id,
+      process_id: process.id,
+      process_step_id: step_1.id,
     )
   end
   fab!(:state_b) do
     Fabricate(
       :process_state,
       topic_id: topic_b.id,
-      workflow_id: process.id,
-      workflow_step_id: step_2.id,
+      process_id: process.id,
+      process_step_id: step_2.id,
     )
   end
   before do
@@ -116,7 +116,7 @@ RSpec.describe "Process list filters", type: :request do
     other_step =
       Fabricate(
         :process_step,
-        workflow_id: other_process.id,
+        process_id: other_process.id,
         category_id: category_a.id,
         position: 1,
       )
@@ -124,8 +124,8 @@ RSpec.describe "Process list filters", type: :request do
     Fabricate(
       :process_state,
       topic_id: other_topic.id,
-      workflow_id: other_process.id,
-      workflow_step_id: other_step.id,
+      process_id: other_process.id,
+      process_step_id: other_step.id,
     )
 
     get "/processes.json"
@@ -140,7 +140,7 @@ RSpec.describe "Process list filters", type: :request do
   it "does not materialize process topic ids when combining quick filters" do
     state_a.update_columns(updated_at: 5.days.ago)
 
-    workflow_state_topic_id_plucks =
+    process_state_topic_id_plucks =
       track_sql_queries do
         get "/processes.json",
             params: {
@@ -149,12 +149,12 @@ RSpec.describe "Process list filters", type: :request do
               process_step_position: "1",
             }
       end.select do |query|
-        query.match?(/SELECT\s+"workflow_states"\."topic_id"/) &&
-          query.include?('FROM "workflow_states"')
+        query.match?(/SELECT\s+"process_manager_process_states"\."topic_id"/) &&
+          query.include?('FROM "process_manager_process_states"')
       end
 
     expect(response.status).to eq(200)
-    expect(workflow_state_topic_id_plucks).to eq([])
+    expect(process_state_topic_id_plucks).to eq([])
   end
 
   it "omits process metadata when no process topics are visible" do

@@ -51,19 +51,19 @@ module ProcessManager
     end
 
     def selected_chart_process
-      workflow_scope = ::ProcessManager::Process.where(enabled: true).ordered
+      process_scope = ::ProcessManager::Process.where(enabled: true).ordered
       selected_id = params[:process_id].to_i
 
       if selected_id > 0
-        selected_process = load_chart_process(workflow_scope.where(id: selected_id))
+        selected_process = load_chart_process(process_scope.where(id: selected_id))
         return selected_process if selected_process.present?
       end
 
-      load_chart_process(workflow_scope)
+      load_chart_process(process_scope)
     end
 
     def load_chart_process(scope)
-      scope.includes(workflow_steps: { category: :parent_category }).first
+      scope.includes(process_steps: { category: :parent_category }).first
     end
 
     def chart_date_range(weeks)
@@ -72,19 +72,19 @@ module ProcessManager
       (start_date..end_date).to_a
     end
 
-    def build_series(workflow, date_range)
-      return [] if workflow.blank?
+    def build_series(process, date_range)
+      return [] if process.blank?
 
-      steps = workflow.workflow_steps.sort_by { |step| step.position.to_i }
+      steps = process.process_steps.sort_by { |step| step.position.to_i }
       return [] if steps.blank?
       today = Date.current
 
       step_ids = steps.map(&:id)
       stats =
         ::ProcessManager::ProcessStat
-          .where(workflow_id: workflow.id, workflow_step_id: step_ids)
+          .where(process_id: process.id, process_step_id: step_ids)
           .where(cob_date: date_range.first.beginning_of_day..date_range.last.end_of_day)
-          .group("DATE(cob_date)", :workflow_step_id)
+          .group("DATE(cob_date)", :process_step_id)
           .sum(:count)
       counts_by_day_step =
         stats.each_with_object({}) do |((date_value, step_id), count), memo|

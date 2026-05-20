@@ -101,11 +101,9 @@ class RenameWorkflowTablesToProcessManager < ActiveRecord::Migration[8.0]
     return if !table_exists?(table)
 
     indexes.each do |old_name, new_name|
-      if !index_name_exists?(table, old_name, false) || index_name_exists?(table, new_name, false)
-        next
-      end
+      next if !index_name_exists?(table, old_name) || index_name_exists?(table, new_name)
 
-      rename_index table, old_name, new_name
+      execute "ALTER INDEX #{quote_table_name(old_name)} RENAME TO #{quote_table_name(new_name)}"
     end
   end
 end

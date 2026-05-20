@@ -4,7 +4,7 @@ const CREATE_ATTRIBUTES = [
   "process_step_id",
   "process_option_id",
   "position",
-  "target_step_id",
+  "target_process_step_id",
 ];
 
 export default class ProcessStepOption extends RestModel {

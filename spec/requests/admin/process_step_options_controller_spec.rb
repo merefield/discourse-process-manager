@@ -8,19 +8,19 @@ describe ProcessManager::Admin::ProcessStepOptionsController do
   fab!(:category_1, :category)
   fab!(:category_2, :category)
   fab!(:step_1) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: category_1.id, position: 1)
+    Fabricate(:process_step, process_id: process.id, category_id: category_1.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: category_2.id, position: 2)
+    Fabricate(:process_step, process_id: process.id, category_id: category_2.id, position: 2)
   end
   fab!(:existing_option) { Fabricate(:process_option, slug: "start") }
   fab!(:new_option) { Fabricate(:process_option, slug: "next") }
   fab!(:step_option) do
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_1.id,
-      workflow_option_id: existing_option.id,
-      target_step_id: step_2.id,
+      process_step_id: step_1.id,
+      process_option_id: existing_option.id,
+      target_process_step_id: step_2.id,
       position: 1,
     )
   end
@@ -34,7 +34,7 @@ describe ProcessManager::Admin::ProcessStepOptionsController do
              process_step_option: {
                process_step_id: step_1.id,
                process_option_id: new_option.id,
-               target_step_id: step_2.id,
+               target_process_step_id: step_2.id,
              },
            }
     end.to change { ProcessManager::ProcessStepOption.count }.by(1)
@@ -49,13 +49,13 @@ describe ProcessManager::Admin::ProcessStepOptionsController do
           process_step_option: {
             process_step_id: step_1.id,
             process_option_id: new_option.id,
-            target_step_id: step_2.id,
+            target_process_step_id: step_2.id,
             position: step_option.position,
           },
         }
 
     expect(response.status).to eq(200)
-    expect(step_option.reload.workflow_option_id).to eq(new_option.id)
+    expect(step_option.reload.process_option_id).to eq(new_option.id)
   end
 
   it "does not add per-option queries when listing step options" do
@@ -69,9 +69,9 @@ describe ProcessManager::Admin::ProcessStepOptionsController do
     extra_option = Fabricate(:process_option, slug: "branch")
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_1.id,
-      workflow_option_id: extra_option.id,
-      target_step_id: step_2.id,
+      process_step_id: step_1.id,
+      process_option_id: extra_option.id,
+      target_process_step_id: step_2.id,
       position: 2,
     )
 

@@ -9,30 +9,30 @@ RSpec.describe "Process quick filters" do
   fab!(:category_2, :category)
   fab!(:category_3, :category)
   fab!(:step_1) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: category_1.id, position: 1)
+    Fabricate(:process_step, process_id: process.id, category_id: category_1.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: category_2.id, position: 2)
+    Fabricate(:process_step, process_id: process.id, category_id: category_2.id, position: 2)
   end
   fab!(:step_3) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: category_3.id, position: 3)
+    Fabricate(:process_step, process_id: process.id, category_id: category_3.id, position: 3)
   end
   fab!(:next_option) { Fabricate(:process_option, slug: "next", name: "Next") }
   fab!(:finish_option) { Fabricate(:process_option, slug: "finish", name: "Finish") }
   fab!(:step_transition) do
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_1.id,
-      workflow_option_id: next_option.id,
-      target_step_id: step_2.id,
+      process_step_id: step_1.id,
+      process_option_id: next_option.id,
+      target_process_step_id: step_2.id,
     )
   end
   fab!(:step_transition_2) do
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_2.id,
-      workflow_option_id: finish_option.id,
-      target_step_id: step_3.id,
+      process_step_id: step_2.id,
+      process_option_id: finish_option.id,
+      target_process_step_id: step_3.id,
     )
   end
   fab!(:topic_1) { Fabricate(:topic_with_op, category: category_1, user: user, tags: [kanban_tag]) }
@@ -41,16 +41,16 @@ RSpec.describe "Process quick filters" do
     Fabricate(
       :process_state,
       topic_id: topic_1.id,
-      workflow_id: process.id,
-      workflow_step_id: step_1.id,
+      process_id: process.id,
+      process_step_id: step_1.id,
     )
   end
   fab!(:process_state_2) do
     Fabricate(
       :process_state,
       topic_id: topic_2.id,
-      workflow_id: process.id,
-      workflow_step_id: step_2.id,
+      process_id: process.id,
+      process_step_id: step_2.id,
     )
   end
 
@@ -274,7 +274,7 @@ RSpec.describe "Process quick filters" do
     expect(process_discovery_page).to have_kanban_card_for_topic_in_step(topic_1.id, 1)
 
     # Simulate another actor advancing this item after the client has loaded.
-    process_state_1.update_columns(workflow_step_id: step_2.id)
+    process_state_1.update_columns(process_step_id: step_2.id)
 
     process_discovery_page.drag_kanban_card_to_step(topic_1.id, 2)
 
@@ -306,7 +306,7 @@ RSpec.describe "Process quick filters" do
     other_step =
       Fabricate(
         :process_step,
-        workflow_id: other_process.id,
+        process_id: other_process.id,
         category_id: category_1.id,
         position: 1,
       )
@@ -314,8 +314,8 @@ RSpec.describe "Process quick filters" do
     Fabricate(
       :process_state,
       topic_id: other_topic.id,
-      workflow_id: other_process.id,
-      workflow_step_id: other_step.id,
+      process_id: other_process.id,
+      process_step_id: other_step.id,
     )
 
     process_discovery_page.visit_processes

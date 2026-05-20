@@ -11,13 +11,13 @@ module ProcessManager
       def index
         @process_steps =
           if @process.present?
-            ProcessStep.where(workflow_id: @process.id).order(:position).to_a
+            ProcessStep.where(process_id: @process.id).order(:position).to_a
           else
             ProcessStep.all.order(:position).to_a
           end
         ActiveRecord::Associations::Preloader.new(
           records: @process_steps,
-          associations: [:category, { workflow_step_options: :workflow_option }],
+          associations: [:category, { process_step_options: :process_option }],
         ).call
         process_categories = visual_categories_for(@process_steps)
         render_json_dump(
@@ -40,36 +40,35 @@ module ProcessManager
       end
 
       def new
-        workflow_step = ProcessStep.new(process_step_params)
-        if workflow_step.save
+        process_step = ProcessStep.new(process_step_params)
+        if process_step.save
           render json: {
-                   process_step: ProcessStepSerializer.new(workflow_step, root: false),
+                   process_step: ProcessStepSerializer.new(process_step, root: false),
                  },
                  status: :created
         else
-          render_json_error workflow_step
+          render_json_error process_step
         end
       end
 
       def create
-        workflow_step = ProcessStep.new(process_step_params)
-        if !workflow_step.position.present?
+        process_step = ProcessStep.new(process_step_params)
+        if !process_step.position.present?
           if ProcessStep.count == 0 ||
-               ProcessStep.where(workflow_id: workflow_step.workflow_id).count == 0
-            workflow_step.position = 1
+               ProcessStep.where(process_id: process_step.process_id).count == 0
+            process_step.position = 1
           else
-            workflow_step.position =
-              ProcessStep.where(workflow_id: workflow_step.workflow_id).maximum(:position).to_i + 1
+            process_step.position =
+              ProcessStep.where(process_id: process_step.process_id).maximum(:position).to_i + 1
           end
         end
-        if workflow_step.save
+        if process_step.save
           render json: {
-                   process_step: ProcessStepSerializer.new(workflow_step, root: false),
+                   process_step: ProcessStepSerializer.new(process_step, root: false),
                  },
                  status: :created
-          # redirect_to edit_workflow_workflow_step_path(workflow_id: workflow_step.workflow_id, id: workflow_step.id)
         else
-          render_json_error workflow_step
+          render_json_error process_step
         end
       end
 
@@ -93,7 +92,7 @@ module ProcessManager
           target_position = reorder_params[:position].to_i
           target_steps =
             ProcessStep
-              .where(workflow_id: @process_step.workflow_id, position: target_position)
+              .where(process_id: @process_step.process_id, position: target_position)
               .where.not(id: @process_step.id)
 
           target_steps.update_all(position: @process_step.position, updated_at: Time.zone.now)
@@ -111,8 +110,8 @@ module ProcessManager
       def destroy
         ProcessStep.transaction do
           ProcessStepOption
-            .where(workflow_step_id: @process_step.id)
-            .or(ProcessStepOption.where(target_step_id: @process_step.id))
+            .where(process_step_id: @process_step.id)
+            .or(ProcessStepOption.where(target_process_step_id: @process_step.id))
             .destroy_all
 
           @process_step.destroy!
@@ -126,9 +125,9 @@ module ProcessManager
       private
 
       def set_process
-        workflow_id = params.dig(:process_id)
-        if workflow_id.present?
-          @process = Process.find(workflow_id)
+        process_id = params.dig(:process_id)
+        if process_id.present?
+          @process = Process.find(process_id)
         else
           @process = nil
         end
@@ -151,7 +150,6 @@ module ProcessManager
             :overdue_days,
           )
 
-        permitted[:workflow_id] = permitted.delete(:process_id) if permitted.key?(:process_id)
         permitted
       end
 
@@ -159,8 +157,8 @@ module ProcessManager
         params.require(:process_step).permit(:position, :category_id)
       end
 
-      def visual_categories_for(workflow_steps)
-        categories = workflow_steps.filter_map(&:category)
+      def visual_categories_for(process_steps)
+        categories = process_steps.filter_map(&:category)
         category_ids = categories.map(&:id)
         parent_category_ids = categories.filter_map(&:parent_category_id).uniq
 

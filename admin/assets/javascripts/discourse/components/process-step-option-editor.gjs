@@ -130,9 +130,9 @@ export default class ProcessStepOptionEditor extends Component {
             "admin.process_manager.processes.steps.options.target_step"
           }}</label>
         <DropdownSelectBox
-          @value={{this.editingModel.target_step_id}}
+          @value={{this.editingModel.target_process_step_id}}
           @content={{this.availableSteps}}
-          @onChange={{fn (mut this.editingModel.target_step_id)}}
+          @onChange={{fn (mut this.editingModel.target_process_step_id)}}
           @options={{hash
             disabled=this.editingModel.system
             none="admin.process_manager.processes.steps.options.no_target_step"

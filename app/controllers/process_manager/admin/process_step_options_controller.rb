@@ -11,13 +11,13 @@ module ProcessManager
       def index
         @process_step_options =
           if @process_step.present?
-            ProcessStepOption.where(workflow_step_id: @process_step.id).order(:position).to_a
+            ProcessStepOption.where(process_step_id: @process_step.id).order(:position).to_a
           else
             ProcessStepOption.all.order(:position).to_a
           end
         ActiveRecord::Associations::Preloader.new(
           records: @process_step_options,
-          associations: %i[workflow_option workflow_step],
+          associations: %i[process_option process_step],
         ).call
         render_json_dump(
           {
@@ -34,42 +34,42 @@ module ProcessManager
       end
 
       def new
-        workflow_step_option = ProcessStepOption.new(process_step_option_params)
-        if workflow_step_option.save
+        process_step_option = ProcessStepOption.new(process_step_option_params)
+        if process_step_option.save
           render json: {
                    process_step_option:
-                     ProcessStepOptionSerializer.new(workflow_step_option, root: false),
+                     ProcessStepOptionSerializer.new(process_step_option, root: false),
                  },
                  status: :created
         else
-          render_json_error workflow_step_option
+          render_json_error process_step_option
         end
       end
 
       def create
-        workflow_step_option = ProcessStepOption.new(process_step_option_params)
-        if !workflow_step_option.position.present?
+        process_step_option = ProcessStepOption.new(process_step_option_params)
+        if !process_step_option.position.present?
           if ProcessStepOption.count == 0 ||
                ProcessStepOption.where(
-                 workflow_step_id: workflow_step_option.workflow_step_id,
+                 process_step_id: process_step_option.process_step_id,
                ).count == 0
-            workflow_step_option.position = 1
+            process_step_option.position = 1
           else
-            workflow_step_option.position =
+            process_step_option.position =
               ProcessStepOption
-                .where(workflow_step_id: workflow_step_option.workflow_step_id)
+                .where(process_step_id: process_step_option.process_step_id)
                 .maximum(:position)
                 .to_i + 1
           end
         end
-        if workflow_step_option.save
+        if process_step_option.save
           render json: {
                    process_step_option:
-                     ProcessStepOptionSerializer.new(workflow_step_option, root: false),
+                     ProcessStepOptionSerializer.new(process_step_option, root: false),
                  },
                  status: :created
         else
-          render_json_error workflow_step_option
+          render_json_error process_step_option
         end
       end
 
@@ -117,12 +117,12 @@ module ProcessManager
             :position,
             :process_step_id,
             :process_option_id,
-            :target_step_id,
+            :target_process_step_id,
           )
-        permitted[:workflow_step_id] = permitted.delete(:process_step_id) if permitted.key?(
+        permitted[:process_step_id] = permitted.delete(:process_step_id) if permitted.key?(
           :process_step_id,
         )
-        permitted[:workflow_option_id] = permitted.delete(:process_option_id) if permitted.key?(
+        permitted[:process_option_id] = permitted.delete(:process_option_id) if permitted.key?(
           :process_option_id,
         )
         permitted

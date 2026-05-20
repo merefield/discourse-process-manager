@@ -6,18 +6,18 @@ module ProcessManager
 
       current_date = Date.current
       now = Time.zone.now
-      counts_by_workflow_step =
+      counts_by_process_step =
         ::ProcessManager::ProcessState
-          .where.not(workflow_id: nil)
-          .where.not(workflow_step_id: nil)
-          .group(:workflow_id, :workflow_step_id)
+          .where.not(process_id: nil)
+          .where.not(process_step_id: nil)
+          .group(:process_id, :process_step_id)
           .count
       records =
-        counts_by_workflow_step.map do |(workflow_id, workflow_step_id), count|
+        counts_by_process_step.map do |(process_id, process_step_id), count|
           {
             cob_date: current_date,
-            workflow_id: workflow_id,
-            workflow_step_id: workflow_step_id,
+            process_id: process_id,
+            process_step_id: process_step_id,
             count: count,
             created_at: now,
             updated_at: now,

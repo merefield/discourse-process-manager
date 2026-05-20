@@ -100,13 +100,13 @@ export default class ProcessVisualEditor extends Component {
       return this.stepOptions(step)
         .filter((stepOption) => {
           return this.processSteps.some(
-            (targetStep) => targetStep.id === stepOption.target_step_id
+            (targetStep) => targetStep.id === stepOption.target_process_step_id
           );
         })
         .map((stepOption) => {
           return {
             source_step_id: step.id,
-            target_step_id: stepOption.target_step_id,
+            target_process_step_id: stepOption.target_process_step_id,
             step_option: stepOption,
           };
         });
@@ -205,14 +205,14 @@ export default class ProcessVisualEditor extends Component {
     return this.edgeLayouts.find((edge) => {
       return (
         (edge.source_step_id === step.id && edge.source_side === side) ||
-        (edge.target_step_id === step.id && edge.target_side === side)
+        (edge.target_process_step_id === step.id && edge.target_side === side)
       );
     });
   }
 
   edgeForTargetHandle(step, side) {
     return this.edgeLayouts.find((edge) => {
-      return edge.target_step_id === step.id && edge.target_side === side;
+      return edge.target_process_step_id === step.id && edge.target_side === side;
     });
   }
 
@@ -354,7 +354,7 @@ export default class ProcessVisualEditor extends Component {
             position: stepOption.position,
             process_step_id: stepOption.process_step_id,
             process_option_id: stepOption.process_option_id,
-            target_step_id: stepOption.target_step_id,
+            target_process_step_id: stepOption.target_process_step_id,
             ...attributes,
           },
         },
@@ -547,12 +547,12 @@ export default class ProcessVisualEditor extends Component {
     this.edgeLayouts = this.processEdges
       .map((edge, index) => {
         const sourceRect = stepRectById.get(edge.source_step_id);
-        const targetRect = stepRectById.get(edge.target_step_id);
+        const targetRect = stepRectById.get(edge.target_process_step_id);
         const sourceStep = this.processSteps.find(
           (step) => step.id === edge.source_step_id
         );
         const targetStep = this.processSteps.find(
-          (step) => step.id === edge.target_step_id
+          (step) => step.id === edge.target_process_step_id
         );
 
         if (!sourceRect || !targetRect || !sourceStep || !targetStep) {
@@ -577,7 +577,7 @@ export default class ProcessVisualEditor extends Component {
           this.endpointKey(edge.source_step_id, route.source_side)
         );
         usedEndpoints.add(
-          this.endpointKey(edge.target_step_id, route.target_side)
+          this.endpointKey(edge.target_process_step_id, route.target_side)
         );
         routedSegments.push(...route.segments);
         routedLabels.push({ x: route.label_x, y: route.label_y });
@@ -1715,7 +1715,7 @@ export default class ProcessVisualEditor extends Component {
       return (
         edge.step_option.id !== ignoredStepOptionId &&
         ((edge.source_step_id === stepId && edge.source_side === side) ||
-          (edge.target_step_id === stepId && edge.target_side === side))
+          (edge.target_process_step_id === stepId && edge.target_side === side))
       );
     });
   }
@@ -1984,7 +1984,7 @@ export default class ProcessVisualEditor extends Component {
       this.draggedOptionId = sourceEdge.step_option.id;
       this.connectorSourceStepId = step.id;
       this.connectorSourceSide = side;
-      this.connectorTargetStepId = sourceEdge.target_step_id;
+      this.connectorTargetStepId = sourceEdge.target_process_step_id;
       this.connectorTargetSide = sourceEdge.target_side;
     } else {
       this.connectorDragMode = "create";
@@ -2208,7 +2208,7 @@ export default class ProcessVisualEditor extends Component {
           process_step_option: {
             process_step_id: sourceStep.id,
             process_option_id: processOptionId,
-            target_step_id: targetStepId,
+            target_process_step_id: targetStepId,
             position: this.stepOptions(sourceStep).length + 1,
           },
         },
@@ -2234,11 +2234,11 @@ export default class ProcessVisualEditor extends Component {
       .flatMap((step) => step.process_step_options || [])
       .find((option) => option.id === this.draggedOptionId);
 
-    if (!stepOption || stepOption.target_step_id === targetStepId) {
+    if (!stepOption || stepOption.target_process_step_id === targetStepId) {
       return;
     }
 
-    await this.updateStepOption(stepOption, { target_step_id: targetStepId });
+    await this.updateStepOption(stepOption, { target_process_step_id: targetStepId });
     await this.reloadGraphInPlace();
   }
 
@@ -2379,7 +2379,7 @@ export default class ProcessVisualEditor extends Component {
                 class="process-visual-editor__edge-path"
                 data-process-step-option-id={{edge.step_option.id}}
                 data-process-source-step-id={{edge.source_step_id}}
-                data-process-target-step-id={{edge.target_step_id}}
+                data-process-target-process-step-id={{edge.target_process_step_id}}
                 data-process-source-side={{edge.source_side}}
                 data-process-target-side={{edge.target_side}}
                 d={{edge.path}}

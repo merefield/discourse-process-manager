@@ -17,7 +17,7 @@ RSpec.describe Jobs::ProcessManager::DailyStats do
   fab!(:step_a1) do
     Fabricate(
       :process_step,
-      workflow_id: process_a.id,
+      process_id: process_a.id,
       category_id: category_a1.id,
       position: 1,
       name: "Intake",
@@ -26,7 +26,7 @@ RSpec.describe Jobs::ProcessManager::DailyStats do
   fab!(:step_a2) do
     Fabricate(
       :process_step,
-      workflow_id: process_a.id,
+      process_id: process_a.id,
       category_id: category_a2.id,
       position: 2,
       name: "Triage",
@@ -35,7 +35,7 @@ RSpec.describe Jobs::ProcessManager::DailyStats do
   fab!(:step_a3) do
     Fabricate(
       :process_step,
-      workflow_id: process_a.id,
+      process_id: process_a.id,
       category_id: category_a3.id,
       position: 3,
       name: "Approval",
@@ -44,7 +44,7 @@ RSpec.describe Jobs::ProcessManager::DailyStats do
   fab!(:step_a4) do
     Fabricate(
       :process_step,
-      workflow_id: process_a.id,
+      process_id: process_a.id,
       category_id: category_a4.id,
       position: 4,
       name: "Done",
@@ -53,7 +53,7 @@ RSpec.describe Jobs::ProcessManager::DailyStats do
   fab!(:step_b1) do
     Fabricate(
       :process_step,
-      workflow_id: process_b.id,
+      process_id: process_b.id,
       category_id: category_b1.id,
       position: 1,
       name: "Queue",
@@ -62,7 +62,7 @@ RSpec.describe Jobs::ProcessManager::DailyStats do
   fab!(:step_b2) do
     Fabricate(
       :process_step,
-      workflow_id: process_b.id,
+      process_id: process_b.id,
       category_id: category_b2.id,
       position: 2,
       name: "Investigating",
@@ -71,7 +71,7 @@ RSpec.describe Jobs::ProcessManager::DailyStats do
   fab!(:step_b3) do
     Fabricate(
       :process_step,
-      workflow_id: process_b.id,
+      process_id: process_b.id,
       category_id: category_b3.id,
       position: 3,
       name: "Resolved",
@@ -136,16 +136,16 @@ RSpec.describe Jobs::ProcessManager::DailyStats do
     Fabricate(
       :process_stat,
       cob_date: Date.current,
-      workflow: process_a,
-      workflow_step: step_a1,
+      process_id: process_a.id,
+      process_step_id: step_a1.id,
       count: 99,
     )
     # Historical days are left untouched.
     Fabricate(
       :process_stat,
       cob_date: 1.day.ago.to_date,
-      workflow: process_a,
-      workflow_step: step_a1,
+      process_id: process_a.id,
+      process_step_id: step_a1.id,
       count: 42,
     )
   end
@@ -184,8 +184,8 @@ RSpec.describe Jobs::ProcessManager::DailyStats do
       Fabricate(
         :process_state,
         topic_id: topic.id,
-        workflow_id: process.id,
-        workflow_step_id: step.id,
+        process_id: process.id,
+        process_step_id: step.id,
       )
     end
   end
@@ -193,8 +193,8 @@ RSpec.describe Jobs::ProcessManager::DailyStats do
   def stat_count_for(process, step, cob_date: Date.current)
     ProcessManager::ProcessStat.find_by!(
       cob_date: cob_date,
-      workflow_id: process.id,
-      workflow_step_id: step.id,
+      process_id: process.id,
+      process_step_id: step.id,
     ).count
   end
 end

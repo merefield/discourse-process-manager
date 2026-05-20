@@ -4,22 +4,22 @@ module ProcessManager
   class AiActions
     def transition_all
       ProcessManager::ProcessState
-        .includes(topic: :first_post, workflow_step: { workflow_step_options: :workflow_option })
-        .find_each do |workflow_state|
-          step = workflow_state.workflow_step
+        .includes(topic: :first_post, process_step: { process_step_options: :process_option })
+        .find_each do |process_state|
+          step = process_state.process_step
           next unless step
 
           # skip if AI not enabled or no options
           next unless step.ai_enabled
-          next if step.workflow_step_options.empty?
+          next if step.process_step_options.empty?
 
-          ai_transition(workflow_state)
+          ai_transition(process_state)
         end
     end
 
-    def ai_transition(workflow_state)
-      step = workflow_state.workflow_step
-      topic = workflow_state.topic
+    def ai_transition(process_state)
+      step = process_state.process_step
+      topic = process_state.topic
       return unless step && topic
 
       client = OpenAI::Client.new(access_token: SiteSetting.process_manager_openai_api_key)
@@ -30,7 +30,7 @@ module ProcessManager
       return if base_user_prompt.blank?
 
       # get option slugs for this step
-      options = step.workflow_step_options.map { |o| o.workflow_option&.slug }.compact
+      options = step.process_step_options.map { |o| o.process_option&.slug }.compact
 
       return if options.empty?
 

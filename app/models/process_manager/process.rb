@@ -2,7 +2,7 @@
 
 module ::ProcessManager
   class Process < ActiveRecord::Base
-    self.table_name = "workflows"
+    self.table_name = "process_manager_processes"
 
     before_validation :generate_unique_slug, if: :slug_generation_required?
 
@@ -15,16 +15,16 @@ module ::ProcessManager
                 allow_nil: true,
               }
 
-    has_many :workflow_steps,
+    has_many :process_steps,
              class_name: "ProcessManager::ProcessStep",
-             foreign_key: :workflow_id,
+             foreign_key: :process_id,
              dependent: :destroy
-    has_many :workflow_states, class_name: "ProcessManager::ProcessState", foreign_key: :workflow_id
+    has_many :process_states, class_name: "ProcessManager::ProcessState", foreign_key: :process_id
 
     scope :ordered, -> { order("lower(name) ASC") }
 
     def kanban_compatible?
-      steps = workflow_steps.to_a
+      steps = process_steps.to_a
       return false if steps.blank?
 
       positions = steps.map { |step| step.position.to_i }
@@ -38,23 +38,23 @@ module ::ProcessManager
       steps_by_id = steps.index_by(&:id)
       edges = Hash.new { |hash, key| hash[key] = [] }
       edge_lookup = {}
-      step_options_by_step_id = workflow_step_options_by_step_id(steps)
+      step_options_by_step_id = process_step_options_by_step_id(steps)
 
       steps.each do |step|
         step_options_by_step_id
           .fetch(step.id, [])
           .each do |step_option|
-            target_step_id = step_option.target_step_id
-            next if target_step_id.blank?
-            return false if !step_lookup[target_step_id]
+            target_process_step_id = step_option.target_process_step_id
+            next if target_process_step_id.blank?
+            return false if !step_lookup[target_process_step_id]
 
             from_position = step.position.to_i
-            to_position = steps_by_id[target_step_id].position.to_i
+            to_position = steps_by_id[target_process_step_id].position.to_i
             edge_key = [from_position, to_position]
             return false if edge_lookup[edge_key]
 
             edge_lookup[edge_key] = true
-            edges[step.id] << target_step_id
+            edges[step.id] << target_process_step_id
           end
       end
 
@@ -67,7 +67,7 @@ module ::ProcessManager
         next if visited[current_step_id]
 
         visited[current_step_id] = true
-        edges[current_step_id].each { |target_step_id| stack << target_step_id }
+        edges[current_step_id].each { |target_process_step_id| stack << target_process_step_id }
       end
 
       visited.size == step_ids.size
@@ -75,10 +75,10 @@ module ::ProcessManager
 
     def validation_warnings
       warnings = []
-      steps = workflow_steps.to_a
+      steps = process_steps.to_a
       step_ids = steps.map(&:id)
       step_lookup = step_ids.index_with(true)
-      step_options_by_step_id = workflow_step_options_by_step_id(steps)
+      step_options_by_step_id = process_step_options_by_step_id(steps)
       step_options = step_options_by_step_id.values.flatten
 
       duplicate_step_positions =
@@ -95,7 +95,8 @@ module ::ProcessManager
 
       orphan_target_step_options =
         step_options.select do |step_option|
-          step_option.target_step_id.present? && !step_lookup[step_option.target_step_id]
+          step_option.target_process_step_id.present? &&
+            !step_lookup[step_option.target_process_step_id]
         end
 
       if orphan_target_step_options.present?
@@ -105,7 +106,7 @@ module ::ProcessManager
         }
       end
 
-      option_slugs = workflow_option_slugs(step_options)
+      option_slugs = process_option_slugs(step_options)
 
       missing_option_labels =
         option_slugs.reject do |slug|
@@ -121,24 +122,24 @@ module ::ProcessManager
 
     private
 
-    def workflow_step_options_by_step_id(steps)
+    def process_step_options_by_step_id(steps)
       step_ids = steps.map(&:id)
       return {} if step_ids.blank?
 
-      if steps.all? { |step| step.association(:workflow_step_options).loaded? }
-        steps.each_with_object({}) { |step, memo| memo[step.id] = step.workflow_step_options }
+      if steps.all? { |step| step.association(:process_step_options).loaded? }
+        steps.each_with_object({}) { |step, memo| memo[step.id] = step.process_step_options }
       else
-        ProcessStepOption.where(workflow_step_id: step_ids).group_by(&:workflow_step_id)
+        ProcessStepOption.where(process_step_id: step_ids).group_by(&:process_step_id)
       end
     end
 
-    def workflow_option_slugs(step_options)
+    def process_option_slugs(step_options)
       return [] if step_options.blank?
 
-      if step_options.all? { |step_option| step_option.association(:workflow_option).loaded? }
-        step_options.map { |step_option| step_option.workflow_option&.slug }.compact.uniq
+      if step_options.all? { |step_option| step_option.association(:process_option).loaded? }
+        step_options.map { |step_option| step_option.process_option&.slug }.compact.uniq
       else
-        option_ids = step_options.map(&:workflow_option_id).compact.uniq
+        option_ids = step_options.map(&:process_option_id).compact.uniq
         return [] if option_ids.blank?
 
         ProcessOption.where(id: option_ids).pluck(:slug).compact.uniq
@@ -148,7 +149,7 @@ module ::ProcessManager
     def ensure_name_ascii
       return if name.blank?
       if !CGI.unescape(self.name).ascii_only?
-        errors.add(:name, I18n.t("workflow.errors.name_contains_non_ascii_chars"))
+        errors.add(:name, I18n.t("process_manager.errors.name_contains_non_ascii_chars"))
       end
     end
 
@@ -173,7 +174,7 @@ end
 
 # == Schema Information
 #
-# Table name: workflows
+# Table name: process_manager_processes
 #
 #  id               :bigint           not null, primary key
 #  description      :text

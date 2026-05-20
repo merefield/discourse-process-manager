@@ -5,10 +5,10 @@ module ProcessManager
     def list_processes
       create_list(:processes) do |topics|
         topics.joins(
-          "INNER JOIN workflow_states
-                              ON workflow_states.topic_id = topics.id
-                      INNER JOIN workflows
-                              ON workflows.id = workflow_states.workflow_id",
+          "INNER JOIN process_manager_process_states
+                              ON process_manager_process_states.topic_id = topics.id
+                      INNER JOIN process_manager_processes
+                              ON process_manager_processes.id = process_manager_process_states.process_id",
         )
       end
     end

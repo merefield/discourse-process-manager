@@ -17,7 +17,7 @@ RSpec.describe "Process charts" do
   fab!(:step_1) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_1.id,
       position: 1,
       name: "Queue",
@@ -26,7 +26,7 @@ RSpec.describe "Process charts" do
   fab!(:step_2) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_2.id,
       position: 2,
       name: "Review",
@@ -35,7 +35,7 @@ RSpec.describe "Process charts" do
   fab!(:step_3) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_3.id,
       position: 3,
       name: "Approval",
@@ -44,7 +44,7 @@ RSpec.describe "Process charts" do
   fab!(:step_4) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_4.id,
       position: 4,
       name: "Done",
@@ -53,7 +53,7 @@ RSpec.describe "Process charts" do
   fab!(:other_step) do
     Fabricate(
       :process_step,
-      workflow_id: other_process.id,
+      process_id: other_process.id,
       category_id: other_category.id,
       position: 1,
       name: "Other Queue",
@@ -70,8 +70,8 @@ RSpec.describe "Process charts" do
       Fabricate(
         :process_state,
         topic_id: topic.id,
-        workflow_id: process.id,
-        workflow_step_id: step_1.id,
+        process_id: process.id,
+        process_step_id: step_1.id,
       )
     end
 
@@ -137,8 +137,8 @@ RSpec.describe "Process charts" do
         Fabricate(
           :process_stat,
           cob_date: day,
-          workflow: process_record,
-          workflow_step: steps.first,
+          process_id: process_record.id,
+          process_step_id: steps.first.id,
           count: base_count || 10,
         )
         next
@@ -150,29 +150,29 @@ RSpec.describe "Process charts" do
       Fabricate(
         :process_stat,
         cob_date: day,
-        workflow: process_record,
-        workflow_step: steps[0],
+        process_id: process_record.id,
+        process_step_id: steps[0].id,
         count: queue_count,
       )
       Fabricate(
         :process_stat,
         cob_date: day,
-        workflow: process_record,
-        workflow_step: steps[1],
+        process_id: process_record.id,
+        process_step_id: steps[1].id,
         count: review_count,
       )
       Fabricate(
         :process_stat,
         cob_date: day,
-        workflow: process_record,
-        workflow_step: steps[2],
+        process_id: process_record.id,
+        process_step_id: steps[2].id,
         count: approval_count,
       )
       Fabricate(
         :process_stat,
         cob_date: day,
-        workflow: process_record,
-        workflow_step: steps[3],
+        process_id: process_record.id,
+        process_step_id: steps[3].id,
         count: done_count,
       )
     end

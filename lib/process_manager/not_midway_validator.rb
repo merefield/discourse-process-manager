@@ -7,9 +7,9 @@ module ProcessManager
       return if record.private_message?
 
       active_steps =
-        ProcessManager::ProcessStep.joins(:workflow).where(
+        ProcessManager::ProcessStep.joins(:process).where(
           category_id: record.category_id,
-          workflows: {
+          process_manager_processes: {
             enabled: true,
           },
         )
@@ -18,8 +18,8 @@ module ProcessManager
       return if active_steps.where(position: 1).exists?
       # return if record.user.staff?
 
-      workflow_in_progress = active_steps.where("workflow_steps.position > 1").exists?
-      if workflow_in_progress
+      process_in_progress = active_steps.where("process_manager_process_steps.position > 1").exists?
+      if process_in_progress
         record.errors.add(:base, message: I18n.t("process_manager.errors.no_midway_error"))
       end
     end

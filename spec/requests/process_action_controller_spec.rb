@@ -10,7 +10,7 @@ RSpec.describe ProcessManager::ProcessActionController, type: :request do
   fab!(:step_1) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_1.id,
       position: 1,
       name: "Step A",
@@ -19,7 +19,7 @@ RSpec.describe ProcessManager::ProcessActionController, type: :request do
   fab!(:step_2) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_2.id,
       position: 2,
       name: "Step B",
@@ -30,18 +30,18 @@ RSpec.describe ProcessManager::ProcessActionController, type: :request do
   fab!(:step_1_option) do
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_1.id,
-      workflow_option_id: next_option.id,
-      target_step_id: step_2.id,
+      process_step_id: step_1.id,
+      process_option_id: next_option.id,
+      target_process_step_id: step_2.id,
       position: 1,
     )
   end
   fab!(:step_2_option) do
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_2.id,
-      workflow_option_id: back_option.id,
-      target_step_id: step_1.id,
+      process_step_id: step_2.id,
+      process_option_id: back_option.id,
+      target_process_step_id: step_1.id,
       position: 1,
     )
   end
@@ -50,8 +50,8 @@ RSpec.describe ProcessManager::ProcessActionController, type: :request do
     Fabricate(
       :process_state,
       topic_id: topic.id,
-      workflow_id: process.id,
-      workflow_step_id: step_1.id,
+      process_id: process.id,
+      process_step_id: step_1.id,
     )
   end
 
@@ -70,7 +70,7 @@ RSpec.describe ProcessManager::ProcessActionController, type: :request do
 
     expect(response.status).to eq(200)
     expect(response.parsed_body["success"]).to eq("OK")
-    expect(process_state.reload.workflow_step_id).to eq(step_2.id)
+    expect(process_state.reload.process_step_id).to eq(step_2.id)
   end
 
   it "returns conflict when trying a stale transition option" do

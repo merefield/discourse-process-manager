@@ -2,13 +2,13 @@
 
 module ::ProcessManager
   class ProcessOption < ActiveRecord::Base
-    self.table_name = "workflow_options"
+    self.table_name = "process_manager_process_options"
   end
 end
 
 # == Schema Information
 #
-# Table name: workflow_options
+# Table name: process_manager_process_options
 #
 #  id         :bigint           not null, primary key
 #  name       :string

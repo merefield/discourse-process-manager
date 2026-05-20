@@ -13,14 +13,14 @@ module ProcessManager
                :ai_enabled,
                :ai_prompt
 
-    has_many :workflow_step_options,
+    has_many :process_step_options,
              serializer: ProcessStepOptionSerializer,
              embed: :object,
              key: :process_step_options
     has_one :category, serializer: ProcessCategorySerializer, embed: :object
 
     def process_id
-      object.workflow_id
+      object.process_id
     end
 
     def category

@@ -31,7 +31,7 @@ after_initialize do
     Notification.singleton_class.prepend(ProcessManager::NotificationExtension)
   end
 
-  register_topic_preloader_associations({ workflow_state: %i[workflow workflow_step] }) do
+  register_topic_preloader_associations({ process_state: %i[process process_step] }) do
     SiteSetting.process_manager_enabled
   end
 
@@ -53,18 +53,18 @@ after_initialize do
   )
 
   add_to_class(:category, :process_enabled) do
-    ProcessManager::ProcessStep.find_by(category_id: self.id)&.step_id == 1 || false
+    ProcessManager::ProcessStep.find_by(category_id: self.id)&.position == 1 || false
   end
 
   add_to_class(:category, :process_slug) do
     ProcessManager::Process
-      .joins(:workflow_steps)
-      .where(workflow_steps: { category_id: self.id })
+      .joins(:process_steps)
+      .where(process_manager_process_steps: { category_id: self.id })
       .first
       &.slug
   end
 
-  # prevent non-staff from changing category on a workflow topic
+  # prevent non-staff from changing category on a process topic
   PostRevisor.track_topic_field(:category_id) do |tc, category_id|
     if tc.guardian.is_staff?
       tc.record_change("category_id", tc.topic.category_id, category_id)
@@ -74,8 +74,8 @@ after_initialize do
         # TODO get this to work and add a translation
         tc.topic.errors.add(
           :base,
-          :workflow,
-          message: "you can't change category on a workflow topic unless you are staff",
+          :process,
+          message: "you can't change category on a process topic unless you are staff",
         )
         next
       else
@@ -85,41 +85,41 @@ after_initialize do
     end
   end
 
-  add_to_class(:topic, :process_slug) { workflow_state&.workflow&.slug }
+  add_to_class(:topic, :process_slug) { process_state&.process&.slug }
 
-  add_to_class(:topic, :process_name) { workflow_state&.workflow&.name }
+  add_to_class(:topic, :process_name) { process_state&.process&.name }
 
-  add_to_class(:topic, :process_step_slug) { workflow_state&.workflow_step&.slug }
+  add_to_class(:topic, :process_step_slug) { process_state&.process_step&.slug }
 
-  add_to_class(:topic, :process_step_name) { workflow_state&.workflow_step&.name }
+  add_to_class(:topic, :process_step_name) { process_state&.process_step&.name }
 
-  add_to_class(:topic, :process_step_position) { workflow_state&.workflow_step&.position }
+  add_to_class(:topic, :process_step_position) { process_state&.process_step&.position }
 
   add_to_class(:topic, :process_step_options) do
-    step = workflow_state&.workflow_step
+    step = process_state&.process_step
     return [] unless step
 
     step
-      .workflow_step_options
-      .includes(:workflow_option)
+      .process_step_options
+      .includes(:process_option)
       .order(:position)
-      .map { |wso| wso.workflow_option.slug }
+      .map { |wso| wso.process_option.slug }
   end
 
   add_to_class(:topic, :process_step_actions) do
-    step = workflow_state&.workflow_step
+    step = process_state&.process_step
     return [] unless step
 
-    step_options = step.workflow_step_options.includes(:workflow_option).order(:position)
+    step_options = step.process_step_options.includes(:process_option).order(:position)
 
     target_steps =
       ProcessManager::ProcessStep.where(
-        id: step_options.map(&:target_step_id).compact.uniq,
+        id: step_options.map(&:target_process_step_id).compact.uniq,
       ).index_by(&:id)
 
-    step_options.map do |workflow_step_option|
-      option = workflow_step_option.workflow_option
-      target_step = target_steps[workflow_step_option.target_step_id]
+    step_options.map do |process_step_option|
+      option = process_step_option.process_option
+      target_step = target_steps[process_step_option.target_process_step_id]
 
       {
         slug: option&.slug,
@@ -130,14 +130,14 @@ after_initialize do
     end
   end
 
-  add_to_class(:topic, :process_step_entered_at) { workflow_state&.updated_at }
+  add_to_class(:topic, :process_step_entered_at) { process_state&.updated_at }
 
   add_to_class(:topic, :process_overdue_days_threshold) do
-    state = workflow_state
+    state = process_state
     return nil if state.blank?
 
-    step_overdue_days = state.workflow_step&.overdue_days
-    process_overdue_days = state.workflow&.overdue_days
+    step_overdue_days = state.process_step&.overdue_days
+    process_overdue_days = state.process&.overdue_days
 
     if !step_overdue_days.nil?
       step_overdue_days.to_i
@@ -161,33 +161,33 @@ after_initialize do
   add_to_class(:topic_list, :process_kanban_process) do
     return @process_kanban_process if defined?(@process_kanban_process)
 
-    workflow_ids = topics.map { |topic| topic.workflow_state&.workflow_id }.compact.uniq
+    process_ids = topics.map { |topic| topic.process_state&.process_id }.compact.uniq
 
     @process_kanban_process =
-      if workflow_ids.length == 1
+      if process_ids.length == 1
         ProcessManager::Process.includes(
-          workflow_steps: [
+          process_steps: [
             { category: :parent_category },
-            { workflow_step_options: :workflow_option },
+            { process_step_options: :process_option },
           ],
-        ).find_by(id: workflow_ids.first)
+        ).find_by(id: process_ids.first)
       end
   end
 
   add_to_class(:topic_list, :has_process_topics?) do
-    return @has_workflow_topics if defined?(@has_workflow_topics)
+    return @has_process_topics if defined?(@has_process_topics)
 
-    @has_workflow_topics = topics.any? { |topic| topic.workflow_state.present? }
+    @has_process_topics = topics.any? { |topic| topic.process_state.present? }
   end
 
   add_to_class(:topic_list, :process_kanban_compatible) do
-    workflow = process_kanban_process
-    workflow.present? && workflow.kanban_compatible?
+    process = process_kanban_process
+    process.present? && process.kanban_compatible?
   end
 
   add_to_class(:topic_list, :process_kanban_show_tags) do
-    workflow = process_kanban_process
-    workflow.present? && workflow.show_kanban_tags != false
+    process = process_kanban_process
+    process.present? && process.show_kanban_tags != false
   end
 
   add_to_class(:topic_list, :process_single_process_id) { process_kanban_process&.id }
@@ -198,7 +198,7 @@ after_initialize do
     return [] if !process_kanban_compatible
 
     process_kanban_process
-      .workflow_steps
+      .process_steps
       .order(:position)
       .map do |step|
         category = step.category
@@ -214,20 +214,20 @@ after_initialize do
   add_to_class(:topic_list, :process_kanban_transitions) do
     return [] if !process_kanban_compatible
 
-    workflow = process_kanban_process
-    steps = workflow.workflow_steps.to_a
+    process = process_kanban_process
+    steps = process.process_steps.to_a
     steps_by_id = steps.index_by(&:id)
     first_option_for_edge = {}
 
     steps.each do |step|
       step
-        .workflow_step_options
+        .process_step_options
         .sort_by { |option| option.position.to_i }
         .each do |step_option|
-          target_step = steps_by_id[step_option.target_step_id]
+          target_step = steps_by_id[step_option.target_process_step_id]
           next if target_step.blank?
 
-          option_slug = step_option.workflow_option&.slug
+          option_slug = step_option.process_option&.slug
           next if option_slug.blank?
 
           edge_key = [step.position.to_i, target_step.position.to_i]
@@ -404,19 +404,19 @@ after_initialize do
     topic, opts = params
 
     if SiteSetting.process_manager_enabled
-      workflow_step =
-        ProcessManager::ProcessStep.joins(:workflow).find_by(
+      process_step =
+        ProcessManager::ProcessStep.joins(:process).find_by(
           category_id: topic.category_id,
           position: 1,
-          workflows: {
+          process_manager_processes: {
             enabled: true,
           },
         )
-      if workflow_step
+      if process_step
         ProcessManager::ProcessState.create!(
           topic_id: topic.id,
-          workflow_id: workflow_step.workflow_id,
-          workflow_step_id: workflow_step.id,
+          process_id: process_step.process_id,
+          process_step_id: process_step.id,
         )
       end
     end

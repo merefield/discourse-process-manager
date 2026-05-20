@@ -8,10 +8,10 @@ describe ProcessManager::Admin::ProcessesController do
   fab!(:category_1, :category)
   fab!(:category_2, :category)
   fab!(:step_1) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: category_1.id, position: 1)
+    Fabricate(:process_step, process_id: process.id, category_id: category_1.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(:process_step, workflow_id: process.id, category_id: category_2.id, position: 2)
+    Fabricate(:process_step, process_id: process.id, category_id: category_2.id, position: 2)
   end
 
   before { sign_in(admin) }
@@ -29,9 +29,9 @@ describe ProcessManager::Admin::ProcessesController do
     option = Fabricate(:process_option, slug: "next", name: "Next")
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_1.id,
-      workflow_option_id: option.id,
-      target_step_id: step_2.id,
+      process_step_id: step_1.id,
+      process_option_id: option.id,
+      target_process_step_id: step_2.id,
     )
 
     get "/admin/plugins/discourse-process-manager/processes.json"
@@ -57,9 +57,9 @@ describe ProcessManager::Admin::ProcessesController do
     option = Fabricate(:process_option, slug: "next-query", name: "Next Query")
     Fabricate(
       :process_step_option,
-      workflow_step_id: step_1.id,
-      workflow_option_id: option.id,
-      target_step_id: step_2.id,
+      process_step_id: step_1.id,
+      process_option_id: option.id,
+      target_process_step_id: step_2.id,
     )
 
     get "/admin/plugins/discourse-process-manager/processes.json"
@@ -76,22 +76,22 @@ describe ProcessManager::Admin::ProcessesController do
       extra_step_1 =
         Fabricate(
           :process_step,
-          workflow_id: extra_process.id,
+          process_id: extra_process.id,
           category_id: category_3.id,
           position: 1,
         )
       extra_step_2 =
         Fabricate(
           :process_step,
-          workflow_id: extra_process.id,
+          process_id: extra_process.id,
           category_id: category_4.id,
           position: 2,
         )
       Fabricate(
         :process_step_option,
-        workflow_step_id: extra_step_1.id,
-        workflow_option_id: option.id,
-        target_step_id: extra_step_2.id,
+        process_step_id: extra_step_1.id,
+        process_option_id: option.id,
+        target_process_step_id: extra_step_2.id,
       )
     end
 

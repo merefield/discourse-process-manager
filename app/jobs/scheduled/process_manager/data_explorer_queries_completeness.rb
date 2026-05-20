@@ -23,11 +23,11 @@ module Jobs
             w.name as "Process",
             wstp.name as "Step",
             wstt.count as "Count"
-        FROM workflow_stats wstt
-        INNER JOIN workflow_steps wstp ON wstt.workflow_step_id = wstp.id
-        INNER JOIN workflows w ON wstt.workflow_id = w.id
+        FROM process_manager_process_stats wstt
+        INNER JOIN process_manager_process_steps wstp ON wstt.process_step_id = wstp.id
+        INNER JOIN process_manager_processes w ON wstt.process_id = w.id
         WHERE wstt.cob_date >= NOW() - (:num_of_days_history * INTERVAL '1 day')
-          AND wstt.workflow_id = :process_id
+          AND wstt.process_id = :process_id
       SQL
 
           DB.exec <<~SQL, now: Time.zone.now, query_sql: query_sql
@@ -49,13 +49,13 @@ module Jobs
 
         SELECT user_id,
             topic_id,
-            workflow_name,
-            starting_step_name,
-            step_option_name
+            process_name,
+            starting_process_step_name,
+            process_step_option_name
         FROM
-            workflow_audit_logs
+            process_manager_process_audit_logs
         WHERE created_at >= NOW() - (:num_of_days_history * INTERVAL '1 day')
-        AND workflow_id = :process_id
+        AND process_id = :process_id
       SQL
 
           DB.exec <<~SQL, now: Time.zone.now, query_sql: query_sql

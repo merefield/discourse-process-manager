@@ -57,7 +57,7 @@ export default class ProcessStepOptionsListEditor extends Component {
     if (!processSteps) {
       return;
     }
-    return processSteps.find((step) => step.id === stepOption.target_step_id)
+    return processSteps.find((step) => step.id === stepOption.target_process_step_id)
       ?.position;
   }
 

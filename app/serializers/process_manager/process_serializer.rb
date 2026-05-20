@@ -16,18 +16,18 @@ module ProcessManager
                :final_category_id,
                :validation_warnings
 
-    has_many :workflow_steps, serializer: ProcessStepSerializer, embed: :object, key: :process_steps
+    has_many :process_steps, serializer: ProcessStepSerializer, embed: :object, key: :process_steps
 
     def process_steps_count
-      ordered_workflow_steps.length
+      ordered_process_steps.length
     end
 
     def starting_category_id
-      ordered_workflow_steps.first&.category_id
+      ordered_process_steps.first&.category_id
     end
 
     def final_category_id
-      ordered_workflow_steps.last&.category_id
+      ordered_process_steps.last&.category_id
     end
 
     def validation_warnings
@@ -40,8 +40,8 @@ module ProcessManager
 
     private
 
-    def ordered_workflow_steps
-      @ordered_workflow_steps ||= object.workflow_steps.to_a.sort_by { |step| step.position.to_i }
+    def ordered_process_steps
+      @ordered_process_steps ||= object.process_steps.to_a.sort_by { |step| step.position.to_i }
     end
   end
 end

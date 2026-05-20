@@ -536,10 +536,10 @@ module PageObjects
         self
       end
 
-      def select_option(step_option, workflow_option)
+      def select_option(step_option, process_option)
         find(
           "#{option_selector(step_option)} select[data-process-step-option-id='#{step_option.id}']",
-        ).find("option[value='#{workflow_option.id}']").select_option
+        ).find("option[value='#{process_option.id}']").select_option
         self
       end
 

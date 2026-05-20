@@ -26,27 +26,27 @@ module ProcessManager
         default_overdue_days = SiteSetting.process_manager_overdue_days_default.to_i
         process_topic_ids_scope =
           process_topic_ids_scope
-            .joins(:workflow_step, :workflow)
+            .joins(:process_step, :process)
             .where(
-              "COALESCE(workflow_steps.overdue_days, workflows.overdue_days, ?) > 0",
+              "COALESCE(process_manager_process_steps.overdue_days, process_manager_processes.overdue_days, ?) > 0",
               default_overdue_days,
             )
             .where(
-              "workflow_states.updated_at <= NOW() - (COALESCE(workflow_steps.overdue_days, workflows.overdue_days, ?) * INTERVAL '1 day')",
+              "process_manager_process_states.updated_at <= NOW() - (COALESCE(process_manager_process_steps.overdue_days, process_manager_processes.overdue_days, ?) * INTERVAL '1 day')",
               default_overdue_days,
             )
         process_filters_applied = true
       elsif params[:overdue_days].present? && params[:overdue_days].to_i > 0
         cutoff = params[:overdue_days].to_i.days.ago
         process_topic_ids_scope =
-          process_topic_ids_scope.where("workflow_states.updated_at <= ?", cutoff)
+          process_topic_ids_scope.where("process_manager_process_states.updated_at <= ?", cutoff)
         process_filters_applied = true
       end
 
       if params[:process_step_position].present? && params[:process_step_position].to_i > 0
         process_topic_ids_scope =
-          process_topic_ids_scope.joins(:workflow_step).where(
-            workflow_steps: {
+          process_topic_ids_scope.joins(:process_step).where(
+            process_manager_process_steps: {
               position: params[:process_step_position].to_i,
             },
           )

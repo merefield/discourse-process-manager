@@ -14,7 +14,7 @@ RSpec.describe "Process admin visual" do
   fab!(:queue_step) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: review_category.id,
       position: 1,
       name: "Queue",
@@ -23,7 +23,7 @@ RSpec.describe "Process admin visual" do
   fab!(:review_step) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: done_category.id,
       position: 2,
       name: "Review",
@@ -32,7 +32,7 @@ RSpec.describe "Process admin visual" do
   fab!(:done_step) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: done_category.id,
       position: 3,
       name: "Done",
@@ -43,9 +43,9 @@ RSpec.describe "Process admin visual" do
   fab!(:queue_to_done_option) do
     Fabricate(
       :process_step_option,
-      workflow_step_id: queue_step.id,
-      workflow_option_id: next_option.id,
-      target_step_id: done_step.id,
+      process_step_id: queue_step.id,
+      process_option_id: next_option.id,
+      target_process_step_id: done_step.id,
       position: 1,
     )
   end
@@ -76,16 +76,16 @@ RSpec.describe "Process admin visual" do
     before do
       Fabricate(
         :process_step_option,
-        workflow_step_id: review_step.id,
-        workflow_option_id: back_option.id,
-        target_step_id: queue_step.id,
+        process_step_id: review_step.id,
+        process_option_id: back_option.id,
+        target_process_step_id: queue_step.id,
         position: 1,
       )
       Fabricate(
         :process_step_option,
-        workflow_step_id: done_step.id,
-        workflow_option_id: back_option.id,
-        target_step_id: review_step.id,
+        process_step_id: done_step.id,
+        process_option_id: back_option.id,
+        target_process_step_id: review_step.id,
         position: 1,
       )
 
@@ -120,10 +120,10 @@ RSpec.describe "Process admin visual" do
     expect(visual_page).to have_any_option_control
     step_option =
       ProcessManager::ProcessStepOption.find_by!(
-        workflow_step_id: queue_step.id,
-        target_step_id: review_step.id,
+        process_step_id: queue_step.id,
+        target_process_step_id: review_step.id,
       )
-    expect(step_option.target_step_id).to eq(review_step.id)
+    expect(step_option.target_process_step_id).to eq(review_step.id)
     expect(visual_page).to have_arrow_link_for_option(step_option)
     expect(visual_page).to have_only_orthogonal_arrow_paths
     expect(visual_page).to have_forward_arrow_path
@@ -131,7 +131,7 @@ RSpec.describe "Process admin visual" do
     visual_page.drag_existing_connector_target(review_step, done_step)
 
     expect(visual_page).to have_option(step_option)
-    expect(step_option.reload.target_step_id).to eq(done_step.id)
+    expect(step_option.reload.target_process_step_id).to eq(done_step.id)
   end
 
   it "creates arrows from connector handles without dragging" do
@@ -145,8 +145,8 @@ RSpec.describe "Process admin visual" do
 
     step_option =
       ProcessManager::ProcessStepOption.find_by!(
-        workflow_step_id: review_step.id,
-        target_step_id: queue_step.id,
+        process_step_id: review_step.id,
+        target_process_step_id: queue_step.id,
       )
     expect(visual_page).to have_arrow_link_for_option(step_option)
   end
@@ -159,7 +159,7 @@ RSpec.describe "Process admin visual" do
     visual_page.track_requests
     visual_page.select_option(queue_to_done_option, back_option)
 
-    expect(queue_to_done_option.reload.workflow_option_id).to eq(back_option.id)
+    expect(queue_to_done_option.reload.process_option_id).to eq(back_option.id)
     expect(visual_page).to have_tracked_request("/process_steps.json")
     expect(visual_page.tracked_request_count("/process_options.json")).to eq(0)
   end
@@ -173,7 +173,7 @@ RSpec.describe "Process admin visual" do
 
     visual_page.select_option(queue_to_done_option, custom_option)
 
-    expect(queue_to_done_option.reload.workflow_option_id).to eq(custom_option.id)
+    expect(queue_to_done_option.reload.process_option_id).to eq(custom_option.id)
     expect(visual_page).to have_selected_option_label(queue_to_done_option, "Custom action")
   end
 
@@ -185,7 +185,7 @@ RSpec.describe "Process admin visual" do
 
     visual_page.select_option(queue_to_done_option, back_option)
 
-    expect(queue_to_done_option.reload.workflow_option_id).to eq(back_option.id)
+    expect(queue_to_done_option.reload.process_option_id).to eq(back_option.id)
     expect(visual_page).to have_window_scroll_y(scroll_y)
   end
 
@@ -211,17 +211,17 @@ RSpec.describe "Process admin visual" do
     incoming_option =
       Fabricate(
         :process_step_option,
-        workflow_step_id: queue_step.id,
-        workflow_option_id: next_option.id,
-        target_step_id: review_step.id,
+        process_step_id: queue_step.id,
+        process_option_id: next_option.id,
+        target_process_step_id: review_step.id,
         position: 2,
       )
     outgoing_option =
       Fabricate(
         :process_step_option,
-        workflow_step_id: review_step.id,
-        workflow_option_id: next_option.id,
-        target_step_id: done_step.id,
+        process_step_id: review_step.id,
+        process_option_id: next_option.id,
+        target_process_step_id: done_step.id,
         position: 1,
       )
 
@@ -262,7 +262,7 @@ RSpec.describe "Process admin visual" do
     orphan_step =
       Fabricate(
         :process_step,
-        workflow_id: process.id,
+        process_id: process.id,
         category_id: orphan_category.id,
         position: 4,
         name: "Temporary lane",
@@ -296,7 +296,7 @@ RSpec.describe "Process admin visual" do
 
     visual_page.fill_new_step_name("QA").choose_new_step_category(review_category).add_step
 
-    step = ProcessManager::ProcessStep.find_by!(workflow_id: process.id, name: "QA")
+    step = ProcessManager::ProcessStep.find_by!(process_id: process.id, name: "QA")
     expect(step.category_id).to eq(review_category.id)
     expect(step.position).to eq(4)
     expect(visual_page).to have_step(step, text: "QA")
@@ -307,7 +307,7 @@ RSpec.describe "Process admin visual" do
 
     visual_page.choose_new_step_category(review_category).add_step
 
-    step = ProcessManager::ProcessStep.find_by!(workflow_id: process.id, name: "New step")
+    step = ProcessManager::ProcessStep.find_by!(process_id: process.id, name: "New step")
     expect(step.position).to eq(4)
     expect(visual_page).to have_step(step, text: "New step")
   end

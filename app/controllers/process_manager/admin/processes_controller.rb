@@ -12,7 +12,7 @@ module ProcessManager
         ActiveRecord::Associations::Preloader.new(
           records: @processes,
           associations: {
-            workflow_steps: [:category, { workflow_step_options: :workflow_option }],
+            process_steps: [:category, { process_step_options: :process_option }],
           },
         ).call
         render_json_dump(

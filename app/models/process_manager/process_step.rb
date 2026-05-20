@@ -2,15 +2,15 @@
 
 module ::ProcessManager
   class ProcessStep < ActiveRecord::Base
-    self.table_name = "workflow_steps"
-    belongs_to :workflow, class_name: "ProcessManager::Process"
+    self.table_name = "process_manager_process_steps"
+    belongs_to :process, class_name: "ProcessManager::Process"
     belongs_to :category
-    has_many :workflow_step_options,
+    has_many :process_step_options,
              class_name: "ProcessManager::ProcessStepOption",
-             foreign_key: :workflow_step_id
-    has_many :workflow_states,
+             foreign_key: :process_step_id
+    has_many :process_states,
              class_name: "ProcessManager::ProcessState",
-             foreign_key: :workflow_step_id
+             foreign_key: :process_step_id
 
     validates :category_id, presence: true
     validates :name, presence: true
@@ -25,7 +25,7 @@ end
 
 # == Schema Information
 #
-# Table name: workflow_steps
+# Table name: process_manager_process_steps
 #
 #  id           :bigint           not null, primary key
 #  ai_enabled   :boolean          default(FALSE)
@@ -38,15 +38,15 @@ end
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  category_id  :bigint
-#  workflow_id  :bigint
+#  process_id   :bigint
 #
 # Indexes
 #
-#  index_workflow_steps_on_category_id  (category_id)
-#  index_workflow_steps_on_workflow_id  (workflow_id)
+#  index_process_steps_on_category_id  (category_id)
+#  index_process_steps_on_process_id   (process_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (category_id => categories.id)
-#  fk_rails_...  (workflow_id => workflows.id)
+#  fk_rails_...  (process_id => process_manager_processes.id)
 #

@@ -20,7 +20,7 @@ RSpec.describe "Process overdue thresholds", type: :request do
   fab!(:step_global_default) do
     Fabricate(
       :process_step,
-      workflow_id: process_global_default.id,
+      process_id: process_global_default.id,
       category_id: category_global_default.id,
       position: 1,
       overdue_days: nil,
@@ -29,7 +29,7 @@ RSpec.describe "Process overdue thresholds", type: :request do
   fab!(:step_process_override) do
     Fabricate(
       :process_step,
-      workflow_id: process_override.id,
+      process_id: process_override.id,
       category_id: category_process_override.id,
       position: 1,
       overdue_days: nil,
@@ -38,7 +38,7 @@ RSpec.describe "Process overdue thresholds", type: :request do
   fab!(:step_step_override) do
     Fabricate(
       :process_step,
-      workflow_id: process_step_override.id,
+      process_id: process_step_override.id,
       category_id: category_step_override.id,
       position: 1,
       overdue_days: 2,
@@ -47,7 +47,7 @@ RSpec.describe "Process overdue thresholds", type: :request do
   fab!(:step_disabled) do
     Fabricate(
       :process_step,
-      workflow_id: process_disabled.id,
+      process_id: process_disabled.id,
       category_id: category_disabled.id,
       position: 1,
       overdue_days: nil,
@@ -69,32 +69,32 @@ RSpec.describe "Process overdue thresholds", type: :request do
     Fabricate(
       :process_state,
       topic_id: topic_global_default.id,
-      workflow_id: process_global_default.id,
-      workflow_step_id: step_global_default.id,
+      process_id: process_global_default.id,
+      process_step_id: step_global_default.id,
     )
   end
   fab!(:state_process_override) do
     Fabricate(
       :process_state,
       topic_id: topic_process_override.id,
-      workflow_id: process_override.id,
-      workflow_step_id: step_process_override.id,
+      process_id: process_override.id,
+      process_step_id: step_process_override.id,
     )
   end
   fab!(:state_step_override) do
     Fabricate(
       :process_state,
       topic_id: topic_step_override.id,
-      workflow_id: process_step_override.id,
-      workflow_step_id: step_step_override.id,
+      process_id: process_step_override.id,
+      process_step_id: step_step_override.id,
     )
   end
   fab!(:state_disabled) do
     Fabricate(
       :process_state,
       topic_id: topic_disabled.id,
-      workflow_id: process_disabled.id,
-      workflow_step_id: step_disabled.id,
+      process_id: process_disabled.id,
+      process_step_id: step_disabled.id,
     )
   end
 

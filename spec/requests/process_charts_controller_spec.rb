@@ -20,7 +20,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   fab!(:step_1) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_1.id,
       position: 1,
       name: "Queue",
@@ -29,7 +29,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   fab!(:step_2) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_2.id,
       position: 2,
       name: "Review",
@@ -38,7 +38,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   fab!(:step_3) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_3.id,
       position: 3,
       name: "Approval",
@@ -47,7 +47,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   fab!(:step_4) do
     Fabricate(
       :process_step,
-      workflow_id: process.id,
+      process_id: process.id,
       category_id: category_4.id,
       position: 4,
       name: "Done",
@@ -56,7 +56,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   fab!(:other_step) do
     Fabricate(
       :process_step,
-      workflow_id: other_process.id,
+      process_id: other_process.id,
       category_id: other_category.id,
       position: 1,
       name: "Other Queue",
@@ -78,8 +78,8 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
       Fabricate(
         :process_state,
         topic_id: topic.id,
-        workflow_id: process.id,
-        workflow_step_id: step_1.id,
+        process_id: process.id,
+        process_step_id: step_1.id,
       )
     end
 
@@ -190,23 +190,24 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   it "loads chart process step data only for the selected process" do
     sign_in(admin)
 
-    workflow_queries, workflow_steps_queries =
+    process_queries, process_steps_queries =
       track_sql_queries do
         get "/discourse-process-manager/charts.json", params: { process_id: process.id, weeks: 1 }
       end.partition { |query| query.include?('FROM "processes"') }
 
-    workflow_steps_queries.select! do |query|
-      query.include?('FROM "process_steps"') && query.include?('"process_steps"."process_id"')
+    process_steps_queries.select! do |query|
+      query.include?('FROM "process_manager_process_steps"') &&
+        query.include?('"process_manager_process_steps"."process_id"')
     end
 
-    unscoped_workflow_query =
-      workflow_queries.any? do |query|
+    unscoped_process_query =
+      process_queries.any? do |query|
         query.include?('"processes"."enabled" = TRUE') && !query.include?('"processes"."id" =')
       end
 
     expect(response.status).to eq(200)
-    expect(unscoped_workflow_query).to eq(false)
-    expect(workflow_steps_queries.any? { |query| query.include?(other_process.id.to_s) }).to eq(
+    expect(unscoped_process_query).to eq(false)
+    expect(process_steps_queries.any? { |query| query.include?(other_process.id.to_s) }).to eq(
       false,
     )
   end
@@ -253,29 +254,29 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
       Fabricate(
         :process_stat,
         cob_date: day,
-        workflow: process,
-        workflow_step: step_1,
+        process_id: process.id,
+        process_step_id: step_1.id,
         count: queue_count,
       )
       Fabricate(
         :process_stat,
         cob_date: day,
-        workflow: process,
-        workflow_step: step_2,
+        process_id: process.id,
+        process_step_id: step_2.id,
         count: review_count,
       )
       Fabricate(
         :process_stat,
         cob_date: day,
-        workflow: process,
-        workflow_step: step_3,
+        process_id: process.id,
+        process_step_id: step_3.id,
         count: approval_count,
       )
       Fabricate(
         :process_stat,
         cob_date: day,
-        workflow: process,
-        workflow_step: step_4,
+        process_id: process.id,
+        process_step_id: step_4.id,
         count: done_count,
       )
     end

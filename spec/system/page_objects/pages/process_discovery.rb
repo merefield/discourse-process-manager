@@ -74,7 +74,7 @@ module PageObjects
       end
 
       def has_process_chart_process_selector?
-        has_css?(".process-burndown__workflow-select")
+        has_css?(".process-burndown__process-select")
       end
 
       def select_chart_weeks(weeks)
@@ -83,8 +83,8 @@ module PageObjects
         self
       end
 
-      def select_chart_workflow(name)
-        find(".process-burndown__workflow-select").select(name)
+      def select_chart_process(name)
+        find(".process-burndown__process-select").select(name)
         self
       end
 
