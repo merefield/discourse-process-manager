@@ -212,7 +212,9 @@ export default class ProcessVisualEditor extends Component {
 
   edgeForTargetHandle(step, side) {
     return this.edgeLayouts.find((edge) => {
-      return edge.target_process_step_id === step.id && edge.target_side === side;
+      return (
+        edge.target_process_step_id === step.id && edge.target_side === side
+      );
     });
   }
 
@@ -2238,7 +2240,9 @@ export default class ProcessVisualEditor extends Component {
       return;
     }
 
-    await this.updateStepOption(stepOption, { target_process_step_id: targetStepId });
+    await this.updateStepOption(stepOption, {
+      target_process_step_id: targetStepId,
+    });
     await this.reloadGraphInPlace();
   }
 
