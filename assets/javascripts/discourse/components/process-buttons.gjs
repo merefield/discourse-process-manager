@@ -53,7 +53,7 @@ export default class ProcessButtonsComponent extends Component {
           data: { option },
         })
           .then(() => {
-            this.router.transitionTo("/c/" + this.args.category_id);
+            this.router.transitionTo("discovery.processes");
           })
           .catch(async (err) => {
             this.transitioningOption = null;

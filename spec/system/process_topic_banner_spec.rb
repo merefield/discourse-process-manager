@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe "Process topic banner" do
+  let(:dialog) { PageObjects::Components::Dialog.new }
+  let(:process_topic_page) { PageObjects::Pages::ProcessTopic.new }
+
+  fab!(:admin)
   fab!(:actor, :user)
   fab!(:viewer, :user)
   fab!(:actor_group, :group)
@@ -91,5 +95,14 @@ RSpec.describe "Process topic banner" do
       )
 
     expect(Time.zone.parse(entered_at)).to be < 2.days.ago
+  end
+
+  it "returns to process discovery after a topic action" do
+    sign_in(admin)
+    process_topic_page.visit_topic(topic).click_process_action("Accept")
+    dialog.click_yes
+
+    expect(page).to have_current_path("/processes", url: false)
+    expect(process_state.reload.process_step_id).to eq(step_2.id)
   end
 end

@@ -23,6 +23,11 @@ module PageObjects
       def has_step_age_badge_text?(text)
         has_css?(".process-step-age-badge", text: text)
       end
+
+      def click_process_action(label)
+        find(".process-step-actions .process-action-button .btn", text: label).click
+        self
+      end
     end
   end
 end
