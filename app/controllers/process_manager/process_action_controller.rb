@@ -13,7 +13,7 @@ module ProcessManager
       successful_transition = false
 
       if user.present? && option.present? && topic.present?
-        cooldown_key = "discourse-workflow-transition-#{user.id}-#{topic.id}"
+        cooldown_key = "discourse-process-manager-transition-#{user.id}-#{topic.id}"
         cooldown_acquired = Discourse.redis.set(cooldown_key, "1", ex: 5, nx: true)
 
         if !cooldown_acquired

@@ -62,11 +62,11 @@ RSpec.describe ProcessManager::ProcessActionController, type: :request do
     category_1.save!
     category_2.save!
     sign_in(user)
-    Discourse.redis.del("discourse-workflow-transition-#{user.id}-#{topic.id}")
+    Discourse.redis.del("discourse-process-manager-transition-#{user.id}-#{topic.id}")
   end
 
   it "returns 200 for a valid transition" do
-    post "/discourse-workflow/act/#{topic.id}.json", params: { option: "next" }
+    post "/discourse-process-manager/act/#{topic.id}.json", params: { option: "next" }
 
     expect(response.status).to eq(200)
     expect(response.parsed_body["success"]).to eq("OK")
@@ -74,13 +74,13 @@ RSpec.describe ProcessManager::ProcessActionController, type: :request do
   end
 
   it "returns conflict when trying a stale transition option" do
-    post "/discourse-workflow/act/#{topic.id}.json", params: { option: "next" }
+    post "/discourse-process-manager/act/#{topic.id}.json", params: { option: "next" }
     expect(response.status).to eq(200)
 
     # clear cooldown so we can assert stale-state behavior instead of cooldown
-    Discourse.redis.del("discourse-workflow-transition-#{user.id}-#{topic.id}")
+    Discourse.redis.del("discourse-process-manager-transition-#{user.id}-#{topic.id}")
 
-    post "/discourse-workflow/act/#{topic.id}.json", params: { option: "next" }
+    post "/discourse-process-manager/act/#{topic.id}.json", params: { option: "next" }
 
     expect(response.status).to eq(409)
     expect(response.parsed_body["failed"]).to eq("FAILED")

@@ -286,7 +286,7 @@ export default class ProcessVisualEditor extends Component {
 
   updateStep(step, attributes) {
     return ajax(
-      `/admin/plugins/discourse-workflow/process_steps/${step.id}.json`,
+      `/admin/plugins/discourse-process-manager/process_steps/${step.id}.json`,
       {
         type: "PUT",
         data: {
@@ -308,7 +308,7 @@ export default class ProcessVisualEditor extends Component {
 
   reorderStepPosition(step, attributes) {
     return ajax(
-      `/admin/plugins/discourse-workflow/process_steps/${step.id}/reorder.json`,
+      `/admin/plugins/discourse-process-manager/process_steps/${step.id}/reorder.json`,
       {
         type: "PUT",
         data: {
@@ -333,7 +333,7 @@ export default class ProcessVisualEditor extends Component {
       didConfirm: async () => {
         try {
           await ajax(
-            `/admin/plugins/discourse-workflow/process_steps/${step.id}.json`,
+            `/admin/plugins/discourse-process-manager/process_steps/${step.id}.json`,
             { type: "DELETE" }
           );
           await this.reloadGraphInPlace();
@@ -346,7 +346,7 @@ export default class ProcessVisualEditor extends Component {
 
   updateStepOption(stepOption, attributes) {
     return ajax(
-      `/admin/plugins/discourse-workflow/process_step_options/${stepOption.id}.json`,
+      `/admin/plugins/discourse-process-manager/process_step_options/${stepOption.id}.json`,
       {
         type: "PUT",
         data: {
@@ -378,7 +378,7 @@ export default class ProcessVisualEditor extends Component {
       didConfirm: async () => {
         try {
           await ajax(
-            `/admin/plugins/discourse-workflow/process_step_options/${stepOption.id}.json`,
+            `/admin/plugins/discourse-process-manager/process_step_options/${stepOption.id}.json`,
             { type: "DELETE" }
           );
           await this.reloadGraphInPlace();
@@ -401,10 +401,10 @@ export default class ProcessVisualEditor extends Component {
       const shouldLoadOptions =
         options.reloadOptions === true || this.processOptions.length === 0;
       const processStepsRequest = ajax(
-        `/admin/plugins/discourse-workflow/processes/${this.args.process.id}/process_steps.json`
+        `/admin/plugins/discourse-process-manager/processes/${this.args.process.id}/process_steps.json`
       );
       const processOptionsRequest = shouldLoadOptions
-        ? ajax("/admin/plugins/discourse-workflow/process_options.json")
+        ? ajax("/admin/plugins/discourse-process-manager/process_options.json")
         : Promise.resolve(null);
       const [processStepsResult, processOptionsResult] = await Promise.all([
         processStepsRequest,
@@ -2200,17 +2200,20 @@ export default class ProcessVisualEditor extends Component {
       return;
     }
 
-    await ajax("/admin/plugins/discourse-workflow/process_step_options.json", {
-      type: "POST",
-      data: {
-        process_step_option: {
-          process_step_id: sourceStep.id,
-          process_option_id: processOptionId,
-          target_step_id: targetStepId,
-          position: this.stepOptions(sourceStep).length + 1,
+    await ajax(
+      "/admin/plugins/discourse-process-manager/process_step_options.json",
+      {
+        type: "POST",
+        data: {
+          process_step_option: {
+            process_step_id: sourceStep.id,
+            process_option_id: processOptionId,
+            target_step_id: targetStepId,
+            position: this.stepOptions(sourceStep).length + 1,
+          },
         },
-      },
-    });
+      }
+    );
     await this.reloadGraphInPlace();
   }
 
@@ -2296,19 +2299,24 @@ export default class ProcessVisualEditor extends Component {
     }
 
     try {
-      await ajax("/admin/plugins/discourse-workflow/process_steps.json", {
-        type: "POST",
-        data: {
-          process_step: {
-            process_id: this.args.process.id,
-            name:
-              this.newStepName ||
-              i18n("admin.process_manager.processes.visual.default_step_name"),
-            category_id: this.newStepCategoryId,
-            position: this.nextStepPosition,
+      await ajax(
+        "/admin/plugins/discourse-process-manager/process_steps.json",
+        {
+          type: "POST",
+          data: {
+            process_step: {
+              process_id: this.args.process.id,
+              name:
+                this.newStepName ||
+                i18n(
+                  "admin.process_manager.processes.visual.default_step_name"
+                ),
+              category_id: this.newStepCategoryId,
+              position: this.nextStepPosition,
+            },
           },
-        },
-      });
+        }
+      );
       this.newStepName = "";
       await this.reloadGraphInPlace();
     } catch (err) {

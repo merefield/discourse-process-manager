@@ -89,7 +89,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   it "returns forbidden when user is not admin and not in configured groups" do
     sign_in(blocked_user)
 
-    get "/discourse-workflow/charts.json"
+    get "/discourse-process-manager/charts.json"
 
     expect(response.status).to eq(403)
     expect(response.parsed_body["errors"]).to include(
@@ -111,7 +111,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   it "allows configured group members to query process chart data" do
     sign_in(allowed_user)
 
-    get "/discourse-workflow/charts.json"
+    get "/discourse-process-manager/charts.json"
 
     expect(response.status).to eq(200)
     expect(response.parsed_body["selected_process_id"]).to eq(workflow.id)
@@ -120,7 +120,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   it "allows admins to query process chart data" do
     sign_in(admin)
 
-    get "/discourse-workflow/charts.json"
+    get "/discourse-process-manager/charts.json"
 
     expect(response.status).to eq(200)
     expect(response.parsed_body["selected_process_id"]).to eq(workflow.id)
@@ -145,7 +145,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   it "returns full-week daily labels and per-step series for 2 weeks by default" do
     sign_in(admin)
 
-    get "/discourse-workflow/charts.json", params: { process_id: workflow.id }
+    get "/discourse-process-manager/charts.json", params: { process_id: workflow.id }
 
     payload = response.parsed_body
     labels = payload["labels"]
@@ -171,7 +171,11 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   it "supports up to 12 weeks and returns selected process metadata only" do
     sign_in(admin)
 
-    get "/discourse-workflow/charts.json", params: { process_id: other_workflow.id, weeks: 12 }
+    get "/discourse-process-manager/charts.json",
+        params: {
+          process_id: other_workflow.id,
+          weeks: 12,
+        }
 
     payload = response.parsed_body
 
@@ -188,7 +192,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
 
     workflow_queries, workflow_steps_queries =
       track_sql_queries do
-        get "/discourse-workflow/charts.json", params: { process_id: workflow.id, weeks: 1 }
+        get "/discourse-process-manager/charts.json", params: { process_id: workflow.id, weeks: 1 }
       end.partition { |query| query.include?('FROM "processes"') }
 
     workflow_steps_queries.select! do |query|
@@ -210,7 +214,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   it "supports a one-week horizon when requested" do
     sign_in(admin)
 
-    get "/discourse-workflow/charts.json", params: { process_id: workflow.id, weeks: 1 }
+    get "/discourse-process-manager/charts.json", params: { process_id: workflow.id, weeks: 1 }
 
     payload = response.parsed_body
     expect(response.status).to eq(200)
@@ -222,7 +226,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
     freeze_time(Time.zone.parse("2026-02-18 10:00:00 UTC")) do
       sign_in(admin)
 
-      get "/discourse-workflow/charts.json", params: { process_id: workflow.id, weeks: 1 }
+      get "/discourse-process-manager/charts.json", params: { process_id: workflow.id, weeks: 1 }
 
       payload = response.parsed_body
       labels = payload["labels"]

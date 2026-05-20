@@ -1,8 +1,8 @@
 # Process Manager
 
-`discourse-workflow` provides a process management plugin for Discourse.
+`discourse-process-manager` provides a process management plugin for Discourse.
 
-Discuss the plugin here: https://meta.discourse.org/t/discourse-workflow/347110?u=merefield
+Discuss the plugin here: https://meta.discourse.org/t/discourse-process-manager/347110?u=merefield
 
 ## Introduction
 

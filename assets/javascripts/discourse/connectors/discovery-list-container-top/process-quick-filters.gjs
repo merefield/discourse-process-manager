@@ -753,7 +753,7 @@ export default class ProcessQuickFiltersConnector extends Component {
     this.transitionInFlightTopicId = topicId;
 
     try {
-      await ajax(`/discourse-workflow/act/${topicId}`, {
+      await ajax(`/discourse-process-manager/act/${topicId}`, {
         type: "POST",
         data: { option: optionSlug },
       });

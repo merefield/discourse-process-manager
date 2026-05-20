@@ -12,7 +12,7 @@ describe "Admin workflow route source contracts" do
     source = File.read(route_path)
 
     expect(source).to include('"adminPlugins.show.processes.steps"')
-    expect(source).not_to include('"admin.plugins.show.discourse-workflow.workflows.steps"')
+    expect(source).not_to include('"admin.plugins.show.discourse-process-manager.processes.steps"')
   end
 
   it "derives process id in setupController without nested router path traversal" do

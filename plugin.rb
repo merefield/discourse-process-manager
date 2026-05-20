@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-# name: discourse-workflow
+# name: discourse-process-manager
 # about: A process management plugin for Discourse
 # version: 0.5.0
 # authors: Robert Barrow
 # contact_emails: robert@pavilion.tech
-# url: https://github.com/merefield/discourse-workflow
+# url: https://github.com/merefield/discourse-process-manager
 
 gem "event_stream_parser", "1.0.0", { require: false }
 gem "ruby-openai", "8.1.0", { require: false }
@@ -16,7 +16,7 @@ register_asset "stylesheets/desktop/workflow_desktop.scss", :desktop
 register_asset "stylesheets/mobile/workflow_mobile.scss", :mobile
 
 module ::ProcessManager
-  PLUGIN_NAME = "discourse-workflow"
+  PLUGIN_NAME = "discourse-process-manager"
 end
 
 require_relative "lib/process_manager/engine"
@@ -44,9 +44,13 @@ after_initialize do
   Discourse.filters.push(:processes)
   Discourse.anonymous_filters.push(:processes)
 
-  SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-workflow", "db", "fixtures").to_s
+  SeedFu.fixture_paths << File.join(__dir__, "db", "fixtures")
 
-  add_admin_route("admin.process_manager.title", "discourse-workflow", { use_new_show_route: true })
+  add_admin_route(
+    "admin.process_manager.title",
+    "discourse-process-manager",
+    { use_new_show_route: true },
+  )
 
   add_to_class(:category, :process_enabled) do
     ProcessManager::ProcessStep.find_by(category_id: self.id)&.step_id == 1 || false

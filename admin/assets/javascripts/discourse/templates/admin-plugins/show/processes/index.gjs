@@ -13,7 +13,7 @@ export default <template>
           @label="admin.process_manager.processes.new"
           @title="admin.process_manager.processes.new"
           @route="adminPlugins.show.processes.new"
-          @routeModels="discourse-workflow"
+          @routeModels="discourse-process-manager"
           @icon="plus"
           class="admin-workflows-new"
         />

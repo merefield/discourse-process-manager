@@ -4,7 +4,7 @@ export default class Adapter extends RestAdapter {
   jsonMode = true;
 
   basePath() {
-    return "/admin/plugins/discourse-workflow/";
+    return "/admin/plugins/discourse-process-manager/";
   }
 
   pathFor(store, type, findArgs) {

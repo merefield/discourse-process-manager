@@ -89,7 +89,7 @@ const processOverdueCell = <template>
 </template>;
 
 export default {
-  name: "discourse-workflow-initializer",
+  name: "discourse-process-manager-initializer",
 
   initialize(container) {
     const router = container.lookup("service:router");
@@ -122,7 +122,7 @@ export default {
     withPluginApi((api) => {
       api.addStorePluralization("process", "processes");
 
-      api.addAdminPluginConfigurationNav("discourse-workflow", [
+      api.addAdminPluginConfigurationNav("discourse-process-manager", [
         {
           label: "admin.process_manager.processes.title",
           route: "adminPlugins.show.processes",

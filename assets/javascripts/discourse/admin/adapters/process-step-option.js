@@ -5,10 +5,10 @@ export default class Adapter extends RestAdapter {
 
   basePath(store, type, findArgs) {
     if (findArgs && typeof findArgs === "object") {
-      return `/admin/plugins/discourse-workflow/processes/${findArgs.process_id}/process_steps/${findArgs.process_step_id}/`;
+      return `/admin/plugins/discourse-process-manager/processes/${findArgs.process_id}/process_steps/${findArgs.process_step_id}/`;
     }
 
-    return "/admin/plugins/discourse-workflow/";
+    return "/admin/plugins/discourse-process-manager/";
   }
 
   pathFor(store, type, findArgs) {

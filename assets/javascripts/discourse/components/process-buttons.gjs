@@ -48,7 +48,7 @@ export default class ProcessButtonsComponent extends Component {
       message: confirmationMessage,
       didConfirm: () => {
         this.transitioningOption = option;
-        ajax(`/discourse-workflow/act/${this.args.topic_id}`, {
+        ajax(`/discourse-process-manager/act/${this.args.topic_id}`, {
           type: "POST",
           data: { option },
         })

@@ -227,7 +227,7 @@ export default class ProcessBurndownChartConnector extends Component {
     this.errorMessage = null;
 
     try {
-      this.chartPayload = await ajax("/discourse-workflow/charts.json", {
+      this.chartPayload = await ajax("/discourse-process-manager/charts.json", {
         data: {
           weeks: this.selectedWeeks,
           process_id: this.singleProcessId,

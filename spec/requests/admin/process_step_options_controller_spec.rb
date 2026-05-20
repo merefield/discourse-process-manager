@@ -29,7 +29,7 @@ describe ProcessManager::Admin::ProcessStepOptionsController do
 
   it "creates a step option with next position when position is omitted" do
     expect do
-      post "/admin/plugins/discourse-workflow/process_step_options.json",
+      post "/admin/plugins/discourse-process-manager/process_step_options.json",
            params: {
              process_step_option: {
                process_step_id: step_1.id,
@@ -44,7 +44,7 @@ describe ProcessManager::Admin::ProcessStepOptionsController do
   end
 
   it "updates the workflow option used by a step option" do
-    put "/admin/plugins/discourse-workflow/process_step_options/#{step_option.id}.json",
+    put "/admin/plugins/discourse-process-manager/process_step_options/#{step_option.id}.json",
         params: {
           process_step_option: {
             process_step_id: step_1.id,
@@ -59,10 +59,10 @@ describe ProcessManager::Admin::ProcessStepOptionsController do
   end
 
   it "does not add per-option queries when listing step options" do
-    get "/admin/plugins/discourse-workflow/processes/#{workflow.id}/process_steps/#{step_1.id}/process_step_options.json"
+    get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps/#{step_1.id}/process_step_options.json"
     base_query_count =
       track_sql_queries do
-        get "/admin/plugins/discourse-workflow/processes/#{workflow.id}/process_steps/#{step_1.id}/process_step_options.json"
+        get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps/#{step_1.id}/process_step_options.json"
         expect(response.status).to eq(200)
       end.count
 
@@ -75,10 +75,10 @@ describe ProcessManager::Admin::ProcessStepOptionsController do
       position: 2,
     )
 
-    get "/admin/plugins/discourse-workflow/processes/#{workflow.id}/process_steps/#{step_1.id}/process_step_options.json"
+    get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps/#{step_1.id}/process_step_options.json"
     expanded_query_count =
       track_sql_queries do
-        get "/admin/plugins/discourse-workflow/processes/#{workflow.id}/process_steps/#{step_1.id}/process_step_options.json"
+        get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps/#{step_1.id}/process_step_options.json"
         expect(response.status).to eq(200)
       end.count
 

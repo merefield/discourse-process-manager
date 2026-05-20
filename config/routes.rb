@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 Discourse::Application.routes.draw do
-  mount ::ProcessManager::Engine, at: "discourse-workflow"
+  mount ::ProcessManager::Engine, at: "discourse-process-manager"
 
-  scope "/admin/plugins/discourse-workflow" do
+  scope "/admin/plugins/discourse-process-manager" do
     resources :processes, controller: "process_manager/admin/processes" do
       resources :process_steps,
                 only: %i[index edit show],

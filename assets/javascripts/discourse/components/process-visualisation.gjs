@@ -8,11 +8,11 @@ import { i18n } from "discourse-i18n";
 
 export default class ProcessVisualisationComponent extends Component {
   ensureD3() {
-    return loadScript("/plugins/discourse-workflow/d3/d3.min.js");
+    return loadScript("/plugins/discourse-process-manager/d3/d3.min.js");
   }
 
   async fetchData(topic_id) {
-    return ajax(`/discourse-workflow/visualisation/${topic_id}`).catch(
+    return ajax(`/discourse-process-manager/visualisation/${topic_id}`).catch(
       (err) => {
         popupAjaxError(err);
       }

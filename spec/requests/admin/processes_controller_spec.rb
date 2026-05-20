@@ -17,7 +17,7 @@ describe ProcessManager::Admin::ProcessesController do
   before { sign_in(admin) }
 
   it "serializes kanban compatibility for incompatible workflows" do
-    get "/admin/plugins/discourse-workflow/processes.json"
+    get "/admin/plugins/discourse-process-manager/processes.json"
 
     expect(response.status).to eq(200)
     payload = response.parsed_body["processes"].find { |w| w["id"] == workflow.id }
@@ -34,7 +34,7 @@ describe ProcessManager::Admin::ProcessesController do
       target_step_id: step_2.id,
     )
 
-    get "/admin/plugins/discourse-workflow/processes.json"
+    get "/admin/plugins/discourse-process-manager/processes.json"
 
     expect(response.status).to eq(200)
     payload = response.parsed_body["processes"].find { |w| w["id"] == workflow.id }
@@ -42,7 +42,7 @@ describe ProcessManager::Admin::ProcessesController do
   end
 
   it "updates show_kanban_tags on a workflow" do
-    put "/admin/plugins/discourse-workflow/processes/#{workflow.id}.json",
+    put "/admin/plugins/discourse-process-manager/processes/#{workflow.id}.json",
         params: {
           process: {
             show_kanban_tags: false,
@@ -62,10 +62,10 @@ describe ProcessManager::Admin::ProcessesController do
       target_step_id: step_2.id,
     )
 
-    get "/admin/plugins/discourse-workflow/processes.json"
+    get "/admin/plugins/discourse-process-manager/processes.json"
     base_query_count =
       track_sql_queries do
-        get "/admin/plugins/discourse-workflow/processes.json"
+        get "/admin/plugins/discourse-process-manager/processes.json"
         expect(response.status).to eq(200)
       end.count
 
@@ -95,10 +95,10 @@ describe ProcessManager::Admin::ProcessesController do
       )
     end
 
-    get "/admin/plugins/discourse-workflow/processes.json"
+    get "/admin/plugins/discourse-process-manager/processes.json"
     expanded_query_count =
       track_sql_queries do
-        get "/admin/plugins/discourse-workflow/processes.json"
+        get "/admin/plugins/discourse-process-manager/processes.json"
         expect(response.status).to eq(200)
       end.count
 
