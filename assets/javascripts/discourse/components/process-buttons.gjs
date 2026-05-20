@@ -39,10 +39,13 @@ export default class ProcessButtonsComponent extends Component {
       return;
     }
 
-    const message = i18n(`process_manager.options.${option}.confirmation`);
-    const targetSuffix = this.processActionHelperText(processAction);
-    const confirmationMessage =
-      targetSuffix && message ? `${message} ${targetSuffix}` : message;
+    const confirmation = i18n(`process_manager.options.${option}.confirmation`);
+    const confirmationMessage = processAction.target_step_name
+      ? i18n("process_manager.topic_banner.transition_confirmation_target", {
+          confirmation: confirmation.replace(/\?$/, ""),
+          target_step_name: processAction.target_step_name,
+        })
+      : confirmation;
 
     this.dialog.yesNoConfirm({
       message: confirmationMessage,

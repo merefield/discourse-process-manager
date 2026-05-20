@@ -100,6 +100,11 @@ RSpec.describe "Process topic banner" do
   it "returns to process discovery after a topic action" do
     sign_in(admin)
     process_topic_page.visit_topic(topic).click_process_action("Accept")
+
+    expect(dialog).to have_content(
+      "Are you sure you want to accept this item and move it to Review?",
+    )
+
     dialog.click_yes
 
     expect(page).to have_current_path("/processes", url: false)
