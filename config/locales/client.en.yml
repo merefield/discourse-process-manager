@@ -18,6 +18,7 @@ en:
         process_topic_arrival: "A topic titled %{topic_title} has arrived in step: %{process_step_name} of the process: %{process_name}, authored by %{username}"
     action_codes:
       process_transition: "acted upon topic in a process %{when}"
+      workflow_transition: "acted upon topic in a process %{when}"
     topics:
       bottom:
         processes: Currently, there are no more viewable process topics.
