@@ -64,7 +64,7 @@ export default class ProcessEditor extends Component {
       await this.args.process.save();
       this.#sortProcesses();
       this.toasts.success({
-        data: { message: i18n("admin.discourse_workflow.workflows.saved") },
+        data: { message: i18n("admin.process_manager.processes.saved") },
         duration: 2000,
       });
       this.router.transitionTo(
@@ -84,7 +84,7 @@ export default class ProcessEditor extends Component {
   @action
   delete() {
     return this.dialog.confirm({
-      message: i18n("admin.discourse_workflow.workflows.confirm_delete"),
+      message: i18n("admin.process_manager.processes.confirm_delete"),
       didConfirm: () => {
         return this.args.process.destroyRecord().then(() => {
           this.router.transitionTo(
@@ -136,7 +136,7 @@ export default class ProcessEditor extends Component {
 
     if (code === "duplicate_step_positions") {
       return i18n(
-        "admin.discourse_workflow.workflows.validation.duplicate_step_positions",
+        "admin.process_manager.processes.validation.duplicate_step_positions",
         {
           positions: (warning.positions || []).join(", "),
         }
@@ -145,7 +145,7 @@ export default class ProcessEditor extends Component {
 
     if (code === "orphan_target_steps") {
       return i18n(
-        "admin.discourse_workflow.workflows.validation.orphan_target_steps",
+        "admin.process_manager.processes.validation.orphan_target_steps",
         {
           count: (warning.option_ids || []).length,
         }
@@ -154,7 +154,7 @@ export default class ProcessEditor extends Component {
 
     if (code === "missing_option_labels") {
       return i18n(
-        "admin.discourse_workflow.workflows.validation.missing_option_labels",
+        "admin.process_manager.processes.validation.missing_option_labels",
         {
           slugs: (warning.slugs || []).join(", "),
         }
@@ -175,21 +175,19 @@ export default class ProcessEditor extends Component {
   <template>
     <DBreadcrumbsItem
       @path="/admin/plugins/{{this.adminPluginNavManager.currentPlugin.name}}/processes/{{@model.id}}"
-      @label={{i18n "admin.discourse_workflow.workflows.workflow.short_title"}}
+      @label={{i18n "admin.process_manager.processes.process.short_title"}}
     />
     <BackButton
       @route="adminPlugins.show.processes"
-      @label="admin.discourse_workflow.workflows.back"
+      @label="admin.process_manager.processes.back"
     />
     {{#if @process.name}}
       <h2>{{I18n.t
-          "admin.discourse_workflow.workflows.workflow.editing.title"
+          "admin.process_manager.processes.process.editing.title"
           process_name=@process.name
         }}</h2>
     {{else}}
-      <h2>{{I18n.t
-          "admin.discourse_workflow.workflows.workflow.new.title"
-        }}</h2>
+      <h2>{{I18n.t "admin.process_manager.processes.process.new.title"}}</h2>
     {{/if}}
     <form
       class="form-horizontal process-editor"
@@ -199,7 +197,7 @@ export default class ProcessEditor extends Component {
       {{#if @process.validation_warnings.length}}
         <div class="control-group process-editor__validation-warnings">
           <label>{{i18n
-              "admin.discourse_workflow.workflows.validation.title"
+              "admin.process_manager.processes.validation.title"
             }}</label>
           <ul>
             {{#each @process.validation_warnings as |warning|}}
@@ -212,12 +210,12 @@ export default class ProcessEditor extends Component {
         <DToggleSwitch
           class="process-editor__enabled"
           @state={{@process.enabled}}
-          @label="admin.discourse_workflow.workflows.enabled"
+          @label="admin.process_manager.processes.enabled"
           {{on "click" this.toggleEnabled}}
         />
       </div>
       <div class="control-group">
-        <label>{{I18n.t "admin.discourse_workflow.workflows.name"}}</label>
+        <label>{{I18n.t "admin.process_manager.processes.name"}}</label>
         <Input
           class="process-editor__name"
           @type="text"
@@ -226,9 +224,7 @@ export default class ProcessEditor extends Component {
         />
       </div>
       <div class="control-group">
-        <label>{{I18n.t
-            "admin.discourse_workflow.workflows.description"
-          }}</label>
+        <label>{{I18n.t "admin.process_manager.processes.description"}}</label>
         <Textarea
           class="process-editor__description"
           @value={{this.editingModel.description}}
@@ -236,9 +232,7 @@ export default class ProcessEditor extends Component {
         />
       </div>
       <div class="control-group">
-        <label>{{I18n.t
-            "admin.discourse_workflow.workflows.overdue_days"
-          }}</label>
+        <label>{{I18n.t "admin.process_manager.processes.overdue_days"}}</label>
         <Input
           class="process-editor__overdue-days"
           @type="number"
@@ -246,42 +240,40 @@ export default class ProcessEditor extends Component {
           @value={{this.editingModel.overdue_days}}
           disabled={{this.editingModel.system}}
         />
-        <p>{{i18n "admin.discourse_workflow.workflows.overdue_days_help"}}</p>
+        <p>{{i18n "admin.process_manager.processes.overdue_days_help"}}</p>
       </div>
       <div class="control-group">
         <DToggleSwitch
           class="process-editor__show-kanban-tags"
           @state={{this.editingModel.show_kanban_tags}}
-          @label="admin.discourse_workflow.workflows.show_kanban_tags"
+          @label="admin.process_manager.processes.show_kanban_tags"
           @disabled={{this.editingModel.system}}
           {{on "click" this.toggleShowKanbanTags}}
         />
-        <p>{{i18n
-            "admin.discourse_workflow.workflows.show_kanban_tags_help"
-          }}</p>
+        <p>{{i18n "admin.process_manager.processes.show_kanban_tags_help"}}</p>
       </div>
       {{#if @process.id}}
         <div class="control-group">
           <label>{{i18n
-              "admin.discourse_workflow.workflows.kanban_compatibility.label"
+              "admin.process_manager.processes.kanban_compatibility.label"
             }}</label>
           <p>
             {{#if @process.kanban_compatible}}
               <span class="process-editor__kanban-compatible">
                 {{i18n
-                  "admin.discourse_workflow.workflows.kanban_compatibility.compatible"
+                  "admin.process_manager.processes.kanban_compatibility.compatible"
                 }}
               </span>
             {{else}}
               <span class="process-editor__kanban-incompatible">
                 {{i18n
-                  "admin.discourse_workflow.workflows.kanban_compatibility.incompatible"
+                  "admin.process_manager.processes.kanban_compatibility.incompatible"
                 }}
               </span>
             {{/if}}
           </p>
           <p>{{i18n
-              "admin.discourse_workflow.workflows.kanban_compatibility.help"
+              "admin.process_manager.processes.kanban_compatibility.help"
             }}</p>
         </div>
       {{/if}}
@@ -297,7 +289,7 @@ export default class ProcessEditor extends Component {
               }}
               {{on "click" this.showStepsList}}
             >
-              {{i18n "admin.discourse_workflow.workflows.steps.tabs.list"}}
+              {{i18n "admin.process_manager.processes.steps.tabs.list"}}
             </button>
             <button
               type="button"
@@ -308,7 +300,7 @@ export default class ProcessEditor extends Component {
               }}
               {{on "click" this.showStepsVisual}}
             >
-              {{i18n "admin.discourse_workflow.workflows.steps.tabs.visual"}}
+              {{i18n "admin.process_manager.processes.steps.tabs.visual"}}
             </button>
           </div>
 
@@ -332,13 +324,13 @@ export default class ProcessEditor extends Component {
           class="btn-primary process-editor__save"
           @action={{this.save}}
           @disabled={{this.isSaving}}
-        >{{I18n.t "admin.discourse_workflow.workflows.save"}}</DButton>
+        >{{I18n.t "admin.process_manager.processes.save"}}</DButton>
         {{#if this.showDelete}}
           <DButton
             @action={{this.delete}}
             class="btn-danger process-editor__delete"
           >
-            {{I18n.t "admin.discourse_workflow.workflows.delete"}}
+            {{I18n.t "admin.process_manager.processes.delete"}}
           </DButton>
         {{/if}}
       </div>

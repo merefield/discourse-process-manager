@@ -46,11 +46,7 @@ after_initialize do
 
   SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-workflow", "db", "fixtures").to_s
 
-  add_admin_route(
-    "admin.discourse_workflow.title",
-    "discourse-workflow",
-    { use_new_show_route: true },
-  )
+  add_admin_route("admin.process_manager.title", "discourse-workflow", { use_new_show_route: true })
 
   add_to_class(:category, :process_enabled) do
     ProcessManager::ProcessStep.find_by(category_id: self.id)&.step_id == 1 || false

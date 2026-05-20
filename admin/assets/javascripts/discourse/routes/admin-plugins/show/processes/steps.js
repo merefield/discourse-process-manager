@@ -10,6 +10,6 @@ export default class AdminPluginsShowProcessesSteps extends DiscourseRoute {
   }
 
   titleToken() {
-    return i18n("admin.discourse_workflow.workflows.title");
+    return i18n("admin.process_manager.processes.title");
   }
 }

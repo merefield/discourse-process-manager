@@ -4,7 +4,7 @@ import ProcessNameLink from "../../components/process-name-link";
 
 export default class ProcessLink extends Component {
   get label() {
-    return i18n("discourse_workflow.process_link", {
+    return i18n("process_manager.process_link", {
       process_name: this.args.outletArgs.topic.process_name,
       process_step_name: this.args.outletArgs.topic.process_step_name,
     });

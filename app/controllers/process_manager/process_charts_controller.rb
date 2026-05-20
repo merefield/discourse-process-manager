@@ -38,7 +38,7 @@ module ProcessManager
       raise Discourse::InvalidAccess.new(
               nil,
               nil,
-              custom_message: "discourse_workflow.errors.charts_access_denied",
+              custom_message: "process_manager.errors.charts_access_denied",
             )
     end
 

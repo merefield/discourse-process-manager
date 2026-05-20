@@ -10,7 +10,7 @@ describe "Process option seed and client translation parity" do
 
     fixture_slugs = File.read(fixtures_path).scan(/slug:\s*["']([^"']+)["']/).flatten
     option_keys =
-      YAML.safe_load_file(client_locale_path).dig("en", "js", "discourse_workflow", "options").keys
+      YAML.safe_load_file(client_locale_path).dig("en", "js", "process_manager", "options").keys
 
     expect(option_keys).to include(*fixture_slugs)
     expect(fixture_slugs).to include(*option_keys)

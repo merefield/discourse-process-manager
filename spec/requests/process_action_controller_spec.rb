@@ -85,7 +85,7 @@ RSpec.describe ProcessManager::ProcessActionController, type: :request do
     expect(response.status).to eq(409)
     expect(response.parsed_body["failed"]).to eq("FAILED")
     expect(response.parsed_body["message"]).to eq(
-      I18n.t("discourse_workflow.errors.transition_failed_stale_state_refreshing"),
+      I18n.t("process_manager.errors.transition_failed_stale_state_refreshing"),
     )
   end
 end

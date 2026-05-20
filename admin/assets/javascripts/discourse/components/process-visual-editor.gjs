@@ -71,7 +71,7 @@ export default class ProcessVisualEditor extends Component {
           id: categoryId,
           name:
             category?.name ||
-            i18n("admin.discourse_workflow.workflows.visual.unknown_category"),
+            i18n("admin.process_manager.processes.visual.unknown_category"),
           color: category?.color,
           steps: [],
         });
@@ -140,12 +140,12 @@ export default class ProcessVisualEditor extends Component {
 
     if (!processOption) {
       return i18n(
-        "admin.discourse_workflow.workflows.steps.options.select_an_option"
+        "admin.process_manager.processes.steps.options.select_an_option"
       );
     }
 
     return i18n(
-      `admin.discourse_workflow.workflows.steps.options.actions.${processOption.slug}`,
+      `admin.process_manager.processes.steps.options.actions.${processOption.slug}`,
       { defaultValue: processOption.name }
     );
   }
@@ -194,7 +194,7 @@ export default class ProcessVisualEditor extends Component {
   @bind
   connectorHandleLabel(step, side) {
     return i18n(
-      `admin.discourse_workflow.workflows.visual.connector_handles.${side}`,
+      `admin.process_manager.processes.visual.connector_handles.${side}`,
       {
         step: step.name,
       }
@@ -264,7 +264,7 @@ export default class ProcessVisualEditor extends Component {
         name:
           category?.name ||
           allCategoriesById.get(categoryId)?.name ||
-          i18n("admin.discourse_workflow.workflows.visual.unknown_category"),
+          i18n("admin.process_manager.processes.visual.unknown_category"),
         color: category?.color || allCategoriesById.get(categoryId)?.color,
         parent_category_id: category?.parent_category_id,
       });
@@ -326,11 +326,10 @@ export default class ProcessVisualEditor extends Component {
 
     return this.dialog.confirm({
       message: i18n(
-        "admin.discourse_workflow.workflows.visual.confirm_delete_step"
+        "admin.process_manager.processes.visual.confirm_delete_step"
       ),
       confirmButtonClass: "btn-danger",
-      confirmButtonLabel:
-        "admin.discourse_workflow.workflows.visual.delete_step",
+      confirmButtonLabel: "admin.process_manager.processes.visual.delete_step",
       didConfirm: async () => {
         try {
           await ajax(
@@ -371,11 +370,11 @@ export default class ProcessVisualEditor extends Component {
 
     return this.dialog.confirm({
       message: i18n(
-        "admin.discourse_workflow.workflows.visual.confirm_delete_connector"
+        "admin.process_manager.processes.visual.confirm_delete_connector"
       ),
       confirmButtonClass: "btn-danger",
       confirmButtonLabel:
-        "admin.discourse_workflow.workflows.visual.delete_connector",
+        "admin.process_manager.processes.visual.delete_connector",
       didConfirm: async () => {
         try {
           await ajax(
@@ -2304,9 +2303,7 @@ export default class ProcessVisualEditor extends Component {
             process_id: this.args.process.id,
             name:
               this.newStepName ||
-              i18n(
-                "admin.discourse_workflow.workflows.visual.default_step_name"
-              ),
+              i18n("admin.process_manager.processes.visual.default_step_name"),
             category_id: this.newStepCategoryId,
             position: this.nextStepPosition,
           },
@@ -2326,7 +2323,7 @@ export default class ProcessVisualEditor extends Component {
           class="process-visual-editor__new-step-name"
           @value={{this.newStepName}}
           placeholder={{i18n
-            "admin.discourse_workflow.workflows.visual.new_step_name"
+            "admin.process_manager.processes.visual.new_step_name"
           }}
         />
         <CategoryChooser
@@ -2336,14 +2333,14 @@ export default class ProcessVisualEditor extends Component {
         <DButton
           class="btn-primary process-visual-editor__add-step-button"
           @action={{this.addStep}}
-          @label="admin.discourse_workflow.workflows.visual.add_step"
-          @title="admin.discourse_workflow.workflows.visual.add_step_title"
+          @label="admin.process_manager.processes.visual.add_step"
+          @title="admin.process_manager.processes.visual.add_step_title"
           @disabled={{@disabled}}
         />
       </div>
 
       {{#if this.isLoading}}
-        <p>{{i18n "admin.discourse_workflow.workflows.visual.loading"}}</p>
+        <p>{{i18n "admin.process_manager.processes.visual.loading"}}</p>
       {{else if this.hasSteps}}
         <div
           class="process-visual-editor__board"
@@ -2398,14 +2395,14 @@ export default class ProcessVisualEditor extends Component {
                 <DButton
                   class="btn-danger btn-small process-visual-editor__delete-option"
                   @icon="xmark"
-                  @title="admin.discourse_workflow.workflows.visual.delete_connector"
+                  @title="admin.process_manager.processes.visual.delete_connector"
                   @action={{fn this.confirmDeleteStepOption edge.step_option}}
                   @disabled={{@disabled}}
                 />
                 <select
                   data-process-step-option-id={{edge.step_option.id}}
                   title={{i18n
-                    "admin.discourse_workflow.workflows.visual.change_connector_option"
+                    "admin.process_manager.processes.visual.change_connector_option"
                   }}
                   value={{edge.step_option.process_option_id}}
                   {{on
@@ -2445,7 +2442,7 @@ export default class ProcessVisualEditor extends Component {
                   <DButton
                     class="btn-small btn-default process-visual-editor__add-step-to-lane"
                     @icon="plus"
-                    @title="admin.discourse_workflow.workflows.visual.add_step_to_lane"
+                    @title="admin.process_manager.processes.visual.add_step_to_lane"
                     @action={{fn this.addStepToLane lane}}
                     @disabled={{@disabled}}
                   />
@@ -2479,7 +2476,7 @@ export default class ProcessVisualEditor extends Component {
                           <DButton
                             class="btn-danger btn-small process-visual-editor__delete-step"
                             @icon="xmark"
-                            @title="admin.discourse_workflow.workflows.visual.delete_step"
+                            @title="admin.process_manager.processes.visual.delete_step"
                             @action={{fn this.confirmDeleteStep step}}
                             @disabled={{@disabled}}
                           />
@@ -2540,7 +2537,7 @@ export default class ProcessVisualEditor extends Component {
           {{didInsert this.captureBoard}}
         >
           <p class="process-visual-editor__empty">
-            {{i18n "admin.discourse_workflow.workflows.steps.none"}}
+            {{i18n "admin.process_manager.processes.steps.none"}}
           </p>
         </div>
       {{/if}}

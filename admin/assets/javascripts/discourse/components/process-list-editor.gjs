@@ -31,7 +31,7 @@ export default class ProcessListEditor extends Component {
   <template>
     <DBreadcrumbsItem
       @path="/admin/plugins/{{this.adminPluginNavManager.currentPlugin.name}}/processes"
-      @label={{i18n "admin.discourse_workflow.workflows.short_title"}}
+      @label={{i18n "admin.process_manager.processes.short_title"}}
     />
     <section class="process-list-editor__current admin-detail pull-left">
       {{#if @currentProcess}}
@@ -41,11 +41,9 @@ export default class ProcessListEditor extends Component {
           <table class="content-list process-list-editor d-admin-table">
             <thead>
               <tr>
-                <th>{{i18n "admin.discourse_workflow.workflows.enabled"}}</th>
-                <th>{{i18n "admin.discourse_workflow.workflows.name"}}</th>
-                <th>{{i18n
-                    "admin.discourse_workflow.workflows.description"
-                  }}</th>
+                <th>{{i18n "admin.process_manager.processes.enabled"}}</th>
+                <th>{{i18n "admin.process_manager.processes.name"}}</th>
+                <th>{{i18n "admin.process_manager.processes.description"}}</th>
                 <th></th>
               </tr>
             </thead>
@@ -81,7 +79,7 @@ export default class ProcessListEditor extends Component {
                       @route="adminPlugins.show.processes.edit"
                       @model={{process}}
                       class="btn btn-text btn-small"
-                    >{{i18n "admin.discourse_workflow.workflows.edit"}}
+                    >{{i18n "admin.process_manager.processes.edit"}}
                     </LinkTo>
                   </td>
                 </tr>
@@ -90,12 +88,12 @@ export default class ProcessListEditor extends Component {
           </table>
         {{else}}
           <div class="process-list-editor__empty empty-state">
-            <p>{{i18n "admin.discourse_workflow.workflows.none"}}</p>
+            <p>{{i18n "admin.process_manager.processes.none"}}</p>
             <LinkTo
               @route="adminPlugins.show.processes.new"
               class="btn btn-primary process-list-editor__empty-new-button"
             >
-              {{i18n "admin.discourse_workflow.workflows.new"}}
+              {{i18n "admin.process_manager.processes.new"}}
             </LinkTo>
           </div>
         {{/if}}

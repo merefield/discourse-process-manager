@@ -32,7 +32,7 @@ module ProcessManager
         render json:
                  failed_json.merge(
                    message:
-                     I18n.t("discourse_workflow.errors.transition_failed_stale_state_refreshing"),
+                     I18n.t("process_manager.errors.transition_failed_stale_state_refreshing"),
                  ),
                status: :conflict
       end

@@ -143,7 +143,7 @@ export default class ProcessStepsListEditor extends Component {
   <template>
     <DBreadcrumbsItem
       @path="/admin/plugins/{{this.adminPluginNavManager.currentPlugin.name}}/processes/steps"
-      @label={{i18n "admin.discourse_workflow.workflows.steps.short_title"}}
+      @label={{i18n "admin.process_manager.processes.steps.short_title"}}
     />
     <section
       class="process-step-list-editor__current admin-detail pull-left"
@@ -157,9 +157,9 @@ export default class ProcessStepsListEditor extends Component {
         />
       {{else}}
         <DPageSubheader
-          @titleLabel={{i18n "admin.discourse_workflow.workflows.steps.title"}}
+          @titleLabel={{i18n "admin.process_manager.processes.steps.title"}}
           @descriptionLabel={{i18n
-            "admin.discourse_workflow.workflows.steps.description"
+            "admin.process_manager.processes.steps.description"
           }}
           @learnMoreUrl="https://meta.discourse.org/t/ai-bot-workflows/306099"
         />
@@ -169,22 +169,20 @@ export default class ProcessStepsListEditor extends Component {
             <thead>
               <tr>
                 <th>{{i18n
-                    "admin.discourse_workflow.workflows.steps.position"
+                    "admin.process_manager.processes.steps.position"
+                  }}</th>
+                <th>{{i18n "admin.process_manager.processes.steps.name"}}</th>
+                <th>{{i18n
+                    "admin.process_manager.processes.steps.category"
                   }}</th>
                 <th>{{i18n
-                    "admin.discourse_workflow.workflows.steps.name"
+                    "admin.process_manager.processes.steps.description"
                   }}</th>
                 <th>{{i18n
-                    "admin.discourse_workflow.workflows.steps.category"
+                    "admin.process_manager.processes.steps.ai_enabled"
                   }}</th>
                 <th>{{i18n
-                    "admin.discourse_workflow.workflows.steps.description"
-                  }}</th>
-                <th>{{i18n
-                    "admin.discourse_workflow.workflows.steps.ai_enabled"
-                  }}</th>
-                <th>{{i18n
-                    "admin.discourse_workflow.workflows.steps.ai_prompt"
+                    "admin.process_manager.processes.steps.ai_prompt"
                   }}</th>
                 <th></th>
               </tr>
@@ -225,7 +223,7 @@ export default class ProcessStepsListEditor extends Component {
                     <DToggleSwitch
                       class="process-editor__ai_enabled"
                       @state={{step.ai_enabled}}
-                      @label="admin.discourse_workflow.workflows.enabled"
+                      @label="admin.process_manager.processes.enabled"
                       {{on "click" (fn this.toggleAiEnabled step)}}
                     />
                   </td>
@@ -239,7 +237,7 @@ export default class ProcessStepsListEditor extends Component {
                       <DButton
                         class="process-editor__ai_enabled"
                         @icon="arrow-up"
-                        @title="admin.discourse_workflow.workflows.steps.move_up"
+                        @title="admin.process_manager.processes.steps.move_up"
                         {{on "click" (fn this.moveUp step)}}
                       />
                     {{/unless}}
@@ -247,7 +245,7 @@ export default class ProcessStepsListEditor extends Component {
                       <DButton
                         class="process-editor__ai_enabled"
                         @icon="arrow-down"
-                        @title="admin.discourse_workflow.workflows.steps.move_down"
+                        @title="admin.process_manager.processes.steps.move_down"
                         {{on "click" (fn this.moveDown step)}}
                       />
                     {{/unless}}
@@ -255,7 +253,7 @@ export default class ProcessStepsListEditor extends Component {
                       @route="adminPlugins.show.processes.steps.edit"
                       @models={{array @process.id step}}
                       class="btn btn-text btn-small"
-                    >{{i18n "admin.discourse_workflow.workflows.edit"}}
+                    >{{i18n "admin.process_manager.processes.edit"}}
                     </LinkTo>
                   </td>
                 </tr>
@@ -265,7 +263,7 @@ export default class ProcessStepsListEditor extends Component {
         {{/if}}
         <ProcessLinkButton
           @route="adminPlugins.show.processes.steps.new"
-          @label="admin.discourse_workflow.workflows.steps.new"
+          @label="admin.process_manager.processes.steps.new"
           @model={{@process}}
         />
       {{/if}}

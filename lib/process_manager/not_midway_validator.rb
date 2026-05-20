@@ -20,7 +20,7 @@ module ProcessManager
 
       workflow_in_progress = active_steps.where("workflow_steps.position > 1").exists?
       if workflow_in_progress
-        record.errors.add(:base, message: I18n.t("discourse_workflow.errors.no_midway_error"))
+        record.errors.add(:base, message: I18n.t("process_manager.errors.no_midway_error"))
       end
     end
   end

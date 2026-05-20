@@ -328,7 +328,7 @@ export default class ProcessBurndownChartConnector extends Component {
             },
             title: {
               display: true,
-              text: i18n("discourse_workflow.charts.y_axis_count"),
+              text: i18n("process_manager.charts.y_axis_count"),
             },
           },
         },
@@ -344,13 +344,13 @@ export default class ProcessBurndownChartConnector extends Component {
         {{didUpdate this.syncFromUrl this.currentLocation}}
       >
         <h3 class="process-burndown__title">
-          {{i18n "discourse_workflow.charts.title"}}
+          {{i18n "process_manager.charts.title"}}
         </h3>
 
         {{#if this.selectedProcessName}}
           <p class="process-burndown__process-name">
             {{i18n
-              "discourse_workflow.charts.process_name"
+              "process_manager.charts.process_name"
               process_name=this.selectedProcessName
             }}
           </p>
@@ -358,7 +358,7 @@ export default class ProcessBurndownChartConnector extends Component {
 
         {{#if this.isLoading}}
           <p class="process-burndown__status">
-            {{i18n "discourse_workflow.charts.loading"}}
+            {{i18n "process_manager.charts.loading"}}
           </p>
         {{/if}}
 

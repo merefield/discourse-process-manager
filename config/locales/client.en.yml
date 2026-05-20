@@ -31,7 +31,7 @@ en:
       processes:
         title: "Processes"
         help: "topics involved in a managed process"
-    discourse_workflow:
+    process_manager:
       process_link: "%{process_name}: %{process_step_name}"
       topic_banner:
         title: "Process manager"
@@ -125,10 +125,10 @@ en:
     admin:
       site_settings:
         categories:
-          discourse_workflow: "Process Manager"
-      discourse_workflow:
+          process_manager: "Process Manager"
+      process_manager:
         title: "Process Manager"
-        workflows:
+        processes:
           title: "Processes"
           short_title: "Processes"
           instructions: "Create a process by adding a series of process steps. When a topic is created in the first step category, it enters the process. Users with the right category permissions can then act on the topic and move it to the next configured step."
@@ -146,7 +146,7 @@ en:
             compatible: "Compatible"
             incompatible: "Not compatible"
             help: "Kanban view requires one start step, unique positions, valid step targets, reachability from the start step, and a unique directed transition mapping per step pair. Backward/cyclic paths are supported."
-          workflow:
+          process:
             short_title: "Process"
             editing:
               title: "Editing process: %{process_name}"

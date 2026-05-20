@@ -15,7 +15,7 @@ export default class ProcessButtonsComponent extends Component {
   @tracked transitioningOption = null;
 
   workflowActionLabel = (workflowAction) => {
-    return `discourse_workflow.options.${workflowAction.slug}.button_label`;
+    return `process_manager.options.${workflowAction.slug}.button_label`;
   };
 
   workflowActionHelperText = (workflowAction) => {
@@ -23,7 +23,7 @@ export default class ProcessButtonsComponent extends Component {
       return null;
     }
 
-    return i18n("discourse_workflow.topic_banner.transition_target", {
+    return i18n("process_manager.topic_banner.transition_target", {
       target_step_name: workflowAction.target_step_name,
     });
   };
@@ -39,7 +39,7 @@ export default class ProcessButtonsComponent extends Component {
       return;
     }
 
-    const message = i18n(`discourse_workflow.options.${option}.confirmation`);
+    const message = i18n(`process_manager.options.${option}.confirmation`);
     const targetSuffix = this.workflowActionHelperText(workflowAction);
     const confirmationMessage =
       targetSuffix && message ? `${message} ${targetSuffix}` : message;
@@ -66,7 +66,7 @@ export default class ProcessButtonsComponent extends Component {
 
   <template>
     <div class="process-banner-title process-buttons-title">
-      {{i18n "discourse_workflow.topic_banner.actions_intro"}}
+      {{i18n "process_manager.topic_banner.actions_intro"}}
     </div>
     <div class="process-action-buttons">
       {{#each @process_step_actions as |workflowAction|}}

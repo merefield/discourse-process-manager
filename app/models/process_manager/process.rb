@@ -109,7 +109,7 @@ module ::ProcessManager
 
       missing_option_labels =
         option_slugs.reject do |slug|
-          I18n.exists?("js.discourse_workflow.options.#{slug}.button_label")
+          I18n.exists?("js.process_manager.options.#{slug}.button_label")
         end
 
       if missing_option_labels.present?

@@ -74,7 +74,7 @@ module ProcessManager
           topic_id: topic.id,
           raw:
             I18n.t(
-              "discourse_workflow.topic_transition_action_description",
+              "process_manager.topic_transition_action_description",
               starting_step_name: starting_step_name,
               ending_step_name: target_step.name,
               username: username,

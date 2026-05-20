@@ -30,10 +30,10 @@ export default class ProcessButtonsComponent extends Component {
     const elapsedDays = Math.floor(elapsedMs / (1000 * 60 * 60 * 24));
 
     if (elapsedDays < 1) {
-      return i18n("discourse_workflow.topic_banner.step_age_less_than_day");
+      return i18n("process_manager.topic_banner.step_age_less_than_day");
     }
 
-    return i18n("discourse_workflow.topic_banner.step_age_days", {
+    return i18n("process_manager.topic_banner.step_age_days", {
       count: elapsedDays,
     });
   }
@@ -43,21 +43,21 @@ export default class ProcessButtonsComponent extends Component {
       {{bodyClass "process-topic"}}
       <div class="process-topic-banner">
         <div class="process-banner-border-title">{{i18n
-            "discourse_workflow.topic_banner.title"
+            "process_manager.topic_banner.title"
           }}</div>
         <div class="process-banner-meta">
           <div class="process-banner-section process-process-name">
             <div class="process-banner-title process-process-name-title">{{i18n
-                "discourse_workflow.topic_banner.process_title"
+                "process_manager.topic_banner.process_title"
               }}</div>
             <div class="process-process-name-name">{{@process_name}}</div>
           </div>
           <div class="process-banner-section process-step-name">
             <div class="process-banner-title process-step-name-title">{{i18n
-                "discourse_workflow.topic_banner.step_title"
+                "process_manager.topic_banner.step_title"
               }}</div>
             <div class="process-step-name">{{i18n
-                "discourse_workflow.topic_banner.step"
+                "process_manager.topic_banner.step"
                 process_step_position=@process_step_position
                 process_step_name=@process_step_name
               }}</div>
@@ -76,7 +76,7 @@ export default class ProcessButtonsComponent extends Component {
             {{/if}}
             {{#unless @process_can_act}}
               <div class="process-actions-blocked-reason">{{i18n
-                  "discourse_workflow.topic_banner.blocked_reason_create_permission"
+                  "process_manager.topic_banner.blocked_reason_create_permission"
                 }}</div>
             {{/unless}}
           </div>
@@ -85,7 +85,7 @@ export default class ProcessButtonsComponent extends Component {
               class="btn-primary"
               @icon="right-left"
               @action={{this.showVisualisationModal}}
-              @label="discourse_workflow.topic_banner.visualisation_button"
+              @label="process_manager.topic_banner.visualisation_button"
             />
           </div>
         </div>

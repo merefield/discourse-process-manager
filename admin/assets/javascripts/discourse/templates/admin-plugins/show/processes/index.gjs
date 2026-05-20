@@ -5,15 +5,13 @@ import ProcessListEditor from "../../../../components/process-list-editor";
 export default <template>
   <div class="discourse-process-workflows admin-detail">
     <DPageSubheader
-      @titleLabel={{i18n "admin.discourse_workflow.workflows.title"}}
-      @descriptionLabel={{i18n
-        "admin.discourse_workflow.workflows.instructions"
-      }}
+      @titleLabel={{i18n "admin.process_manager.processes.title"}}
+      @descriptionLabel={{i18n "admin.process_manager.processes.instructions"}}
     >
       <:actions as |actions|>
         <actions.Primary
-          @label="admin.discourse_workflow.workflows.new"
-          @title="admin.discourse_workflow.workflows.new"
+          @label="admin.process_manager.processes.new"
+          @title="admin.process_manager.processes.new"
           @route="adminPlugins.show.processes.new"
           @routeModels="discourse-workflow"
           @icon="plus"
@@ -26,7 +24,7 @@ export default <template>
       {{#if @controller.model.content.length}}
         <ProcessListEditor @processes={{@controller.model.content}} />
       {{else}}
-        {{i18n "admin.discourse_workflow.workflows.none"}}
+        {{i18n "admin.process_manager.processes.none"}}
       {{/if}}
     </div>
   </div>

@@ -82,7 +82,7 @@ const processOverdueCell = <template>
   <td class="process-overdue">
     {{#if @topic.process_overdue}}
       <span class="process-overdue-indicator">{{i18n
-          "discourse_workflow.overdue_indicator"
+          "process_manager.overdue_indicator"
         }}</span>
     {{/if}}
   </td>
@@ -124,7 +124,7 @@ export default {
 
       api.addAdminPluginConfigurationNav("discourse-workflow", [
         {
-          label: "admin.discourse_workflow.workflows.title",
+          label: "admin.process_manager.processes.title",
           route: "adminPlugins.show.processes",
         },
       ]);

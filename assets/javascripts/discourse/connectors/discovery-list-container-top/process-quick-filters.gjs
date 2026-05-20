@@ -394,7 +394,7 @@ export default class ProcessQuickFiltersConnector extends Component {
           ? categoryColorVariable(step.category_color)
           : null,
         topics: stepTopics,
-        topic_count_label: i18n("discourse_workflow.kanban.topic_count", {
+        topic_count_label: i18n("process_manager.kanban.topic_count", {
           count: stepTopics.length,
         }),
       };
@@ -844,20 +844,20 @@ export default class ProcessQuickFiltersConnector extends Component {
           <select
             class="process-quick-filters__view-select"
             value={{this.currentProcessView}}
-            aria-label={{i18n "discourse_workflow.quick_filters.view_label"}}
+            aria-label={{i18n "process_manager.quick_filters.view_label"}}
             {{on "change" this.changeProcessView}}
           >
             <option value="list">
-              {{i18n "discourse_workflow.quick_filters.list_view"}}
+              {{i18n "process_manager.quick_filters.list_view"}}
             </option>
             {{#if this.canUseKanbanView}}
               <option value="kanban">
-                {{i18n "discourse_workflow.quick_filters.kanban_view"}}
+                {{i18n "process_manager.quick_filters.kanban_view"}}
               </option>
             {{/if}}
             {{#if this.showChartViewOption}}
               <option value="chart">
-                {{i18n "discourse_workflow.quick_filters.chart_view"}}
+                {{i18n "process_manager.quick_filters.chart_view"}}
               </option>
             {{/if}}
           </select>
@@ -866,12 +866,12 @@ export default class ProcessQuickFiltersConnector extends Component {
           <select
             class="process-quick-filters__chart-weeks-select"
             value={{this.chartWeeksValue}}
-            aria-label={{i18n "discourse_workflow.charts.weeks_label"}}
+            aria-label={{i18n "process_manager.charts.weeks_label"}}
             {{on "change" this.changeChartWeeks}}
           >
             {{#each this.chartWeekOptions as |weeks|}}
               <option value={{weeks}}>
-                {{i18n "discourse_workflow.charts.weeks_value" count=weeks}}
+                {{i18n "process_manager.charts.weeks_value" count=weeks}}
               </option>
             {{/each}}
           </select>
@@ -884,7 +884,7 @@ export default class ProcessQuickFiltersConnector extends Component {
               "process-quick-filters__my-categories btn-primary"
               "process-quick-filters__my-categories btn-default"
             }}
-            @label="discourse_workflow.quick_filters.my_categories"
+            @label="process_manager.quick_filters.my_categories"
             @action={{this.toggleMyCategories}}
           />
           <DButton
@@ -893,7 +893,7 @@ export default class ProcessQuickFiltersConnector extends Component {
               "process-quick-filters__overdue btn-primary"
               "process-quick-filters__overdue btn-default"
             }}
-            @label="discourse_workflow.quick_filters.overdue"
+            @label="process_manager.quick_filters.overdue"
             @action={{this.toggleOverdue}}
           />
           <input
@@ -902,7 +902,7 @@ export default class ProcessQuickFiltersConnector extends Component {
             min="1"
             value={{this.stepPosition}}
             placeholder={{i18n
-              "discourse_workflow.quick_filters.step_placeholder"
+              "process_manager.quick_filters.step_placeholder"
             }}
             {{on "input" this.updateStepPosition}}
           />
@@ -912,13 +912,13 @@ export default class ProcessQuickFiltersConnector extends Component {
               "process-quick-filters__apply-step btn-primary"
               "process-quick-filters__apply-step btn-default"
             }}
-            @label="discourse_workflow.quick_filters.apply_step"
+            @label="process_manager.quick_filters.apply_step"
             @action={{this.applyStepFilter}}
           />
         {{/unless}}
         <DButton
           class="process-quick-filters__clear btn-default"
-          @label="discourse_workflow.quick_filters.clear"
+          @label="process_manager.quick_filters.clear"
           @action={{this.clearFilters}}
         />
 
@@ -937,12 +937,12 @@ export default class ProcessQuickFiltersConnector extends Component {
           >
             <div class="process-kanban__header">
               <h3 class="process-kanban__title">
-                {{i18n "discourse_workflow.kanban.title"}}
+                {{i18n "process_manager.kanban.title"}}
               </h3>
               {{#if this.kanbanProcessName}}
                 <p class="process-kanban__process-name">
                   {{i18n
-                    "discourse_workflow.kanban.process_name"
+                    "process_manager.kanban.process_name"
                     process_name=this.kanbanProcessName
                   }}
                 </p>
@@ -1019,14 +1019,14 @@ export default class ProcessQuickFiltersConnector extends Component {
                           {{/if}}
                           {{#if topic.process_overdue}}
                             <span class="process-kanban__card-overdue">
-                              {{i18n "discourse_workflow.overdue_indicator"}}
+                              {{i18n "process_manager.overdue_indicator"}}
                             </span>
                           {{/if}}
                         </div>
                       {{/each}}
                     {{else}}
                       <p class="process-kanban__empty-step">
-                        {{i18n "discourse_workflow.kanban.empty_step"}}
+                        {{i18n "process_manager.kanban.empty_step"}}
                       </p>
                     {{/if}}
                   </div>

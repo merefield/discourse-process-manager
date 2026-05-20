@@ -93,7 +93,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
 
     expect(response.status).to eq(403)
     expect(response.parsed_body["errors"]).to include(
-      I18n.t("discourse_workflow.errors.charts_access_denied"),
+      I18n.t("process_manager.errors.charts_access_denied"),
     )
   end
 
@@ -104,7 +104,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
 
     expect(response.status).to eq(403)
     expect(response.parsed_body["errors"]).to include(
-      I18n.t("discourse_workflow.errors.charts_access_denied"),
+      I18n.t("process_manager.errors.charts_access_denied"),
     )
   end
 

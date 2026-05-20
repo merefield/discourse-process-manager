@@ -49,7 +49,7 @@ export default class ProcessStepOptionsListEditor extends Component {
 
   localizedStepOptionName(stepOption) {
     return i18n(
-      `admin.discourse_workflow.workflows.steps.options.actions.${stepOption.process_option.slug}`
+      `admin.process_manager.processes.steps.options.actions.${stepOption.process_option.slug}`
     );
   }
 
@@ -162,10 +162,10 @@ export default class ProcessStepOptionsListEditor extends Component {
       {{else}}
         <DPageSubheader
           @titleLabel={{i18n
-            "admin.discourse_workflow.workflows.steps.options.title"
+            "admin.process_manager.processes.steps.options.title"
           }}
           @descriptionLabel={{i18n
-            "admin.discourse_workflow.workflows.steps.description"
+            "admin.process_manager.processes.steps.description"
           }}
           @learnMoreUrl="https://meta.discourse.org/t/ai-bot-workflows/306099"
         />
@@ -175,13 +175,13 @@ export default class ProcessStepOptionsListEditor extends Component {
             <thead>
               <tr>
                 <th>{{i18n
-                    "admin.discourse_workflow.workflows.steps.options.position"
+                    "admin.process_manager.processes.steps.options.position"
                   }}</th>
                 <th>{{i18n
-                    "admin.discourse_workflow.workflows.steps.options.name"
+                    "admin.process_manager.processes.steps.options.name"
                   }}</th>
                 <th>{{i18n
-                    "admin.discourse_workflow.workflows.steps.options.target_position"
+                    "admin.process_manager.processes.steps.options.target_position"
                   }}</th>
                 <th></th>
               </tr>
@@ -230,7 +230,7 @@ export default class ProcessStepOptionsListEditor extends Component {
                       <DButton
                         class="process-step-option-list-editor__up_arrow"
                         @icon="arrow-up"
-                        @title="admin.discourse_workflow.workflows.options.move_up"
+                        @title="admin.process_manager.processes.options.move_up"
                         {{on "click" (fn this.moveUp stepOption)}}
                       />
                     {{/unless}}
@@ -242,7 +242,7 @@ export default class ProcessStepOptionsListEditor extends Component {
                       <DButton
                         class="process-step-option-list-editor__down_arrow"
                         @icon="arrow-down"
-                        @title="admin.discourse_workflow.workflows.options.move_down"
+                        @title="admin.process_manager.processes.options.move_down"
                         {{on "click" (fn this.moveDown stepOption)}}
                       />
                     {{/unless}}
@@ -254,7 +254,7 @@ export default class ProcessStepOptionsListEditor extends Component {
                         stepOption
                       }}
                       class="btn btn-text btn-small"
-                    >{{i18n "admin.discourse_workflow.workflows.edit"}}
+                    >{{i18n "admin.process_manager.processes.edit"}}
                     </LinkTo>
                   </td>
                 </tr>
@@ -264,7 +264,7 @@ export default class ProcessStepOptionsListEditor extends Component {
         {{/if}}
         <ProcessLinkButton
           @route="adminPlugins.show.processes.steps.options.new"
-          @label="admin.discourse_workflow.workflows.steps.options.new"
+          @label="admin.process_manager.processes.steps.options.new"
           @model={{@processStep}}
         />
       {{/if}}

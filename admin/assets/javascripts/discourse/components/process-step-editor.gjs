@@ -51,7 +51,7 @@ export default class ProcessStepEditor extends Component {
       this.isSaving = false;
       this.toasts.success({
         data: {
-          message: i18n("admin.discourse_workflow.workflows.steps.saved"),
+          message: i18n("admin.process_manager.processes.steps.saved"),
         },
         duration: 2000,
       });
@@ -73,12 +73,12 @@ export default class ProcessStepEditor extends Component {
   @action
   delete() {
     return this.dialog.confirm({
-      message: i18n("admin.discourse_workflow.workflows.steps.confirm_delete"),
+      message: i18n("admin.process_manager.processes.steps.confirm_delete"),
       didConfirm: () => {
         return this.args.currentProcessStep.destroyRecord().then(() => {
           this.toasts.success({
             data: {
-              message: i18n("admin.discourse_workflow.workflows.steps.deleted"),
+              message: i18n("admin.process_manager.processes.steps.deleted"),
             },
             duration: 2000,
           });
@@ -131,12 +131,12 @@ export default class ProcessStepEditor extends Component {
     />
     {{#if @currentProcessStep.id}}
       <h2>{{I18n.t
-          "admin.discourse_workflow.workflows.workflow.step.editing.title"
+          "admin.process_manager.processes.process.step.editing.title"
           process_step_name=this.editingModel.name
         }}</h2>
     {{else}}
       <h2>{{I18n.t
-          "admin.discourse_workflow.workflows.workflow.step.new.title"
+          "admin.process_manager.processes.process.step.new.title"
         }}</h2>
     {{/if}}
     <form
@@ -145,7 +145,7 @@ export default class ProcessStepEditor extends Component {
       {{didInsert this.updateModel @currentProcessStep.id}}
     >
       <div class="control-group">
-        <label>{{I18n.t "admin.discourse_workflow.workflows.name"}}</label>
+        <label>{{I18n.t "admin.process_manager.processes.name"}}</label>
         <Input
           class="process-editor__name"
           @type="text"
@@ -155,7 +155,7 @@ export default class ProcessStepEditor extends Component {
       </div>
       <div class="control-group">
         <label>{{I18n.t
-            "admin.discourse_workflow.workflows.steps.category"
+            "admin.process_manager.processes.steps.category"
           }}</label>
         <CategoryChooser
           @value={{this.editingModel.category_id}}
@@ -164,9 +164,7 @@ export default class ProcessStepEditor extends Component {
         />
       </div>
       <div class="control-group">
-        <label>{{I18n.t
-            "admin.discourse_workflow.workflows.description"
-          }}</label>
+        <label>{{I18n.t "admin.process_manager.processes.description"}}</label>
         <Textarea
           class="process-editor__description"
           @value={{this.editingModel.description}}
@@ -175,7 +173,7 @@ export default class ProcessStepEditor extends Component {
       </div>
       <div class="control-group">
         <label>{{I18n.t
-            "admin.discourse_workflow.workflows.steps.overdue_days"
+            "admin.process_manager.processes.steps.overdue_days"
           }}</label>
         <Input
           class="process-step-editor__overdue-days"
@@ -185,20 +183,20 @@ export default class ProcessStepEditor extends Component {
           disabled={{this.editingModel.system}}
         />
         <p>{{i18n
-            "admin.discourse_workflow.workflows.steps.overdue_days_help"
+            "admin.process_manager.processes.steps.overdue_days_help"
           }}</p>
       </div>
       <div class="control-group">
         <DToggleSwitch
           class="process-editor__enabled"
           @state={{this.editingModel.ai_enabled}}
-          @label="admin.discourse_workflow.workflows.steps.ai_enabled"
+          @label="admin.process_manager.processes.steps.ai_enabled"
           {{on "click" this.toggleAiEnabled}}
         />
       </div>
       <div class="control-group">
         <label>{{I18n.t
-            "admin.discourse_workflow.workflows.steps.ai_prompt"
+            "admin.process_manager.processes.steps.ai_prompt"
           }}</label>
         <Textarea
           class="process-editor__ai_prompt"
@@ -222,13 +220,13 @@ export default class ProcessStepEditor extends Component {
           class="btn-primary process-editor__save"
           @action={{this.save}}
           @disabled={{this.isSaving}}
-        >{{I18n.t "admin.discourse_workflow.workflows.save"}}</DButton>
+        >{{I18n.t "admin.process_manager.processes.save"}}</DButton>
         {{#if this.showDelete}}
           <DButton
             @action={{this.delete}}
             class="btn-danger process-editor__delete"
           >
-            {{I18n.t "admin.discourse_workflow.workflows.delete"}}
+            {{I18n.t "admin.process_manager.processes.delete"}}
           </DButton>
         {{/if}}
       </div>
