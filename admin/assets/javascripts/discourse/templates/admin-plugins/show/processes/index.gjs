@@ -3,7 +3,7 @@ import { i18n } from "discourse-i18n";
 import ProcessListEditor from "../../../../components/process-list-editor";
 
 export default <template>
-  <div class="discourse-process-workflows admin-detail">
+  <div class="discourse-process-manager admin-detail">
     <DPageSubheader
       @titleLabel={{i18n "admin.process_manager.processes.title"}}
       @descriptionLabel={{i18n "admin.process_manager.processes.instructions"}}
@@ -15,12 +15,12 @@ export default <template>
           @route="adminPlugins.show.processes.new"
           @routeModels="discourse-process-manager"
           @icon="plus"
-          class="admin-workflows-new"
+          class="admin-processes-new"
         />
       </:actions>
     </DPageSubheader>
 
-    <div class="workflows-list">
+    <div class="processes-list">
       {{#if @controller.model.content.length}}
         <ProcessListEditor @processes={{@controller.model.content}} />
       {{else}}

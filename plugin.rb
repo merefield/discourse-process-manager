@@ -11,9 +11,9 @@ gem "ruby-openai", "8.1.0", { require: false }
 
 enabled_site_setting :process_manager_enabled
 
-register_asset "stylesheets/common/workflow_common.scss"
-register_asset "stylesheets/desktop/workflow_desktop.scss", :desktop
-register_asset "stylesheets/mobile/workflow_mobile.scss", :mobile
+register_asset "stylesheets/common/process_manager_common.scss"
+register_asset "stylesheets/desktop/process_manager_desktop.scss", :desktop
+register_asset "stylesheets/mobile/process_manager_mobile.scss", :mobile
 
 module ::ProcessManager
   PLUGIN_NAME = "discourse-process-manager"
