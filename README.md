@@ -20,6 +20,7 @@ If you are new to the terminology, see:
 - Process management using Discourse topics as work items
 - Admin-defined processes made from steps mapped to Categories (or Sub-categories)
 - Visual process editor for arranging steps, swim lanes, and transition connectors
+- Admin List/Visual step editing modes, including drag/drop step placement, connector creation, connector retargeting, option selection, and delete controls
 - Transition actions presented as buttons per step option
 - Permission model aligned to native Discourse category permissions
 - Process discovery list (`/processes`) with quick filters
@@ -41,13 +42,13 @@ If you are new to the terminology, see:
 - Process visualization modal from topic and list links
 - Data Explorer audit query support
 - Data Explorer process stats query support for chart-oriented time series
-- Optional AI-assisted step handling with prompt + option guardrails
+- Optional direct OpenAI-assisted step handling with prompt + option guardrails
 
 ## Quickstart
 
 1. Enable the plugin in Site Settings (`process_manager_enabled`).
 2. Go to `Admin -> Plugins -> Process Manager`, create a process, then save it.
-3. Add process steps (Categories in journey order), then add step options (actions/transitions).
+3. Add process steps (Categories in journey order), then add step options (actions/transitions). Use either the List editor or the Visual editor.
 4. Create a topic in the first step Category and transition it through actions from the topic banner.
 5. Use `/processes` to view queue state, apply quick filters, and switch between `List` / `Kanban` / `Chart` views when available.
 6. In Kanban, click a card to open the topic, drag cards to legal target steps, or use keyboard arrows on focused cards.
@@ -75,6 +76,21 @@ First create a new process by hitting the button, save it, then populate it with
 You can change the label of an Option in `Admin -> Customize -> Text`.
 
 A good range of Options is seeded by default, but you can customize the text as needed.
+
+Process steps can be edited in two admin modes:
+
+- `List`: table-style editing for process steps and step options
+- `Visual`: swim-lane editing for laying out the whole process graph
+
+The Visual editor lets admins:
+
+- drag steps between swim lanes and position slots
+- create connectors between step handles
+- retarget existing connectors
+- choose the option/action used by each connector
+- add a step directly into a swim lane
+- delete connectors and steps, including related incoming/outgoing connectors
+- keep the editor in place after changes so the admin does not lose scroll position
 
 Process-level Kanban controls:
 
@@ -113,6 +129,8 @@ Chart view is shown when the current process discovery context resolves to a sin
 - Time windows: complete weeks (Sunday through Saturday)
 - Series: one line per step, color derived from step category color (or parent category color fallback)
 - Response scope: chart payload includes selected process metadata plus series data for that selected process context
+- Data source: daily process stats collected by the scheduled stats job
+- Missing collection days are treated as no data rather than forced zero-count days, so the chart does not draw misleading lines into uncollected periods
 
 Access model for charts is intentionally separate from topic-level category access:
 
@@ -134,7 +152,9 @@ The plugin schedules and runs the following jobs:
 
 ### AI actions
 
-You can leverage AI to handle a step. You need `process_manager_openai_api_key`, AI enabled on the step, and a prompt including both `{{options}}` and `{{topic}}`. You can also tune behavior with `process_manager_ai_model` and `process_manager_ai_prompt_system`.
+You can leverage direct OpenAI integration to handle a step. This is self-contained in Process Manager and does not depend on Discourse AI.
+
+You need `process_manager_openai_api_key`, AI enabled on the step, and a prompt including both `{{options}}` and `{{topic}}`. You can also tune behavior with `process_manager_ai_model` and `process_manager_ai_prompt_system`.
 
 Example prompt:
 
@@ -174,7 +194,19 @@ A Topic Discovery filter `Processes` gives a list of process instances, with thr
 
 - `List`: sortable process topic list with process columns and quick filters
 - `Kanban`: actionable card board for compatible single-process views
-- `Chart`: step count trends over time for a single process
+- `Chart`: step count trends over time for a single process and chart-permitted users
+
+Quick filters include:
+
+- `My categories`
+- `Overdue`
+- `Step = X`
+
+The view selector is intentionally contextual:
+
+- `List` is always available on the process discovery route
+- `Kanban` appears only when the current list is scoped to one Kanban-compatible process
+- `Chart` appears only when the current list is scoped to one process and the current user can view charts
 
 You should keep process Categories and ideally tags distinct, so you can also use those to filter for all process instances that are at a particular stage, or have a specific tag.
 
@@ -218,8 +250,9 @@ Permissioning principle:
 | Area        | Capability                                                    | Status      | Notes                                                                      |
 | ----------- | ------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------- |
 | Definition  | Process definitions (steps/options mapped to categories)      | Implemented | Core admin CRUD plus process-level display controls (for example `show_kanban_tags`) |
+| Definition  | Visual process editor                                         | Implemented | Drag/drop steps, swim-lane placement, connector creation/retargeting, option selection, and step/connector deletion |
 | Runtime     | Topic transitions with audit posts                            | Implemented | Transition actions are logged in-topic                                     |
-| Discovery   | Process list with quick filters, list/kanban toggle, and step filtering | Implemented | `/processes` supports SPA quick filters plus list/kanban switching          |
+| Discovery   | Process list with quick filters and contextual view selector  | Implemented | `/processes` supports SPA quick filters plus List/Kanban/Chart switching when applicable |
 | Discovery   | Real-time process state-change notifier with refresh CTA      | Planned     | Wire MessageBus updates into `/processes` with a core-style “press to refresh” flow |
 | Kanban      | Card transitions (drag/drop and keyboard arrows)              | Implemented | Legal transitions only; deterministic directed edge mapping                |
 | SLA         | Overdue thresholds (step -> process -> global, `0` disables) | Implemented | Includes overdue list indicator                                            |
@@ -234,7 +267,8 @@ Permissioning principle:
 | Performance | Cache process chart payloads                                  | Planned     | Add short-lived caching keyed by process and period to reduce repeated chart aggregation for frequent refreshes |
 | Performance | Cache process visualisation payloads                          | Planned     | Cache graph payloads keyed by topic/process-state version to avoid rebuilding identical visualisations |
 | Performance | Production query-plan validation for process filters          | Partial     | Query shape is now SQL-driven; continue with `EXPLAIN`/index tuning against large production-like datasets |
-| Reporting   | Built-in process analytics dashboards                         | Partial     | Data Explorer support exists; admin-native reporting is next               |
+| Reporting   | Built-in burn-down charting                                   | Implemented | Single-process chart view with week selector, complete-week windows, and category-colored step series |
+| Reporting   | Broader process analytics dashboards                          | Partial     | Burn-down charting and Data Explorer support exist; broader admin-native reporting is next |
 | Lifecycle   | Import/export/version process definitions                     | Missing     | Useful for staging->production promotion and rollback                      |
 | Integration | Event hooks / webhooks / automation integration               | Planned     | Transition and step events are good integration points                     |
 | AI          | Guardrailed AI-assisted transitions                           | Partial     | Present but should tighten confidence/fallback/audit behavior              |
