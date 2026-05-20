@@ -1,0 +1,136 @@
+# frozen_string_literal: true
+
+module ProcessManager
+  module Admin
+    class ProcessStepOptionsController < ::Admin::AdminController
+      requires_plugin ::ProcessManager::PLUGIN_NAME
+
+      before_action :set_process_step, only: %i[index new create]
+      before_action :set_process_step_option, only: %i[show edit update destroy]
+
+      def index
+        @process_step_options =
+          if @process_step.present?
+            ProcessStepOption.where(process_step_id: @process_step.id).order(:position).to_a
+          else
+            ProcessStepOption.all.order(:position).to_a
+          end
+        ActiveRecord::Associations::Preloader.new(
+          records: @process_step_options,
+          associations: %i[process_option process_step],
+        ).call
+        render_json_dump(
+          {
+            process_step_options:
+              ActiveModel::ArraySerializer.new(
+                @process_step_options,
+                each_serializer: ProcessManager::ProcessStepOptionSerializer,
+              ),
+          },
+        )
+      end
+
+      def show
+      end
+
+      def new
+        process_step_option = ProcessStepOption.new(process_step_option_params)
+        if process_step_option.save
+          render json: {
+                   process_step_option:
+                     ProcessStepOptionSerializer.new(process_step_option, root: false),
+                 },
+                 status: :created
+        else
+          render_json_error process_step_option
+        end
+      end
+
+      def create
+        process_step_option = ProcessStepOption.new(process_step_option_params)
+        if !process_step_option.position.present?
+          if ProcessStepOption.count == 0 ||
+               ProcessStepOption.where(
+                 process_step_id: process_step_option.process_step_id,
+               ).count == 0
+            process_step_option.position = 1
+          else
+            process_step_option.position =
+              ProcessStepOption
+                .where(process_step_id: process_step_option.process_step_id)
+                .maximum(:position)
+                .to_i + 1
+          end
+        end
+        if process_step_option.save
+          render json: {
+                   process_step_option:
+                     ProcessStepOptionSerializer.new(process_step_option, root: false),
+                 },
+                 status: :created
+        else
+          render_json_error process_step_option
+        end
+      end
+
+      def edit
+      end
+
+      def update
+        if @process_step_option.update(process_step_option_params)
+          render json: {
+                   process_step_option:
+                     ProcessStepOptionSerializer.new(@process_step_option, root: false),
+                 },
+                 status: :ok
+        else
+          render_json_error @process_step_option
+        end
+      end
+
+      def destroy
+        if @process_step_option.destroy
+          head :no_content
+        else
+          render_json_error @process_step_option
+        end
+      end
+
+      private
+
+      def set_process_step
+        id = params.dig(:process_step_id)
+        if id.present?
+          @process_step = ProcessStep.find(id)
+        else
+          @process_step = nil
+        end
+      end
+
+      def set_process_step_option
+        @process_step_option = ProcessStepOption.find(params[:id])
+      end
+
+      def process_step_option_params
+        permitted =
+          params.require(:process_step_option).permit(
+            :position,
+            :process_step_id,
+            :process_option_id,
+            :target_process_step_id,
+          )
+        permitted[:process_step_id] = permitted.delete(:process_step_id) if permitted.key?(
+          :process_step_id,
+        )
+        permitted[:process_option_id] = permitted.delete(:process_option_id) if permitted.key?(
+          :process_option_id,
+        )
+        permitted
+      end
+
+      def ensure_admin
+        # Your admin constraint logic here
+      end
+    end
+  end
+end

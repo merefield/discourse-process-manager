@@ -1,0 +1,1041 @@
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
+import { fn } from "@ember/helper";
+import { on } from "@ember/modifier";
+import { action, get, set } from "@ember/object";
+import didInsert from "@ember/render-modifiers/modifiers/did-insert";
+import didUpdate from "@ember/render-modifiers/modifiers/did-update";
+import { service } from "@ember/service";
+import DButton from "discourse/components/d-button";
+import categoryColorVariable from "discourse/helpers/category-color-variable";
+import discourseTags from "discourse/helpers/discourse-tags";
+import { ajax } from "discourse/lib/ajax";
+import { extractError } from "discourse/lib/ajax-error";
+import { i18n } from "discourse-i18n";
+
+const STORAGE_KEY = "process_manager_quick_filters";
+
+export default class ProcessQuickFiltersConnector extends Component {
+  @service dialog;
+  @service discovery;
+  @service router;
+
+  @tracked stepPosition = "";
+  @tracked processView = null;
+  @tracked draggedTopicId = null;
+  @tracked draggedFromPosition = null;
+  @tracked transitionInFlightTopicId = null;
+  @tracked recentlyDraggedTopicId = null;
+
+  willDestroy(...args) {
+    super.willDestroy(...args);
+
+    if (typeof document !== "undefined") {
+      document.body.classList.remove("process-kanban-view");
+    }
+  }
+
+  clearDragState(topicId = null) {
+    const normalizedTopicId = Number(topicId || this.draggedTopicId);
+
+    if (normalizedTopicId) {
+      this.recentlyDraggedTopicId = normalizedTopicId;
+      setTimeout(() => {
+        if (Number(this.recentlyDraggedTopicId) === normalizedTopicId) {
+          this.recentlyDraggedTopicId = null;
+        }
+      }, 150);
+    }
+
+    this.draggedTopicId = null;
+    this.draggedFromPosition = null;
+  }
+
+  sanitizeFilters(filters) {
+    const sanitized = {};
+
+    if (filters?.my_categories === "1") {
+      sanitized.my_categories = "1";
+    }
+
+    if (filters?.overdue === "1") {
+      sanitized.overdue = "1";
+    }
+
+    if (filters?.overdue_days) {
+      sanitized.overdue_days = String(filters.overdue_days);
+    }
+
+    if (filters?.process_step_position) {
+      sanitized.process_step_position = String(filters.process_step_position);
+    }
+
+    if (
+      filters?.process_view === "kanban" ||
+      filters?.process_view === "chart"
+    ) {
+      sanitized.process_view = filters.process_view;
+    }
+
+    if (filters?.chart_weeks) {
+      const normalizedWeeks = this.normalizedChartWeeks(filters.chart_weeks);
+      if (normalizedWeeks) {
+        sanitized.chart_weeks = String(normalizedWeeks);
+      }
+    }
+
+    return sanitized;
+  }
+
+  normalizedChartWeeks(value) {
+    const parsed = Number(value);
+    if (!Number.isInteger(parsed) || parsed < 1) {
+      return null;
+    }
+
+    return Math.min(parsed, 12);
+  }
+
+  get routeTopicList() {
+    const routeAttributes = this.router.currentRoute?.attributes;
+
+    return (
+      routeAttributes?.list ||
+      routeAttributes?.model?.list ||
+      routeAttributes?.model ||
+      routeAttributes
+    );
+  }
+
+  get topicList() {
+    return this.routeTopicList || this.discovery.currentTopicList;
+  }
+
+  get topicListMetadata() {
+    try {
+      return this.topicList?.topic_list || this.topicList;
+    } catch {
+      return this.topicList;
+    }
+  }
+
+  get hasProcessFilter() {
+    return this.topicList?.filter?.toString() === "processes";
+  }
+
+  get currentLocation() {
+    // Consume router state so this getter recomputes on in-app transitions.
+    this.router.currentURL;
+
+    if (typeof window !== "undefined") {
+      return `${window.location.pathname}${window.location.search}`;
+    }
+
+    return this.router.currentURL || "";
+  }
+
+  get currentPathname() {
+    return this.currentLocation.split("?")[0];
+  }
+
+  get currentSearchParams() {
+    const queryString = this.currentLocation.split("?")[1] || "";
+    return new URLSearchParams(queryString);
+  }
+
+  get isProcessRoute() {
+    return (
+      this.hasProcessFilter ||
+      this.router.currentRouteName?.startsWith("discovery.processes") ||
+      this.currentPathname.startsWith("/processes") ||
+      this.currentPathname.startsWith("/filter/processes")
+    );
+  }
+
+  get isProcessChartsRoute() {
+    return (
+      this.router.currentRouteName === "discovery.processCharts" ||
+      this.currentPathname.startsWith("/processes/charts")
+    );
+  }
+
+  get hasMyCategoriesFilter() {
+    return this.currentSearchParams.get("my_categories") === "1";
+  }
+
+  get hasOverdueFilter() {
+    if (this.currentSearchParams.get("overdue") === "1") {
+      return true;
+    }
+
+    return (this.currentSearchParams.get("overdue_days") || "").length > 0;
+  }
+
+  get hasStepFilter() {
+    return !!this.currentSearchParams.get("process_step_position");
+  }
+
+  get isKanbanView() {
+    return this.processView === "kanban";
+  }
+
+  get isChartView() {
+    return this.processView === "chart" || this.isProcessChartsRoute;
+  }
+
+  get canUseKanbanView() {
+    try {
+      return this.topicListMetadata?.process_kanban_compatible === true;
+    } catch {
+      return false;
+    }
+  }
+
+  get canUseChartView() {
+    try {
+      return (
+        this.topicListMetadata?.process_can_view_charts === true &&
+        Number(this.topicListMetadata?.process_single_process_id) > 0
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  get showKanbanTags() {
+    return this.topicListMetadata?.process_kanban_show_tags !== false;
+  }
+
+  get currentProcessView() {
+    if (this.isChartView) {
+      return "chart";
+    }
+
+    if (this.isKanbanView) {
+      return "kanban";
+    }
+
+    return "list";
+  }
+
+  get showChartViewOption() {
+    return this.isChartView || this.canUseChartView;
+  }
+
+  get showProcessViewSelector() {
+    return this.canUseKanbanView || this.showChartViewOption;
+  }
+
+  get shouldRenderKanbanBoard() {
+    return this.canUseKanbanView && this.isKanbanView;
+  }
+
+  get chartWeekOptions() {
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  }
+
+  get chartWeeksValue() {
+    return String(
+      this.normalizedChartWeeks(this.currentSearchParams.get("chart_weeks")) ||
+        2
+    );
+  }
+
+  get kanbanProcessName() {
+    try {
+      return this.topicListMetadata?.process_kanban_process_name;
+    } catch {
+      return null;
+    }
+  }
+
+  get kanbanSteps() {
+    try {
+      const steps = this.topicListMetadata?.process_kanban_steps || [];
+      return [...steps].sort((left, right) => left.position - right.position);
+    } catch {
+      return [];
+    }
+  }
+
+  get kanbanTransitionMap() {
+    try {
+      const transitions =
+        this.topicListMetadata?.process_kanban_transitions || [];
+      const transitionMap = new Map();
+
+      transitions.forEach((transition) => {
+        const fromPosition = Number(transition.from_position);
+        const toPosition = Number(transition.to_position);
+        const optionSlug = transition.option_slug;
+
+        if (!fromPosition || !toPosition || !optionSlug) {
+          return;
+        }
+
+        transitionMap.set(`${fromPosition}:${toPosition}`, optionSlug);
+      });
+
+      return transitionMap;
+    } catch {
+      return new Map();
+    }
+  }
+
+  get kanbanStepNames() {
+    return this.kanbanSteps.reduce((accumulator, step) => {
+      accumulator[Number(step.position)] = step.name;
+      return accumulator;
+    }, {});
+  }
+
+  optionSlugForTransition(fromPosition, toPosition) {
+    return this.kanbanTransitionMap.get(`${fromPosition}:${toPosition}`);
+  }
+
+  adjacentStepPosition(fromPosition, direction) {
+    const positions = this.kanbanSteps.map((step) => Number(step.position));
+    const index = positions.indexOf(Number(fromPosition));
+
+    if (index === -1) {
+      return null;
+    }
+
+    const nextPosition = positions[index + direction];
+    return Number.isInteger(nextPosition) ? nextPosition : null;
+  }
+
+  isColumnLegalDropTarget(position) {
+    if (!this.draggedTopicId || !this.draggedFromPosition) {
+      return false;
+    }
+
+    if (Number(position) === Number(this.draggedFromPosition)) {
+      return true;
+    }
+
+    return !!this.optionSlugForTransition(
+      Number(this.draggedFromPosition),
+      Number(position)
+    );
+  }
+
+  dropStateForColumn(position) {
+    if (!this.draggedTopicId || !this.draggedFromPosition) {
+      return null;
+    }
+
+    if (Number(position) === Number(this.draggedFromPosition)) {
+      return "source";
+    }
+
+    return this.isColumnLegalDropTarget(position) ? "legal" : "illegal";
+  }
+
+  getTopicListSafe() {
+    try {
+      const topicCollection =
+        this.discovery.currentTopicList?.topics ||
+        this.topicList?.topics ||
+        this.topicListMetadata?.topics ||
+        this.topicListMetadata?.topic_list?.topics ||
+        [];
+      return Array.isArray(topicCollection) ? topicCollection : [];
+    } catch {
+      return [];
+    }
+  }
+
+  get kanbanColumns() {
+    const topics = this.getTopicListSafe();
+
+    return this.kanbanSteps.map((step) => {
+      const position = Number(step.position);
+      const stepTopics = topics
+        .filter(
+          (topic) =>
+            Number(
+              get(topic, "process_step_position") ||
+                get(topic, "processStepPosition")
+            ) === position
+        )
+        .map((topic) => ({
+          id: get(topic, "id"),
+          title: get(topic, "title"),
+          process_step_position: Number(
+            get(topic, "process_step_position") ||
+              get(topic, "processStepPosition")
+          ),
+          process_overdue: !!get(topic, "process_overdue"),
+          process_can_act: !!get(topic, "process_can_act"),
+          tags: get(topic, "tags") || [],
+          process_topic_url:
+            get(topic, "url") ||
+            (get(topic, "slug")
+              ? `/t/${get(topic, "slug")}/${get(topic, "id")}`
+              : `/t/${get(topic, "id")}`),
+          is_transitioning:
+            Number(get(topic, "id")) === Number(this.transitionInFlightTopicId),
+          is_dragging: Number(get(topic, "id")) === Number(this.draggedTopicId),
+        }));
+
+      const dropState = this.dropStateForColumn(position);
+      const columnClasses = ["process-kanban__column"];
+
+      if (dropState) {
+        columnClasses.push(`process-kanban__column--${dropState}`);
+      }
+
+      return {
+        ...step,
+        drop_state: dropState,
+        column_class: columnClasses.join(" "),
+        column_style: step.category_color
+          ? categoryColorVariable(step.category_color)
+          : null,
+        topics: stepTopics,
+        topic_count_label: i18n("process_manager.kanban.topic_count", {
+          count: stepTopics.length,
+        }),
+      };
+    });
+  }
+
+  @action
+  initializeFilters() {
+    const params = this.currentSearchParams;
+    this.stepPosition = params.get("process_step_position") || "";
+    this.processView =
+      params.get("process_view") ||
+      (this.isProcessChartsRoute ? "chart" : null);
+
+    if (this.isProcessChartsRoute) {
+      return;
+    }
+
+    if (
+      params.has("my_categories") ||
+      params.has("overdue") ||
+      params.has("overdue_days") ||
+      params.has("process_step_position") ||
+      params.has("process_view") ||
+      params.has("chart_weeks")
+    ) {
+      return;
+    }
+
+    const savedFilters = this.savedFilters;
+    if (!savedFilters || Object.keys(savedFilters).length === 0) {
+      return;
+    }
+
+    this.navigateWithFilters(savedFilters);
+  }
+
+  get savedFilters() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    } catch {
+      return {};
+    }
+  }
+
+  persistFilters(filters) {
+    const sanitized = this.sanitizeFilters(filters);
+    if (Object.keys(sanitized).length === 0) {
+      localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitized));
+  }
+
+  navigateWithFilters(filters) {
+    const sanitized = this.sanitizeFilters(filters);
+    const queryParams = {
+      my_categories: sanitized.my_categories || null,
+      overdue: sanitized.overdue || null,
+      overdue_days: sanitized.overdue_days || null,
+      process_step_position: sanitized.process_step_position || null,
+      process_view: sanitized.process_view || null,
+      chart_weeks: sanitized.chart_weeks || null,
+    };
+    const currentParams = this.currentSearchParams;
+    const unchanged =
+      (currentParams.get("my_categories") || null) ===
+        queryParams.my_categories &&
+      (currentParams.get("overdue") || null) === queryParams.overdue &&
+      (currentParams.get("overdue_days") || null) ===
+        queryParams.overdue_days &&
+      (currentParams.get("process_step_position") || null) ===
+        queryParams.process_step_position &&
+      (currentParams.get("process_view") || null) ===
+        queryParams.process_view &&
+      (currentParams.get("chart_weeks") || null) === queryParams.chart_weeks;
+
+    if (unchanged) {
+      return;
+    }
+
+    this.router.transitionTo("discovery.processes", { queryParams });
+  }
+
+  @action
+  updateStepPosition(event) {
+    this.stepPosition = event.target.value;
+  }
+
+  @action
+  toggleMyCategories() {
+    const params = new URLSearchParams(this.currentSearchParams.toString());
+
+    if (this.hasMyCategoriesFilter) {
+      params.delete("my_categories");
+    } else {
+      params.set("my_categories", "1");
+    }
+
+    this.persistFilters({
+      my_categories: params.get("my_categories"),
+      overdue: params.get("overdue"),
+      overdue_days: params.get("overdue_days"),
+      process_step_position: params.get("process_step_position"),
+    });
+    this.navigateWithFilters(Object.fromEntries(params.entries()));
+  }
+
+  @action
+  toggleOverdue() {
+    const params = new URLSearchParams(this.currentSearchParams.toString());
+
+    if (this.hasOverdueFilter) {
+      params.delete("overdue");
+      params.delete("overdue_days");
+    } else {
+      params.set("overdue", "1");
+      params.delete("overdue_days");
+    }
+
+    this.persistFilters({
+      my_categories: params.get("my_categories"),
+      overdue: params.get("overdue"),
+      overdue_days: params.get("overdue_days"),
+      process_step_position: params.get("process_step_position"),
+    });
+    this.navigateWithFilters(Object.fromEntries(params.entries()));
+  }
+
+  @action
+  applyStepFilter() {
+    const params = new URLSearchParams(this.currentSearchParams.toString());
+    const nextStepPosition = this.stepPosition.trim();
+    const currentStepPosition = params.get("process_step_position") || "";
+
+    if (nextStepPosition && nextStepPosition === currentStepPosition) {
+      params.delete("process_step_position");
+    } else if (nextStepPosition) {
+      params.set("process_step_position", nextStepPosition);
+    } else {
+      params.delete("process_step_position");
+    }
+
+    this.persistFilters({
+      my_categories: params.get("my_categories"),
+      overdue: params.get("overdue"),
+      overdue_days: params.get("overdue_days"),
+      process_step_position: params.get("process_step_position"),
+    });
+    this.navigateWithFilters(Object.fromEntries(params.entries()));
+  }
+
+  @action
+  clearFilters() {
+    localStorage.removeItem(STORAGE_KEY);
+    this.stepPosition = "";
+    this.navigateWithFilters({});
+  }
+
+  @action
+  changeProcessView(event) {
+    const nextView = event.target.value;
+    const params = new URLSearchParams(this.currentSearchParams.toString());
+
+    if (nextView === "list") {
+      params.delete("process_view");
+      this.processView = null;
+    } else if (nextView === "kanban") {
+      if (!this.canUseKanbanView) {
+        event.target.value = this.currentProcessView;
+        return;
+      }
+
+      params.set("process_view", "kanban");
+      this.processView = "kanban";
+    } else if (nextView === "chart") {
+      if (!this.canUseChartView) {
+        event.target.value = this.currentProcessView;
+        return;
+      }
+
+      params.set("process_view", "chart");
+      if (!params.get("chart_weeks")) {
+        params.set("chart_weeks", "2");
+      }
+      this.processView = "chart";
+    }
+
+    this.syncBodyClass();
+    const nextFilters = Object.fromEntries(params.entries());
+
+    if (this.isProcessChartsRoute) {
+      this.router.transitionTo("discovery.processes", {
+        queryParams: {
+          my_categories: nextFilters.my_categories || null,
+          overdue: nextFilters.overdue || null,
+          overdue_days: nextFilters.overdue_days || null,
+          process_step_position: nextFilters.process_step_position || null,
+          process_view: nextFilters.process_view || null,
+          chart_weeks: nextFilters.chart_weeks || null,
+        },
+      });
+      return;
+    }
+
+    this.navigateWithFilters(nextFilters);
+  }
+
+  @action
+  changeChartWeeks(event) {
+    const weeks = this.normalizedChartWeeks(event.target.value);
+    if (!weeks) {
+      event.target.value = this.chartWeeksValue;
+      return;
+    }
+
+    const params = new URLSearchParams(this.currentSearchParams.toString());
+    params.set("process_view", "chart");
+    params.set("chart_weeks", String(weeks));
+    this.navigateWithFilters(Object.fromEntries(params.entries()));
+  }
+
+  @action
+  cardDragStart(topic, event) {
+    if (!topic.process_can_act || this.transitionInFlightTopicId) {
+      event.preventDefault();
+      return;
+    }
+
+    this.draggedTopicId = Number(topic.id);
+    this.draggedFromPosition = Number(topic.process_step_position);
+    event.dataTransfer.setData("text/plain", String(topic.id));
+    event.dataTransfer.dropEffect = "move";
+    event.dataTransfer.effectAllowed = "move";
+  }
+
+  @action
+  cardDragEnd(topic) {
+    this.clearDragState(topic?.id);
+  }
+
+  @action
+  openKanbanTopic(topic, event) {
+    if (
+      this.transitionInFlightTopicId ||
+      this.draggedTopicId ||
+      Number(this.recentlyDraggedTopicId) === Number(topic.id)
+    ) {
+      event.preventDefault();
+      return;
+    }
+
+    if (event.metaKey || event.ctrlKey) {
+      window.open(topic.process_topic_url, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    this.router.transitionTo(topic.process_topic_url);
+  }
+
+  @action
+  async openKanbanTopicWithKeyboard(topic, event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      this.openKanbanTopic(topic, event);
+      return;
+    }
+
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (!topic.process_can_act || this.transitionInFlightTopicId) {
+      return;
+    }
+
+    const fromPosition = Number(topic.process_step_position);
+    const direction = event.key === "ArrowRight" ? 1 : -1;
+    const targetPosition = this.adjacentStepPosition(fromPosition, direction);
+    const topicId = Number(topic.id);
+
+    if (!targetPosition) {
+      return;
+    }
+
+    const didTransition = await this.transitionTopic(
+      topicId,
+      fromPosition,
+      targetPosition
+    );
+
+    if (didTransition) {
+      this.focusKanbanCard(topicId);
+    }
+  }
+
+  @action
+  columnDragOver(column, event) {
+    if (!this.isColumnLegalDropTarget(column.position)) {
+      return;
+    }
+
+    event.preventDefault();
+    event.dataTransfer.dropEffect =
+      Number(column.position) === Number(this.draggedFromPosition)
+        ? "none"
+        : "move";
+  }
+
+  updateTopicTransitionState(topicId, targetPosition) {
+    const topicCollections = [
+      this.discovery.currentTopicList?.topics,
+      this.topicList?.topics,
+      this.topicListMetadata?.topics,
+      this.topicListMetadata?.topic_list?.topics,
+    ];
+
+    topicCollections.forEach((topicCollection) => {
+      if (!Array.isArray(topicCollection)) {
+        return;
+      }
+
+      const topic = topicCollection.find(
+        (candidate) => Number(candidate.id) === topicId
+      );
+      if (!topic) {
+        return;
+      }
+
+      set(topic, "process_step_position", targetPosition);
+      set(topic, "processStepPosition", targetPosition);
+      set(topic, "process_step_position", targetPosition);
+      set(topic, "process_step_name", this.kanbanStepNames[targetPosition]);
+      set(topic, "process_overdue", false);
+    });
+  }
+
+  async transitionTopic(topicId, fromPosition, toPosition) {
+    if (
+      !topicId ||
+      !fromPosition ||
+      !toPosition ||
+      toPosition === fromPosition
+    ) {
+      return false;
+    }
+
+    const optionSlug = this.optionSlugForTransition(fromPosition, toPosition);
+    if (!optionSlug) {
+      return false;
+    }
+
+    this.transitionInFlightTopicId = topicId;
+
+    try {
+      await ajax(`/discourse-process-manager/act/${topicId}`, {
+        type: "POST",
+        data: { option: optionSlug },
+      });
+
+      this.updateTopicTransitionState(topicId, toPosition);
+      return true;
+    } catch (error) {
+      await this.dialog.alert(extractError(error));
+      this.router.refresh();
+      return false;
+    } finally {
+      this.transitionInFlightTopicId = null;
+    }
+  }
+
+  focusKanbanCard(topicId) {
+    if (typeof document === "undefined") {
+      return;
+    }
+
+    document
+      .querySelector(`.process-kanban__card[data-topic-id="${topicId}"]`)
+      ?.focus();
+  }
+
+  @action
+  async columnDrop(column, event) {
+    event.preventDefault();
+
+    const topicId =
+      Number(event.dataTransfer.getData("text/plain")) || this.draggedTopicId;
+    const fromPosition = Number(this.draggedFromPosition);
+    const toPosition = Number(column.position);
+
+    await this.transitionTopic(topicId, fromPosition, toPosition);
+    this.clearDragState(topicId);
+  }
+
+  @action
+  syncStepPositionFromUrl() {
+    const params = this.currentSearchParams;
+    this.stepPosition = params.get("process_step_position") || "";
+    this.processView =
+      params.get("process_view") ||
+      (this.isProcessChartsRoute ? "chart" : null);
+
+    if (this.isChartView && !this.canUseChartView) {
+      const fallback = Object.fromEntries(params.entries());
+      delete fallback.process_view;
+      delete fallback.chart_weeks;
+      this.processView = null;
+      this.navigateWithFilters(fallback);
+      return;
+    }
+
+    this.syncBodyClass();
+  }
+
+  @action
+  syncBodyClass() {
+    if (typeof document === "undefined") {
+      return;
+    }
+
+    document.body.classList.toggle("process-kanban-view", this.isKanbanView);
+    document
+      .querySelector("#list-area .contents")
+      ?.classList.toggle("process-kanban-hide-topics", this.isKanbanView);
+    document.body.classList.toggle("process-charts-view", this.isChartView);
+    document
+      .querySelector("#list-area .contents")
+      ?.classList.toggle("process-charts-hide-topics", this.isChartView);
+  }
+
+  <template>
+    {{#if this.isProcessRoute}}
+      <div
+        class={{if
+          this.isKanbanView
+          "discovery-list-container-top-outlet process-quick-filters process-quick-filters--kanban-active"
+          "discovery-list-container-top-outlet process-quick-filters"
+        }}
+        {{didInsert this.initializeFilters}}
+        {{didInsert this.syncBodyClass}}
+        {{didUpdate this.syncStepPositionFromUrl this.currentLocation}}
+      >
+        {{#if this.showProcessViewSelector}}
+          <select
+            class="process-quick-filters__view-select"
+            value={{this.currentProcessView}}
+            aria-label={{i18n "process_manager.quick_filters.view_label"}}
+            {{on "change" this.changeProcessView}}
+          >
+            <option value="list">
+              {{i18n "process_manager.quick_filters.list_view"}}
+            </option>
+            {{#if this.canUseKanbanView}}
+              <option value="kanban">
+                {{i18n "process_manager.quick_filters.kanban_view"}}
+              </option>
+            {{/if}}
+            {{#if this.showChartViewOption}}
+              <option value="chart">
+                {{i18n "process_manager.quick_filters.chart_view"}}
+              </option>
+            {{/if}}
+          </select>
+        {{/if}}
+        {{#if this.isChartView}}
+          <select
+            class="process-quick-filters__chart-weeks-select"
+            value={{this.chartWeeksValue}}
+            aria-label={{i18n "process_manager.charts.weeks_label"}}
+            {{on "change" this.changeChartWeeks}}
+          >
+            {{#each this.chartWeekOptions as |weeks|}}
+              <option value={{weeks}}>
+                {{i18n "process_manager.charts.weeks_value" count=weeks}}
+              </option>
+            {{/each}}
+          </select>
+        {{/if}}
+
+        {{#unless this.isChartView}}
+          <DButton
+            class={{if
+              this.hasMyCategoriesFilter
+              "process-quick-filters__my-categories btn-primary"
+              "process-quick-filters__my-categories btn-default"
+            }}
+            @label="process_manager.quick_filters.my_categories"
+            @action={{this.toggleMyCategories}}
+          />
+          <DButton
+            class={{if
+              this.hasOverdueFilter
+              "process-quick-filters__overdue btn-primary"
+              "process-quick-filters__overdue btn-default"
+            }}
+            @label="process_manager.quick_filters.overdue"
+            @action={{this.toggleOverdue}}
+          />
+          <input
+            class="process-quick-filters__step-input"
+            type="number"
+            min="1"
+            value={{this.stepPosition}}
+            placeholder={{i18n
+              "process_manager.quick_filters.step_placeholder"
+            }}
+            {{on "input" this.updateStepPosition}}
+          />
+          <DButton
+            class={{if
+              this.hasStepFilter
+              "process-quick-filters__apply-step btn-primary"
+              "process-quick-filters__apply-step btn-default"
+            }}
+            @label="process_manager.quick_filters.apply_step"
+            @action={{this.applyStepFilter}}
+          />
+        {{/unless}}
+        <DButton
+          class="process-quick-filters__clear btn-default"
+          @label="process_manager.quick_filters.clear"
+          @action={{this.clearFilters}}
+        />
+
+        {{#if this.shouldRenderKanbanBoard}}
+          <section
+            class={{if
+              this.isKanbanView
+              (if
+                this.draggedTopicId
+                "process-kanban process-kanban--active process-kanban--dragging"
+                "process-kanban process-kanban--active"
+              )
+              "process-kanban"
+            }}
+            data-process-kanban-view={{if this.isKanbanView "active"}}
+          >
+            <div class="process-kanban__header">
+              <h3 class="process-kanban__title">
+                {{i18n "process_manager.kanban.title"}}
+              </h3>
+              {{#if this.kanbanProcessName}}
+                <p class="process-kanban__process-name">
+                  {{i18n
+                    "process_manager.kanban.process_name"
+                    process_name=this.kanbanProcessName
+                  }}
+                </p>
+              {{/if}}
+            </div>
+
+            <div class="process-kanban__columns">
+              {{#each this.kanbanColumns key="position" as |column|}}
+                <section
+                  class={{column.column_class}}
+                  style={{column.column_style}}
+                  data-process-step-position={{column.position}}
+                  {{on "dragover" (fn this.columnDragOver column)}}
+                  {{on "drop" (fn this.columnDrop column)}}
+                >
+                  <div class="process-kanban__column-header">
+                    <span class="process-kanban__step-position">
+                      {{column.position}}
+                    </span>
+                    <span
+                      class="process-kanban__step-name"
+                    >{{column.name}}</span>
+                    <span class="process-kanban__topic-count">
+                      {{column.topic_count_label}}
+                    </span>
+                  </div>
+
+                  <div class="process-kanban__cards">
+                    {{#if column.topics.length}}
+                      {{#each column.topics key="id" as |topic|}}
+                        <div
+                          class={{if
+                            topic.process_can_act
+                            (if
+                              topic.is_dragging
+                              "process-kanban__card process-kanban__card--draggable process-kanban__card--dragging"
+                              (if
+                                topic.is_transitioning
+                                "process-kanban__card process-kanban__card--draggable process-kanban__card--transitioning"
+                                "process-kanban__card process-kanban__card--draggable"
+                              )
+                            )
+                            "process-kanban__card process-kanban__card--locked"
+                          }}
+                          data-topic-id={{topic.id}}
+                          draggable={{if
+                            topic.process_can_act
+                            (if topic.is_transitioning false true)
+                            false
+                          }}
+                          role="link"
+                          tabindex="0"
+                          {{on "dragstart" (fn this.cardDragStart topic)}}
+                          {{on "dragend" (fn this.cardDragEnd topic)}}
+                          {{on "click" (fn this.openKanbanTopic topic)}}
+                          {{on
+                            "keydown"
+                            (fn this.openKanbanTopicWithKeyboard topic)
+                          }}
+                        >
+                          <span class="process-kanban__card-title">
+                            {{topic.title}}
+                          </span>
+                          {{#if this.showKanbanTags}}
+                            {{#if topic.tags.length}}
+                              {{discourseTags
+                                null
+                                tags=topic.tags
+                                style="box"
+                                tagName="span"
+                                className="process-kanban__tags"
+                              }}
+                            {{/if}}
+                          {{/if}}
+                          {{#if topic.process_overdue}}
+                            <span class="process-kanban__card-overdue">
+                              {{i18n "process_manager.overdue_indicator"}}
+                            </span>
+                          {{/if}}
+                        </div>
+                      {{/each}}
+                    {{else}}
+                      <p class="process-kanban__empty-step">
+                        {{i18n "process_manager.kanban.empty_step"}}
+                      </p>
+                    {{/if}}
+                  </div>
+                </section>
+              {{/each}}
+            </div>
+          </section>
+        {{/if}}
+      </div>
+    {{/if}}
+  </template>
+}

@@ -1,0 +1,91 @@
+# frozen_string_literal: true
+
+require_relative "../plugin_helper"
+
+RSpec.describe ProcessManager::ProcessActionController, type: :request do
+  fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
+  fab!(:process) { Fabricate(:process, name: "Transition Process") }
+  fab!(:category_1, :category)
+  fab!(:category_2, :category)
+  fab!(:step_1) do
+    Fabricate(
+      :process_step,
+      process_id: process.id,
+      category_id: category_1.id,
+      position: 1,
+      name: "Step A",
+    )
+  end
+  fab!(:step_2) do
+    Fabricate(
+      :process_step,
+      process_id: process.id,
+      category_id: category_2.id,
+      position: 2,
+      name: "Step B",
+    )
+  end
+  fab!(:next_option) { Fabricate(:process_option, slug: "next", name: "Next") }
+  fab!(:back_option) { Fabricate(:process_option, slug: "back", name: "Back") }
+  fab!(:step_1_option) do
+    Fabricate(
+      :process_step_option,
+      process_step_id: step_1.id,
+      process_option_id: next_option.id,
+      target_process_step_id: step_2.id,
+      position: 1,
+    )
+  end
+  fab!(:step_2_option) do
+    Fabricate(
+      :process_step_option,
+      process_step_id: step_2.id,
+      process_option_id: back_option.id,
+      target_process_step_id: step_1.id,
+      position: 1,
+    )
+  end
+  fab!(:topic) { Fabricate(:topic, category: category_1, user: user) }
+  fab!(:process_state) do
+    Fabricate(
+      :process_state,
+      topic_id: topic.id,
+      process_id: process.id,
+      process_step_id: step_1.id,
+    )
+  end
+
+  before do
+    SiteSetting.process_manager_enabled = true
+    category_1.set_permissions(everyone: :full, staff: :full)
+    category_2.set_permissions(everyone: :full, staff: :full)
+    category_1.save!
+    category_2.save!
+    sign_in(user)
+    Discourse.redis.del("discourse-process-manager-transition-#{user.id}-#{topic.id}")
+  end
+
+  it "returns 200 for a valid transition" do
+    post "/discourse-process-manager/act/#{topic.id}.json", params: { option: "next" }
+
+    expect(response.status).to eq(200)
+    expect(response.parsed_body["success"]).to eq("OK")
+    expect(process_state.reload.process_step_id).to eq(step_2.id)
+  end
+
+  it "returns conflict when trying a stale transition option" do
+    post "/discourse-process-manager/act/#{topic.id}.json", params: { option: "next" }
+    expect(response.status).to eq(200)
+
+    # clear cooldown so we can assert stale-state behavior instead of cooldown
+    Discourse.redis.del("discourse-process-manager-transition-#{user.id}-#{topic.id}")
+
+    post "/discourse-process-manager/act/#{topic.id}.json", params: { option: "next" }
+
+    expect(response.status).to eq(409)
+    expect(response.parsed_body["failed"]).to eq("FAILED")
+    expect(response.parsed_body["message"]).to eq(
+      I18n.t("process_manager.errors.transition_failed_stale_state_refreshing"),
+    )
+  end
+end

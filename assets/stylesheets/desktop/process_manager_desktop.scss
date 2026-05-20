@@ -1,0 +1,18 @@
+.process-list .process-after-title .process-action-button {
+  display: none;
+}
+
+.process-visualisation-modal {
+  max-height: 800px;
+  width: 100%;
+
+  .d-modal__container {
+    max-width: 1000px;
+    max-height: 800px;
+    width: 100%;
+  }
+
+  .modal-body {
+    padding: 0;
+  }
+}

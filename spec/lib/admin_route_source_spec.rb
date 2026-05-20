@@ -2,28 +2,28 @@
 
 require_relative "../plugin_helper"
 
-describe "Admin workflow route source contracts" do
+describe "Admin process route source contracts" do
   it "loads step options from the canonical parent route key" do
     route_path =
       File.expand_path(
-        "../../admin/assets/javascripts/discourse/routes/admin-plugins/show/discourse-workflow-workflows/steps/options.js",
+        "../../admin/assets/javascripts/discourse/routes/admin-plugins/show/processes/steps/options.js",
         __dir__,
       )
     source = File.read(route_path)
 
-    expect(source).to include('"adminPlugins.show.discourse-workflow-workflows.steps"')
-    expect(source).not_to include('"admin.plugins.show.discourse-workflow.workflows.steps"')
+    expect(source).to include('"adminPlugins.show.processes.steps"')
+    expect(source).not_to include('"admin.plugins.show.discourse-process-manager.processes.steps"')
   end
 
-  it "derives workflow id in setupController without nested router path traversal" do
+  it "derives process id in setupController without nested router path traversal" do
     route_path =
       File.expand_path(
-        "../../admin/assets/javascripts/discourse/routes/admin-plugins/show/discourse-workflow-workflows/steps/options/edit.js",
+        "../../admin/assets/javascripts/discourse/routes/admin-plugins/show/processes/steps/options/edit.js",
         __dir__,
       )
     source = File.read(route_path)
 
-    expect(source).to include("model.workflow_id")
+    expect(source).to include("model.process_id")
     expect(source).not_to include("this.router.currentRoute.parent.parent")
   end
 end

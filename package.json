@@ -1,7 +1,7 @@
 {
-  "name": "discourse-workflow",
+  "name": "discourse-process-manager",
   "version": "1.0.0",
-  "repository": "git@github.com:paviliondev/discourse-workflow.git",
+  "repository": "git@github.com:paviliondev/discourse-process-manager.git",
   "author": "Robert Barrow",
   "license": "GPL V2",
   "private": true,

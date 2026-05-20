@@ -1,43 +1,43 @@
 en:
   js:
     user_menu:
-      no_workflow_notifications_title: "You don’t have any workflow notifications yet"
-      no_workflow_notifications_body: >
-        You will be notified in this panel when a Topic enters a workflow state for which you are Watching the First Post of the Category. Notifications will also be sent to your email when you haven’t logged in for a while.
+      no_process_notifications_title: "You don’t have any process notifications yet"
+      no_process_notifications_body: >
+        You will be notified in this panel when a topic enters a process step for which you are Watching the First Post of the category. Notifications will also be sent to your email when you haven’t logged in for a while.
         <br><br>
         For more, see your <a href='%{preferencesUrl}'>notification preferences</a>.
       tabs:
-        workflow_notifications: "Workflow notifications"
-        workflow_notifications_with_unread:
-          one: "Workflow notifications - %{count} unread notification"
-          other: "Workflow notifications - %{count} unread notifications"
+        process_notifications: "Process notifications"
+        process_notifications_with_unread:
+          one: "Process notifications - %{count} unread notification"
+          other: "Process notifications - %{count} unread notifications"
     notifications:
-      workflow_topic_arrival_label: "Arrival in: %{workflow_name}"
-      workflow_topic_arrival_description: "Author: %{username}, step: %{workflow_step_name}"
+      process_topic_arrival_label: "Arrival in: %{process_name}"
+      process_topic_arrival_description: "Author: %{username}, step: %{process_step_name}"
       titles:
-        workflow_topic_arrival: "A topic titled %{topic_title} has arrived in step: %{workflow_step_name} of the workflow: %{workflow_name}, authored by %{username}"
+        process_topic_arrival: "A topic titled %{topic_title} has arrived in step: %{process_step_name} of the process: %{process_name}, authored by %{username}"
     action_codes:
-      workflow_transition: "acted upon topic in a workflow %{when}"
+      process_transition: "acted upon topic in a process %{when}"
     topics:
       bottom:
-        workflow: Currently, there are no more viewable Workflow topics.
+        processes: Currently, there are no more viewable process topics.
       none:
-        workflow: Currently, there are no viewable Workflow topics.
-    workflow-name: "Workflow"
-    workflow-step-name: "Step Name"
-    workflow-step-position: "Step"
-    workflow-overdue: "Overdue"
+        processes: Currently, there are no viewable process topics.
+    process-name: "Process"
+    process-step-name: "Step name"
+    process-step-position: "Step"
+    process-overdue: "Overdue"
     filters:
-      workflow:
-        title: "Workflow"
-        help: "topics involved in a workflow"
-    discourse_workflow:
-      workflow_link: "%{workflow_name}: %{workflow_step_name}"
+      processes:
+        title: "Processes"
+        help: "topics involved in a managed process"
+    process_manager:
+      process_link: "%{process_name}: %{process_step_name}"
       topic_banner:
-        title: "Discourse Workflow"
+        title: "Process manager"
         step_title: "Step:"
-        workflow_title: "Workflow:"
-        step: "%{workflow_step_position}. %{workflow_step_name}"
+        process_title: "Process:"
+        step: "%{process_step_position}. %{process_step_name}"
         step_age_less_than_day: "In this step for less than a day"
         step_age_days:
           one: "In this step for %{count} day"
@@ -46,10 +46,10 @@ en:
         transition_target: "-> %{target_step_name}"
         blocked_reason_create_permission: "You can reply in this step, but only users with topic creation permission in this category can transition it."
         visualisation_button: "Visualise"
-        visualisation_title: "Workflow: %{workflow_name}"
+        visualisation_title: "Process: %{process_name}"
       quick_filters:
-        view_label: "Workflow View"
-        my_categories: "My Categories"
+        view_label: "Process view"
+        my_categories: "My categories"
         overdue: "Overdue"
         step_placeholder: "Step #"
         apply_step: "Step = X"
@@ -58,18 +58,17 @@ en:
         chart_view: "Chart"
         clear: "Clear"
       charts:
-        title: "Workflow Burn Down"
+        title: "Process burn-down"
         weeks_label: "Weeks"
         weeks_value:
           one: "%{count} week"
           other: "%{count} weeks"
-        workflow_label: "Workflow"
-        workflow_name: "Workflow: %{workflow_name}"
+        process_name: "Process: %{process_name}"
         loading: "Loading chart data..."
         y_axis_count: "Topics in step"
       kanban:
-        title: "Workflow Kanban"
-        workflow_name: "Workflow: %{workflow_name}"
+        title: "Process Kanban"
+        process_name: "Process: %{process_name}"
         empty_step: "No topics in this step"
         topic_count:
           one: "%{count} topic"
@@ -81,7 +80,7 @@ en:
           confirmation: "Are you sure you want to submit this topic?"
         start:
           button_label: "Start"
-          confirmation: "Are you sure you want to start this workflow?"
+          confirmation: "Are you sure you want to start this process?"
         accept:
           button_label: "Accept"
           confirmation: "Are you sure you want to accept this topic?"
@@ -114,79 +113,84 @@ en:
           confirmation: "Are you sure you want to move this Topic back to the previous step?"
         finish:
           button_label: "Finish"
-          confirmation: "Are you sure you want to finish this workflow?"
+          confirmation: "Are you sure you want to finish this process?"
         close:
           button_label: "Close"
-          confirmation: "Are you sure you want to close this workflow?"
+          confirmation: "Are you sure you want to close this process?"
         reopen:
           button_label: "Reopen"
-          confirmation: "Are you sure you want to reopen this workflow?"
+          confirmation: "Are you sure you want to reopen this process?"
   admin_js:
     admin:
-      discourse_workflow:
-        title: "Discourse Workflow"
-        workflows:
-          title: "Workflows"
-          short_title: "Workflows"
-          instructions: "Create a workflow by adding a series of steps. Each step can have a different user or group assigned to it. When a topic is created in a category with a workflow, it will be assigned to the first step. The user or group assigned to that step will be notified. When the user or group completes the step, the topic will be assigned to the next step."
-          none: "No workflows have been created yet."
-          new: "Create a New Workflow"
+      site_settings:
+        categories:
+          process_manager: "Process Manager"
+      process_manager:
+        title: "Process Manager"
+        processes:
+          title: "Processes"
+          short_title: "Processes"
+          instructions: "Create a process by adding a series of process steps. When a topic is created in the first step category, it enters the process. Users with the right category permissions can then act on the topic and move it to the next configured step."
+          none: "No processes have been created yet."
+          new: "Create a new process"
           enabled: "Enabled"
           name: "Name"
           description: "Description"
-          overdue_days: "Overdue Days Override"
-          overdue_days_help: "Blank uses the global default. 0 disables overdue behavior for this workflow."
-          show_kanban_tags: "Show Tags In Kanban"
+          overdue_days: "Overdue days override"
+          overdue_days_help: "Blank uses the global default. 0 disables overdue behavior for this process."
+          show_kanban_tags: "Show tags in Kanban"
           show_kanban_tags_help: "When enabled, Kanban cards display topic tags below the title."
           kanban_compatibility:
-            label: "Kanban Compatibility"
+            label: "Kanban compatibility"
             compatible: "Compatible"
             incompatible: "Not compatible"
             help: "Kanban view requires one start step, unique positions, valid step targets, reachability from the start step, and a unique directed transition mapping per step pair. Backward/cyclic paths are supported."
-          workflow:
-            short_title: "Workflow"
+          process:
+            short_title: "Process"
             editing:
-              title: "Editing Existing Workflow: %{workflow_name}"
+              title: "Editing process: %{process_name}"
             new:
-              title: "Create a New Workflow"
+              title: "Create a new process"
             step:
               editing:
-                title: "Editing Workflow Step: %{workflow_step_name}"
+                title: "Editing step: %{process_step_name}"
               new:
-                title: "Add a New Workflow Step"
+                title: "Add a new step"
               option:
                 new:
-                  title: "Add a New Option"
+                  title: "Add a new option"
                 editing:
-                  title: "Editing Option at position: %{position}"
+                  title: "Editing option at position: %{position}"
           steps:
             position: "ID"
             category: "Category"
-            ai_enabled: "AI Enabled"
-            ai_prompt: "AI Prompt"
+            ai_enabled: "AI enabled"
+            ai_prompt: "AI prompt"
             tabs:
               list: "List"
               visual: "Visual"
-            overdue_days: "Step Overdue Days Override"
-            overdue_days_help: "Blank uses workflow/global defaults. 0 disables overdue behavior for this step."
+            overdue_days: "Step overdue days override"
+            overdue_days_help: "Blank uses process/global defaults. 0 disables overdue behavior for this step."
             title: "Steps"
-            new: "Add a New Step"
+            list_description: "Define the process steps, categories, overdue rules, and optional direct OpenAI prompts used by this process."
+            new: "Add a new step"
             none: "No steps have been added yet."
             name: "Name"
             description: "Description"
             no_steps: "No steps have been added yet."
-            saved: "Workflow Step saved!"
-            confirm_delete: "Are you sure you want to delete this workflow step?"
-            deleted: "Workflow Step deleted!"
+            saved: "Step saved!"
+            confirm_delete: "Are you sure you want to delete this step?"
+            deleted: "Step deleted!"
             options:
               title: "Options"
-              new: "Add a New Option"
-              target_step: "Target Step"
+              list_description: "Define the actions that move a topic from this step to another process step."
+              new: "Add a new option"
+              target_step: "Target step"
               no_target_step: "No target step selected"
               select_an_option: "Select an option"
               position: "Position"
               name: "Name"
-              target_position: "Target Position"
+              target_position: "Target position"
               actions:
                 submit: "Submit"
                 start: "Start"
@@ -206,7 +210,7 @@ en:
                 reopen: "Reopen"
           visual:
             add_step: "Add step"
-            add_step_title: "Create a workflow step using the selected name and category"
+            add_step_title: "Create a process step using the selected name and category"
             add_step_to_lane: "Add step to this swimlane"
             change_connector_option: "Change the action used by this connector"
             confirm_delete_connector: "Are you sure you want to permanently delete this connector?"
@@ -219,17 +223,17 @@ en:
             default_step_name: "New step"
             delete_connector: "Delete connector"
             delete_step: "Delete step"
-            loading: "Loading workflow visual..."
+            loading: "Loading process visual..."
             new_step_name: "New step name"
             unknown_category: "Unknown category"
           back: "Back"
           save: "Save"
-          saved: "Workflow saved!"
+          saved: "Process saved!"
           edit: "Edit"
           delete: "Delete"
-          confirm_delete: "Are you sure you want to delete this workflow?"
+          confirm_delete: "Are you sure you want to delete this process?"
           validation:
-            title: "Validation Warnings"
+            title: "Validation warnings"
             duplicate_step_positions: "Duplicate step positions detected: %{positions}"
             orphan_target_steps: "Some step options target missing steps (%{count} option entries affected)"
             missing_option_labels: "Missing option button labels for slugs: %{slugs}"

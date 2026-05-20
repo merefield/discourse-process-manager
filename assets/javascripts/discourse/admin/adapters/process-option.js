@@ -1,0 +1,20 @@
+import RestAdapter from "discourse/adapters/rest";
+
+export default class Adapter extends RestAdapter {
+  jsonMode = true;
+
+  basePath() {
+    return "/admin/plugins/discourse-process-manager/";
+  }
+
+  pathFor(store, type, findArgs) {
+    return this.appendQueryParams(
+      `${this.basePath()}process_options`,
+      findArgs
+    );
+  }
+
+  apiNameFor() {
+    return "process_option";
+  }
+}

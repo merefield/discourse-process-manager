@@ -2,26 +2,21 @@
 
 require_relative "../plugin_helper"
 
-describe DiscourseWorkflow::PostNotificationHandler do
-  fab!(:workflow) { Fabricate(:workflow, name: "Notification Workflow") }
-  fab!(:workflow_category, :category)
+describe ProcessManager::PostNotificationHandler do
+  fab!(:process) { Fabricate(:process, name: "Notification Process") }
+  fab!(:process_category, :category)
   fab!(:other_category, :category)
   fab!(:step_1) do
-    Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
-      category_id: workflow_category.id,
-      position: 1,
-    )
+    Fabricate(:process_step, process_id: process.id, category_id: process_category.id, position: 1)
   end
   fab!(:topic_owner, :user)
-  fab!(:topic) { Fabricate(:topic, user: topic_owner, category: workflow_category) }
-  fab!(:workflow_state) do
+  fab!(:topic) { Fabricate(:topic, user: topic_owner, category: process_category) }
+  fab!(:process_state) do
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: topic.id,
-      workflow_id: workflow.id,
-      workflow_step_id: step_1.id,
+      process_id: process.id,
+      process_step_id: step_1.id,
     )
   end
   fab!(:watching_same_category_user, :user)
@@ -30,14 +25,14 @@ describe DiscourseWorkflow::PostNotificationHandler do
   before do
     CategoryUser.create!(
       user_id: watching_same_category_user.id,
-      category_id: workflow_category.id,
-      notification_level: DiscourseWorkflow::WATCHING_FIRST_POST,
+      category_id: process_category.id,
+      notification_level: ProcessManager::WATCHING_FIRST_POST,
     )
 
     CategoryUser.create!(
       user_id: watching_other_category_user.id,
       category_id: other_category.id,
-      notification_level: DiscourseWorkflow::WATCHING_FIRST_POST,
+      notification_level: ProcessManager::WATCHING_FIRST_POST,
     )
   end
 
@@ -46,30 +41,30 @@ describe DiscourseWorkflow::PostNotificationHandler do
     other_notifications_before =
       watching_other_category_user
         .notifications
-        .where(notification_type: Notification.types[:workflow_topic_arrival])
+        .where(notification_type: Notification.types[:process_topic_arrival])
         .count
 
     expect do described_class.new(post, []).handle end.to change {
       watching_same_category_user
         .notifications
-        .where(notification_type: Notification.types[:workflow_topic_arrival])
+        .where(notification_type: Notification.types[:process_topic_arrival])
         .count
     }.by(1)
 
     expect(
       watching_other_category_user
         .notifications
-        .where(notification_type: Notification.types[:workflow_topic_arrival])
+        .where(notification_type: Notification.types[:process_topic_arrival])
         .count,
     ).to eq(other_notifications_before)
   end
 
-  it "does not send workflow arrival notifications for ordinary replies" do
+  it "does not send process arrival notifications for ordinary replies" do
     Fabricate(:post, topic: topic, user: topic_owner)
     post = Fabricate(:post, topic: topic, user: topic_owner, post_number: 2)
 
     expect do described_class.new(post, []).handle end.not_to change {
-      Notification.where(notification_type: Notification.types[:workflow_topic_arrival]).count
+      Notification.where(notification_type: Notification.types[:process_topic_arrival]).count
     }
   end
 
@@ -85,8 +80,8 @@ describe DiscourseWorkflow::PostNotificationHandler do
       user = Fabricate(:user)
       CategoryUser.create!(
         user_id: user.id,
-        category_id: workflow_category.id,
-        notification_level: DiscourseWorkflow::WATCHING_FIRST_POST,
+        category_id: process_category.id,
+        notification_level: ProcessManager::WATCHING_FIRST_POST,
       )
     end
 
@@ -99,12 +94,12 @@ describe DiscourseWorkflow::PostNotificationHandler do
   end
 
   def first_post_with_state
-    next_topic = Fabricate(:topic, user: topic_owner, category: workflow_category)
+    next_topic = Fabricate(:topic, user: topic_owner, category: process_category)
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: next_topic.id,
-      workflow_id: workflow.id,
-      workflow_step_id: step_1.id,
+      process_id: process.id,
+      process_step_id: step_1.id,
     )
     Fabricate(:post, topic: next_topic, user: topic_owner)
   end

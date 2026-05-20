@@ -1,36 +1,36 @@
 # frozen_string_literal: true
 Discourse::Application.routes.draw do
-  mount ::DiscourseWorkflow::Engine, at: "discourse-workflow"
+  mount ::ProcessManager::Engine, at: "discourse-process-manager"
 
-  scope "/admin/plugins/discourse-workflow" do
-    resources :workflows, controller: "discourse_workflow/admin/workflows" do
-      resources :workflow_steps,
+  scope "/admin/plugins/discourse-process-manager" do
+    resources :processes, controller: "process_manager/admin/processes" do
+      resources :process_steps,
                 only: %i[index edit show],
-                controller: "discourse_workflow/admin/workflow_steps" do
-        resources :workflow_step_options,
+                controller: "process_manager/admin/process_steps" do
+        resources :process_step_options,
                   only: %i[index edit show],
-                  controller: "discourse_workflow/admin/workflow_step_options"
+                  controller: "process_manager/admin/process_step_options"
       end
     end
-    resources :workflow_steps,
+    resources :process_steps,
               only: %i[create update destroy],
-              path: "workflow_steps",
-              controller: "discourse_workflow/admin/workflow_steps" do
+              path: "process_steps",
+              controller: "process_manager/admin/process_steps" do
       member { put :reorder }
     end
-    resources :workflow_step_options,
+    resources :process_step_options,
               only: %i[create update destroy],
-              path: "workflow_step_options",
-              controller: "discourse_workflow/admin/workflow_step_options"
-    resources :workflow_options,
+              path: "process_step_options",
+              controller: "process_manager/admin/process_step_options"
+    resources :process_options,
               only: %i[index],
-              path: "workflow_options",
-              controller: "discourse_workflow/admin/workflow_options"
+              path: "process_options",
+              controller: "process_manager/admin/process_options"
   end
 end
 
-::DiscourseWorkflow::Engine.routes.draw do
-  post "/act/:topic_id" => "workflow_action#act"
-  get "/visualisation/:topic_id" => "workflow_visualisation#network"
-  get "/charts" => "workflow_charts#index"
+::ProcessManager::Engine.routes.draw do
+  post "/act/:topic_id" => "process_action#act"
+  get "/visualisation/:topic_id" => "process_visualisation#network"
+  get "/charts" => "process_charts#index"
 end

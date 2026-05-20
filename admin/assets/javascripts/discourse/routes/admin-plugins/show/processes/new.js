@@ -1,0 +1,16 @@
+import DiscourseRoute from "discourse/routes/discourse";
+
+export default class AdminPluginsShowProcessesNew extends DiscourseRoute {
+  async model() {
+    const record = this.store.createRecord("process");
+    return record;
+  }
+
+  setupController(controller, model) {
+    super.setupController(controller, model);
+    controller.set(
+      "allProcesses",
+      this.modelFor("adminPlugins.show.processes")
+    );
+  }
+}

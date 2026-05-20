@@ -1,0 +1,318 @@
+# frozen_string_literal: true
+
+require_relative "../plugin_helper"
+
+RSpec.describe ProcessManager::ProcessChartsController, type: :request do
+  fab!(:admin, :admin)
+  fab!(:allowed_user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
+  fab!(:blocked_user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
+  fab!(:allowed_group, :group)
+
+  fab!(:process) { Fabricate(:process, name: "Burn Down Process") }
+  fab!(:other_process) { Fabricate(:process, name: "Other Process") }
+
+  fab!(:category_1, :category)
+  fab!(:category_2, :category)
+  fab!(:category_3, :category)
+  fab!(:category_4, :category)
+  fab!(:other_category, :category)
+
+  fab!(:step_1) do
+    Fabricate(
+      :process_step,
+      process_id: process.id,
+      category_id: category_1.id,
+      position: 1,
+      name: "Queue",
+    )
+  end
+  fab!(:step_2) do
+    Fabricate(
+      :process_step,
+      process_id: process.id,
+      category_id: category_2.id,
+      position: 2,
+      name: "Review",
+    )
+  end
+  fab!(:step_3) do
+    Fabricate(
+      :process_step,
+      process_id: process.id,
+      category_id: category_3.id,
+      position: 3,
+      name: "Approval",
+    )
+  end
+  fab!(:step_4) do
+    Fabricate(
+      :process_step,
+      process_id: process.id,
+      category_id: category_4.id,
+      position: 4,
+      name: "Done",
+    )
+  end
+  fab!(:other_step) do
+    Fabricate(
+      :process_step,
+      process_id: other_process.id,
+      category_id: other_category.id,
+      position: 1,
+      name: "Other Queue",
+    )
+  end
+
+  before do
+    SiteSetting.process_manager_enabled = true
+    SiteSetting.process_manager_charts_allowed_groups = allowed_group.id.to_s
+    GroupUser.create!(group: allowed_group, user: allowed_user)
+
+    category_1.update_columns(color: "112233")
+    category_2.update_columns(color: "445566")
+    category_3.update_columns(color: "778899")
+    category_4.update_columns(color: "2196f3")
+
+    topics = 10.times.map { Fabricate(:topic, category: category_1) }
+    topics.each do |topic|
+      Fabricate(
+        :process_state,
+        topic_id: topic.id,
+        process_id: process.id,
+        process_step_id: step_1.id,
+      )
+    end
+
+    create_stats_history
+  end
+
+  it "returns forbidden when user is not admin and not in configured groups" do
+    sign_in(blocked_user)
+
+    get "/discourse-process-manager/charts.json"
+
+    expect(response.status).to eq(403)
+    expect(response.parsed_body["errors"]).to include(
+      I18n.t("process_manager.errors.charts_access_denied"),
+    )
+  end
+
+  it "returns the localized access denied message on process discovery charts route when unauthorized" do
+    sign_in(blocked_user)
+
+    get "/processes/charts.json"
+
+    expect(response.status).to eq(403)
+    expect(response.parsed_body["errors"]).to include(
+      I18n.t("process_manager.errors.charts_access_denied"),
+    )
+  end
+
+  it "allows configured group members to query process chart data" do
+    sign_in(allowed_user)
+
+    get "/discourse-process-manager/charts.json"
+
+    expect(response.status).to eq(200)
+    expect(response.parsed_body["selected_process_id"]).to eq(process.id)
+  end
+
+  it "allows admins to query process chart data" do
+    sign_in(admin)
+
+    get "/discourse-process-manager/charts.json"
+
+    expect(response.status).to eq(200)
+    expect(response.parsed_body["selected_process_id"]).to eq(process.id)
+  end
+
+  it "serves the process charts discovery route for authorized users" do
+    sign_in(admin)
+
+    get "/processes/charts.json"
+
+    expect(response.status).to eq(200)
+    expect(response.parsed_body.dig("topic_list", "topics")).to be_present
+  end
+
+  it "registers /processes/charts as a list route" do
+    recognized = Rails.application.routes.recognize_path("/processes/charts", method: :get)
+
+    expect(recognized[:controller]).to eq("list")
+    expect(recognized[:action]).to eq("process_charts")
+  end
+
+  it "returns full-week daily labels and per-step series for 2 weeks by default" do
+    sign_in(admin)
+
+    get "/discourse-process-manager/charts.json", params: { process_id: process.id }
+
+    payload = response.parsed_body
+    labels = payload["labels"]
+    series = payload["series"]
+    step_series = series.index_by { |entry| entry["step_name"] }
+
+    expect(response.status).to eq(200)
+    expect(payload["weeks"]).to eq(2)
+    expect(labels.length).to eq(14)
+    expect(labels.first).to eq((Date.current.end_of_week(:saturday) - 13.days).iso8601)
+    expect(labels.last).to eq(Date.current.end_of_week(:saturday).iso8601)
+    expect(step_series.keys).to contain_exactly("Queue", "Review", "Approval", "Done")
+    expect(step_series["Queue"]["color"]).to eq("112233")
+    expect(step_series["Review"]["color"]).to eq("445566")
+    expect(step_series["Approval"]["color"]).to eq("778899")
+    expect(step_series["Done"]["color"]).to eq("2196f3")
+    expect(step_series["Queue"]["data"].length).to eq(labels.length)
+    expect(step_series["Review"]["data"].length).to eq(labels.length)
+    expect(step_series["Approval"]["data"].length).to eq(labels.length)
+    expect(step_series["Done"]["data"].length).to eq(labels.length)
+  end
+
+  it "supports up to 12 weeks and returns selected process metadata only" do
+    sign_in(admin)
+
+    get "/discourse-process-manager/charts.json",
+        params: {
+          process_id: other_process.id,
+          weeks: 12,
+        }
+
+    payload = response.parsed_body
+
+    expect(response.status).to eq(200)
+    expect(payload["weeks"]).to eq(12)
+    expect(payload["labels"].length).to eq(84)
+    expect(payload["selected_process_id"]).to eq(other_process.id)
+    expect(payload["selected_process_name"]).to eq(other_process.name)
+    expect(payload).not_to have_key("processes")
+  end
+
+  it "loads chart process step data only for the selected process" do
+    sign_in(admin)
+
+    process_queries, process_steps_queries =
+      track_sql_queries do
+        get "/discourse-process-manager/charts.json", params: { process_id: process.id, weeks: 1 }
+      end.partition { |query| query.include?('FROM "processes"') }
+
+    process_steps_queries.select! do |query|
+      query.include?('FROM "process_manager_process_steps"') &&
+        query.include?('"process_manager_process_steps"."process_id"')
+    end
+
+    unscoped_process_query =
+      process_queries.any? do |query|
+        query.include?('"processes"."enabled" = TRUE') && !query.include?('"processes"."id" =')
+      end
+
+    expect(response.status).to eq(200)
+    expect(unscoped_process_query).to eq(false)
+    expect(process_steps_queries.any? { |query| query.include?(other_process.id.to_s) }).to eq(
+      false,
+    )
+  end
+
+  it "supports a one-week horizon when requested" do
+    sign_in(admin)
+
+    get "/discourse-process-manager/charts.json", params: { process_id: process.id, weeks: 1 }
+
+    payload = response.parsed_body
+    expect(response.status).to eq(200)
+    expect(payload["weeks"]).to eq(1)
+    expect(payload["labels"].length).to eq(7)
+  end
+
+  it "returns nil data points for future days so lines stop at the current day" do
+    freeze_time(Time.zone.parse("2026-02-18 10:00:00 UTC")) do
+      sign_in(admin)
+
+      get "/discourse-process-manager/charts.json", params: { process_id: process.id, weeks: 1 }
+
+      payload = response.parsed_body
+      labels = payload["labels"]
+      future_indexes = labels.each_index.select { |index| Date.parse(labels[index]) > Date.current }
+
+      expect(future_indexes).to be_present
+
+      payload["series"].each do |series|
+        future_indexes.each { |index| expect(series["data"][index]).to be_nil }
+      end
+    end
+  end
+
+  def create_stats_history
+    end_date = Date.current.end_of_week(:saturday)
+    start_date = end_date - 13.days
+    days = (start_date..end_date).to_a
+
+    counts_by_day = complex_daily_counts(days.count)
+
+    days.each_with_index do |day, index|
+      queue_count, review_count, approval_count, done_count = counts_by_day[index]
+
+      Fabricate(
+        :process_stat,
+        cob_date: day,
+        process_id: process.id,
+        process_step_id: step_1.id,
+        count: queue_count,
+      )
+      Fabricate(
+        :process_stat,
+        cob_date: day,
+        process_id: process.id,
+        process_step_id: step_2.id,
+        count: review_count,
+      )
+      Fabricate(
+        :process_stat,
+        cob_date: day,
+        process_id: process.id,
+        process_step_id: step_3.id,
+        count: approval_count,
+      )
+      Fabricate(
+        :process_stat,
+        cob_date: day,
+        process_id: process.id,
+        process_step_id: step_4.id,
+        count: done_count,
+      )
+    end
+  end
+
+  def complex_daily_counts(day_count)
+    queue = 6
+    review = 0
+    approval = 0
+    done = 0
+    delayed_not_started = 4
+    delayed_starts = [0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0]
+
+    Array.new(day_count) do |day_index|
+      starts_today = [delayed_starts.fetch(day_index, 0), delayed_not_started].min
+      delayed_not_started -= starts_today
+      queue += starts_today
+
+      moved_to_review = [queue, day_index.even? ? 2 : 1].min
+      queue -= moved_to_review
+      review += moved_to_review
+
+      moved_to_approval = [review, day_index % 3 == 0 ? 2 : 1].min
+      review -= moved_to_approval
+      approval += moved_to_approval
+
+      moved_to_done = [approval, day_index >= 2 ? 1 : 0].min
+      approval -= moved_to_done
+      done += moved_to_done
+
+      if day_index % 6 == 5 && done > 0
+        done -= 1
+        review += 1
+      end
+
+      [queue, review, approval, done]
+    end
+  end
+end

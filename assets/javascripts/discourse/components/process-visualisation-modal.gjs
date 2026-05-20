@@ -1,0 +1,22 @@
+import Component from "@glimmer/component";
+import DModal from "discourse/components/d-modal";
+import { i18n } from "discourse-i18n";
+import ProcessVisualisation from "./process-visualisation";
+
+export default class ProcessVisualisationModalComponent extends Component {
+  get title() {
+    return i18n("process_manager.topic_banner.visualisation_title", {
+      process_name: this.args.model.process_name,
+    });
+  }
+
+  <template>
+    <DModal
+      @title={{this.title}}
+      @closeModal={{@closeModal}}
+      class="process-visualisation-modal"
+    >
+      <ProcessVisualisation @model={{@model}} />
+    </DModal>
+  </template>
+}
