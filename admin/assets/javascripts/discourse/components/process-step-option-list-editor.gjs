@@ -57,8 +57,9 @@ export default class ProcessStepOptionsListEditor extends Component {
     if (!processSteps) {
       return;
     }
-    return processSteps.find((step) => step.id === stepOption.target_process_step_id)
-      ?.position;
+    return processSteps.find(
+      (step) => step.id === stepOption.target_process_step_id
+    )?.position;
   }
 
   @action
@@ -165,9 +166,8 @@ export default class ProcessStepOptionsListEditor extends Component {
             "admin.process_manager.processes.steps.options.title"
           }}
           @descriptionLabel={{i18n
-            "admin.process_manager.processes.steps.description"
+            "admin.process_manager.processes.steps.options.list_description"
           }}
-          @learnMoreUrl="https://meta.discourse.org/t/ai-bot-workflows/306099"
         />
 
         {{#if this.processStepOptionsPresent}}

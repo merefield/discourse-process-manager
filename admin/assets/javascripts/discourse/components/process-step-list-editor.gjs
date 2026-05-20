@@ -159,9 +159,8 @@ export default class ProcessStepsListEditor extends Component {
         <DPageSubheader
           @titleLabel={{i18n "admin.process_manager.processes.steps.title"}}
           @descriptionLabel={{i18n
-            "admin.process_manager.processes.steps.description"
+            "admin.process_manager.processes.steps.list_description"
           }}
-          @learnMoreUrl="https://meta.discourse.org/t/ai-bot-workflows/306099"
         />
 
         {{#if this.processStepsPresent}}

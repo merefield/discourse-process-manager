@@ -173,6 +173,7 @@ en:
             overdue_days: "Step overdue days override"
             overdue_days_help: "Blank uses process/global defaults. 0 disables overdue behavior for this step."
             title: "Steps"
+            list_description: "Define the process steps, categories, overdue rules, and optional direct OpenAI prompts used by this process."
             new: "Add a new step"
             none: "No steps have been added yet."
             name: "Name"
@@ -183,6 +184,7 @@ en:
             deleted: "Step deleted!"
             options:
               title: "Options"
+              list_description: "Define the actions that move a topic from this step to another process step."
               new: "Add a new option"
               target_step: "Target step"
               no_target_step: "No target step selected"
