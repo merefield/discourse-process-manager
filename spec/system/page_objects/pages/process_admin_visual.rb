@@ -245,7 +245,7 @@ module PageObjects
             const stepRects = Array.from(document.querySelectorAll(".process-visual-editor__step")).map((step) => {
               const rect = step.getBoundingClientRect();
               return {
-                id: step.dataset.workflowStepId,
+                id: step.dataset.processStepId,
                 left: rect.left - boardRect.left,
                 right: rect.right - boardRect.left,
                 top: rect.top - boardRect.top,
@@ -254,7 +254,7 @@ module PageObjects
             });
 
             return Array.from(document.querySelectorAll(".process-visual-editor__edge-path")).every((path) => {
-              const endpointStepIds = [path.dataset.workflowSourceStepId, path.dataset.workflowTargetStepId];
+              const endpointStepIds = [path.dataset.processSourceStepId, path.dataset.processTargetProcessStepId];
 
               return parsePathSegments(path).every((segment) => {
                 return stepRects.every((rect) => endpointStepIds.includes(rect.id) || !intersects(segment, rect));
