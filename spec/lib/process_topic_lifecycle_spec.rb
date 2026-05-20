@@ -3,17 +3,17 @@
 require_relative "../plugin_helper"
 
 describe "Process topic lifecycle behavior" do
-  fab!(:workflow) { Fabricate(:workflow, name: "Disabled Process", enabled: false) }
+  fab!(:process) { Fabricate(:process, name: "Disabled Process", enabled: false) }
   fab!(:start_category, :category)
   fab!(:mid_category, :category)
   fab!(:step_1) do
-    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: start_category.id, position: 1)
+    Fabricate(:process_step, workflow_id: process.id, category_id: start_category.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: mid_category.id, position: 2)
+    Fabricate(:process_step, workflow_id: process.id, category_id: mid_category.id, position: 2)
   end
 
-  it "does not initialize workflow_state for topics when process is disabled" do
+  it "does not initialize process_state for topics when process is disabled" do
     SiteSetting.process_manager_enabled = true
     topic = Fabricate(:topic, category: start_category)
     ProcessManager::ProcessState.where(topic_id: topic.id).delete_all

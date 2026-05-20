@@ -4,19 +4,19 @@ require_relative "../../plugin_helper"
 
 describe ProcessManager::Admin::ProcessStepsController do
   fab!(:admin)
-  fab!(:workflow) { Fabricate(:workflow, name: "Process Steps Controller Process") }
+  fab!(:process) { Fabricate(:process, name: "Process Steps Controller Process") }
   fab!(:category_1, :category)
   fab!(:category_2, :category)
-  fab!(:option) { Fabricate(:workflow_option, slug: "next-step") }
+  fab!(:option) { Fabricate(:process_option, slug: "next-step") }
   fab!(:step_1) do
-    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: category_1.id, position: 1)
+    Fabricate(:process_step, workflow_id: process.id, category_id: category_1.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: category_2.id, position: 2)
+    Fabricate(:process_step, workflow_id: process.id, category_id: category_2.id, position: 2)
   end
   fab!(:step_option_1) do
     Fabricate(
-      :workflow_step_option,
+      :process_step_option,
       workflow_step_id: step_1.id,
       workflow_option_id: option.id,
       target_step_id: step_2.id,
@@ -26,11 +26,11 @@ describe ProcessManager::Admin::ProcessStepsController do
 
   before { sign_in(admin) }
 
-  it "does not add per-step queries when listing workflow steps" do
-    get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps.json"
+  it "does not add per-step queries when listing process steps" do
+    get "/admin/plugins/discourse-process-manager/processes/#{process.id}/process_steps.json"
     base_query_count =
       track_sql_queries do
-        get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps.json"
+        get "/admin/plugins/discourse-process-manager/processes/#{process.id}/process_steps.json"
         expect(response.status).to eq(200)
       end.count
 
@@ -38,13 +38,13 @@ describe ProcessManager::Admin::ProcessStepsController do
       extra_category = Fabricate(:category)
       extra_step =
         Fabricate(
-          :workflow_step,
-          workflow_id: workflow.id,
+          :process_step,
+          workflow_id: process.id,
           category_id: extra_category.id,
           position: index + 3,
         )
       Fabricate(
-        :workflow_step_option,
+        :process_step_option,
         workflow_step_id: extra_step.id,
         workflow_option_id: option.id,
         target_step_id: step_1.id,
@@ -52,21 +52,21 @@ describe ProcessManager::Admin::ProcessStepsController do
       )
     end
 
-    get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps.json"
+    get "/admin/plugins/discourse-process-manager/processes/#{process.id}/process_steps.json"
     expanded_query_count =
       track_sql_queries do
-        get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps.json"
+        get "/admin/plugins/discourse-process-manager/processes/#{process.id}/process_steps.json"
         expect(response.status).to eq(200)
       end.count
 
     expect(expanded_query_count).to be <= base_query_count + 2
   end
 
-  it "does not include every root category as a visual lane for top-level workflow steps" do
+  it "does not include every root category as a visual lane for top-level process steps" do
     unrelated_root_category = Fabricate(:category)
     child_of_workflow_category = Fabricate(:category, parent_category_id: category_1.id)
 
-    get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps.json"
+    get "/admin/plugins/discourse-process-manager/processes/#{process.id}/process_steps.json"
 
     category_ids = response.parsed_body["process_categories"].map { |category| category["id"] }
 
@@ -75,7 +75,7 @@ describe ProcessManager::Admin::ProcessStepsController do
     expect(category_ids).not_to include(child_of_workflow_category.id)
   end
 
-  it "includes sibling subcategory lanes for workflow steps under a shared parent category" do
+  it "includes sibling subcategory lanes for process steps under a shared parent category" do
     parent_category = Fabricate(:category)
     subcategory_1 = Fabricate(:category, parent_category_id: parent_category.id)
     subcategory_2 = Fabricate(:category, parent_category_id: parent_category.id)
@@ -84,7 +84,7 @@ describe ProcessManager::Admin::ProcessStepsController do
     step_1.update!(category_id: subcategory_1.id)
     step_2.update!(category_id: subcategory_2.id)
 
-    get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps.json"
+    get "/admin/plugins/discourse-process-manager/processes/#{process.id}/process_steps.json"
 
     category_ids = response.parsed_body["process_categories"].map { |category| category["id"] }
 
@@ -92,13 +92,13 @@ describe ProcessManager::Admin::ProcessStepsController do
     expect(category_ids).not_to include(parent_category.id)
   end
 
-  it "deletes incoming and outgoing step options when destroying a workflow step" do
+  it "deletes incoming and outgoing step options when destroying a process step" do
     category_3 = Fabricate(:category)
     step_3 =
-      Fabricate(:workflow_step, workflow_id: workflow.id, category_id: category_3.id, position: 3)
+      Fabricate(:process_step, workflow_id: process.id, category_id: category_3.id, position: 3)
     incoming_step_option =
       Fabricate(
-        :workflow_step_option,
+        :process_step_option,
         workflow_step_id: step_2.id,
         workflow_option_id: option.id,
         target_step_id: step_1.id,
@@ -106,7 +106,7 @@ describe ProcessManager::Admin::ProcessStepsController do
       )
     unrelated_step_option =
       Fabricate(
-        :workflow_step_option,
+        :process_step_option,
         workflow_step_id: step_2.id,
         workflow_option_id: option.id,
         target_step_id: step_3.id,
@@ -125,10 +125,10 @@ describe ProcessManager::Admin::ProcessStepsController do
     expect(ProcessManager::ProcessStepOption.exists?(unrelated_step_option_id)).to eq(true)
   end
 
-  it "rolls back step option deletion when workflow step destroy raises" do
+  it "rolls back step option deletion when process step destroy raises" do
     incoming_step_option =
       Fabricate(
-        :workflow_step_option,
+        :process_step_option,
         workflow_step_id: step_2.id,
         workflow_option_id: option.id,
         target_step_id: step_1.id,
@@ -150,7 +150,7 @@ describe ProcessManager::Admin::ProcessStepsController do
     expect(ProcessManager::ProcessStepOption.exists?(incoming_step_option.id)).to eq(true)
   end
 
-  it "reorders a workflow step and displaced step atomically" do
+  it "reorders a process step and displaced step atomically" do
     put "/admin/plugins/discourse-process-manager/process_steps/#{step_1.id}/reorder.json",
         params: {
           process_step: {

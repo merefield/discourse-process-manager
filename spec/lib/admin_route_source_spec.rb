@@ -2,7 +2,7 @@
 
 require_relative "../plugin_helper"
 
-describe "Admin workflow route source contracts" do
+describe "Admin process route source contracts" do
   it "loads step options from the canonical parent route key" do
     route_path =
       File.expand_path(

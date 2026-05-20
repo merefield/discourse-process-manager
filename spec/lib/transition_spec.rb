@@ -5,13 +5,13 @@ describe ::ProcessManager::Transition do
   fab!(:category_1, :category)
   fab!(:category_2, :category)
 
-  fab!(:workflow) do
-    Fabricate(:workflow, name: "Test Process", description: "Test Process Description")
+  fab!(:process) do
+    Fabricate(:process, name: "Test Process", description: "Test Process Description")
   end
   fab!(:step_1) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: category_1.id,
       name: "Step 1",
       description: "Step 1 Description",
@@ -19,19 +19,19 @@ describe ::ProcessManager::Transition do
   end
   fab!(:step_2) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: category_2.id,
       name: "Step 2",
       description: "Step 2 Description",
     )
   end
 
-  fab!(:option_1, :workflow_option)
+  fab!(:option_1, :process_option)
 
   fab!(:step_option_1) do
     Fabricate(
-      :workflow_step_option,
+      :process_step_option,
       workflow_step_id: step_1.id,
       workflow_option_id: option_1.id,
       target_step_id: step_2.id,
@@ -40,11 +40,11 @@ describe ::ProcessManager::Transition do
 
   fab!(:topic) { Fabricate(:topic, category: category_1) }
 
-  fab!(:workflow_state) do
+  fab!(:process_state) do
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: topic.id,
-      workflow_id: workflow.id,
+      workflow_id: process.id,
       workflow_step_id: step_1.id,
     )
   end

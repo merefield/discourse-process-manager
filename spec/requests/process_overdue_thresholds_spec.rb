@@ -5,40 +5,40 @@ require_relative "../plugin_helper"
 RSpec.describe "Process overdue thresholds", type: :request do
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
 
-  fab!(:workflow_global_default) do
-    Fabricate(:workflow, name: "Global Default Process", overdue_days: nil)
+  fab!(:process_global_default) do
+    Fabricate(:process, name: "Global Default Process", overdue_days: nil)
   end
-  fab!(:workflow_override) { Fabricate(:workflow, name: "Process Override", overdue_days: 5) }
-  fab!(:workflow_step_override) { Fabricate(:workflow, name: "Step Override", overdue_days: 10) }
-  fab!(:workflow_disabled) { Fabricate(:workflow, name: "Disabled Overdue", overdue_days: 0) }
+  fab!(:process_override) { Fabricate(:process, name: "Process Override", overdue_days: 5) }
+  fab!(:process_step_override) { Fabricate(:process, name: "Step Override", overdue_days: 10) }
+  fab!(:process_disabled) { Fabricate(:process, name: "Disabled Overdue", overdue_days: 0) }
 
   fab!(:category_global_default, :category)
-  fab!(:category_workflow_override, :category)
+  fab!(:category_process_override, :category)
   fab!(:category_step_override, :category)
   fab!(:category_disabled, :category)
 
   fab!(:step_global_default) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow_global_default.id,
+      :process_step,
+      workflow_id: process_global_default.id,
       category_id: category_global_default.id,
       position: 1,
       overdue_days: nil,
     )
   end
-  fab!(:step_workflow_override) do
+  fab!(:step_process_override) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow_override.id,
-      category_id: category_workflow_override.id,
+      :process_step,
+      workflow_id: process_override.id,
+      category_id: category_process_override.id,
       position: 1,
       overdue_days: nil,
     )
   end
   fab!(:step_step_override) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow_step_override.id,
+      :process_step,
+      workflow_id: process_step_override.id,
       category_id: category_step_override.id,
       position: 1,
       overdue_days: 2,
@@ -46,8 +46,8 @@ RSpec.describe "Process overdue thresholds", type: :request do
   end
   fab!(:step_disabled) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow_disabled.id,
+      :process_step,
+      workflow_id: process_disabled.id,
       category_id: category_disabled.id,
       position: 1,
       overdue_days: nil,
@@ -57,8 +57,8 @@ RSpec.describe "Process overdue thresholds", type: :request do
   fab!(:topic_global_default) do
     Fabricate(:topic_with_op, category: category_global_default, user: user)
   end
-  fab!(:topic_workflow_override) do
-    Fabricate(:topic_with_op, category: category_workflow_override, user: user)
+  fab!(:topic_process_override) do
+    Fabricate(:topic_with_op, category: category_process_override, user: user)
   end
   fab!(:topic_step_override) do
     Fabricate(:topic_with_op, category: category_step_override, user: user)
@@ -67,33 +67,33 @@ RSpec.describe "Process overdue thresholds", type: :request do
 
   fab!(:state_global_default) do
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: topic_global_default.id,
-      workflow_id: workflow_global_default.id,
+      workflow_id: process_global_default.id,
       workflow_step_id: step_global_default.id,
     )
   end
-  fab!(:state_workflow_override) do
+  fab!(:state_process_override) do
     Fabricate(
-      :workflow_state,
-      topic_id: topic_workflow_override.id,
-      workflow_id: workflow_override.id,
-      workflow_step_id: step_workflow_override.id,
+      :process_state,
+      topic_id: topic_process_override.id,
+      workflow_id: process_override.id,
+      workflow_step_id: step_process_override.id,
     )
   end
   fab!(:state_step_override) do
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: topic_step_override.id,
-      workflow_id: workflow_step_override.id,
+      workflow_id: process_step_override.id,
       workflow_step_id: step_step_override.id,
     )
   end
   fab!(:state_disabled) do
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: topic_disabled.id,
-      workflow_id: workflow_disabled.id,
+      workflow_id: process_disabled.id,
       workflow_step_id: step_disabled.id,
     )
   end
@@ -105,7 +105,7 @@ RSpec.describe "Process overdue thresholds", type: :request do
 
     [
       category_global_default,
-      category_workflow_override,
+      category_process_override,
       category_step_override,
       category_disabled,
     ].each do |category|
@@ -114,7 +114,7 @@ RSpec.describe "Process overdue thresholds", type: :request do
     end
 
     state_global_default.update_columns(updated_at: 4.days.ago)
-    state_workflow_override.update_columns(updated_at: 4.days.ago)
+    state_process_override.update_columns(updated_at: 4.days.ago)
     state_step_override.update_columns(updated_at: 3.days.ago)
     state_disabled.update_columns(updated_at: 30.days.ago)
   end
@@ -126,7 +126,7 @@ RSpec.describe "Process overdue thresholds", type: :request do
 
     expect(topic_ids).to include(topic_global_default.id)
     expect(topic_ids).to include(topic_step_override.id)
-    expect(topic_ids).not_to include(topic_workflow_override.id)
+    expect(topic_ids).not_to include(topic_process_override.id)
     expect(topic_ids).not_to include(topic_disabled.id)
   end
 
@@ -137,7 +137,7 @@ RSpec.describe "Process overdue thresholds", type: :request do
     topic_by_id = topics.index_by { |topic| topic["id"] }
 
     expect(topic_by_id[topic_global_default.id]["process_overdue"]).to eq(true)
-    expect(topic_by_id[topic_workflow_override.id]["process_overdue"]).to eq(false)
+    expect(topic_by_id[topic_process_override.id]["process_overdue"]).to eq(false)
     expect(topic_by_id[topic_step_override.id]["process_overdue"]).to eq(true)
     expect(topic_by_id[topic_disabled.id]["process_overdue"]).to eq(false)
   end

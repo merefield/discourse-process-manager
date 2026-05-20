@@ -4,13 +4,13 @@ RSpec.describe "Process topic banner" do
   fab!(:actor, :user)
   fab!(:viewer, :user)
   fab!(:actor_group, :group)
-  fab!(:workflow) { Fabricate(:workflow, name: "Topic Banner Process") }
+  fab!(:process) { Fabricate(:process, name: "Topic Banner Process") }
   fab!(:start_category, :category)
   fab!(:next_category, :category)
   fab!(:step_1) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: start_category.id,
       position: 1,
       name: "Triage",
@@ -18,17 +18,17 @@ RSpec.describe "Process topic banner" do
   end
   fab!(:step_2) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: next_category.id,
       position: 2,
       name: "Review",
     )
   end
-  fab!(:option_accept) { Fabricate(:workflow_option, slug: "accept", name: "Accept") }
+  fab!(:option_accept) { Fabricate(:process_option, slug: "accept", name: "Accept") }
   fab!(:step_option) do
     Fabricate(
-      :workflow_step_option,
+      :process_step_option,
       workflow_step_id: step_1.id,
       workflow_option_id: option_accept.id,
       target_step_id: step_2.id,
@@ -36,11 +36,11 @@ RSpec.describe "Process topic banner" do
     )
   end
   fab!(:topic) { Fabricate(:topic_with_op, category: start_category, user: actor) }
-  fab!(:workflow_state) do
+  fab!(:process_state) do
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: topic.id,
-      workflow_id: workflow.id,
+      workflow_id: process.id,
       workflow_step_id: step_1.id,
     )
   end
@@ -81,7 +81,7 @@ RSpec.describe "Process topic banner" do
   end
 
   it "exposes when the current process step was entered" do
-    workflow_state.update_columns(updated_at: 3.days.ago)
+    process_state.update_columns(updated_at: 3.days.ago)
     sign_in(actor)
     page.visit(topic.relative_url)
 

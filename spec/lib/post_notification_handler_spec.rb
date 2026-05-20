@@ -3,24 +3,24 @@
 require_relative "../plugin_helper"
 
 describe ProcessManager::PostNotificationHandler do
-  fab!(:workflow) { Fabricate(:workflow, name: "Notification Process") }
+  fab!(:process) { Fabricate(:process, name: "Notification Process") }
   fab!(:workflow_category, :category)
   fab!(:other_category, :category)
   fab!(:step_1) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: workflow_category.id,
       position: 1,
     )
   end
   fab!(:topic_owner, :user)
   fab!(:topic) { Fabricate(:topic, user: topic_owner, category: workflow_category) }
-  fab!(:workflow_state) do
+  fab!(:process_state) do
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: topic.id,
-      workflow_id: workflow.id,
+      workflow_id: process.id,
       workflow_step_id: step_1.id,
     )
   end
@@ -101,9 +101,9 @@ describe ProcessManager::PostNotificationHandler do
   def first_post_with_state
     next_topic = Fabricate(:topic, user: topic_owner, category: workflow_category)
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: next_topic.id,
-      workflow_id: workflow.id,
+      workflow_id: process.id,
       workflow_step_id: step_1.id,
     )
     Fabricate(:post, topic: next_topic, user: topic_owner)

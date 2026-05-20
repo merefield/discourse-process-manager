@@ -3,8 +3,8 @@
 module PageObjects
   module Pages
     class ProcessAdminVisual < PageObjects::Pages::Base
-      def visit_process(workflow)
-        page.visit "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/edit"
+      def visit_process(process)
+        page.visit "/admin/plugins/discourse-process-manager/processes/#{process.id}/edit"
         self
       end
 

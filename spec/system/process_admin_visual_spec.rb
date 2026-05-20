@@ -6,15 +6,15 @@ RSpec.describe "Process admin visual" do
   let(:visual_page) { PageObjects::Pages::ProcessAdminVisual.new }
 
   fab!(:admin)
-  fab!(:workflow) { Fabricate(:workflow, name: "Visual workflow") }
-  fab!(:workflow_parent_category, :category)
-  fab!(:review_category) { Fabricate(:category, parent_category_id: workflow_parent_category.id) }
-  fab!(:done_category) { Fabricate(:category, parent_category_id: workflow_parent_category.id) }
-  fab!(:unused_category) { Fabricate(:category, parent_category_id: workflow_parent_category.id) }
+  fab!(:process) { Fabricate(:process, name: "Visual process") }
+  fab!(:process_parent_category, :category)
+  fab!(:review_category) { Fabricate(:category, parent_category_id: process_parent_category.id) }
+  fab!(:done_category) { Fabricate(:category, parent_category_id: process_parent_category.id) }
+  fab!(:unused_category) { Fabricate(:category, parent_category_id: process_parent_category.id) }
   fab!(:queue_step) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: review_category.id,
       position: 1,
       name: "Queue",
@@ -22,8 +22,8 @@ RSpec.describe "Process admin visual" do
   end
   fab!(:review_step) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: done_category.id,
       position: 2,
       name: "Review",
@@ -31,18 +31,18 @@ RSpec.describe "Process admin visual" do
   end
   fab!(:done_step) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: done_category.id,
       position: 3,
       name: "Done",
     )
   end
-  fab!(:next_option) { Fabricate(:workflow_option, slug: "next", name: "Next") }
-  fab!(:back_option) { Fabricate(:workflow_option, slug: "back", name: "Back") }
+  fab!(:next_option) { Fabricate(:process_option, slug: "next", name: "Next") }
+  fab!(:back_option) { Fabricate(:process_option, slug: "back", name: "Back") }
   fab!(:queue_to_done_option) do
     Fabricate(
-      :workflow_step_option,
+      :process_step_option,
       workflow_step_id: queue_step.id,
       workflow_option_id: next_option.id,
       target_step_id: done_step.id,
@@ -53,7 +53,7 @@ RSpec.describe "Process admin visual" do
   before { sign_in(admin) }
 
   it "shows a list and visual tab for process step editing" do
-    visual_page.visit_process(workflow)
+    visual_page.visit_process(process)
 
     expect(visual_page).to have_steps_tab("List")
     expect(visual_page).to have_steps_tab("Visual")
@@ -75,21 +75,21 @@ RSpec.describe "Process admin visual" do
   context "with return connectors" do
     before do
       Fabricate(
-        :workflow_step_option,
+        :process_step_option,
         workflow_step_id: review_step.id,
         workflow_option_id: back_option.id,
         target_step_id: queue_step.id,
         position: 1,
       )
       Fabricate(
-        :workflow_step_option,
+        :process_step_option,
         workflow_step_id: done_step.id,
         workflow_option_id: back_option.id,
         target_step_id: review_step.id,
         position: 1,
       )
 
-      visual_page.visit_process(workflow).switch_to_visual
+      visual_page.visit_process(process).switch_to_visual
     end
 
     it "routes visible arrows around intermediate step boxes" do
@@ -113,7 +113,7 @@ RSpec.describe "Process admin visual" do
   end
 
   it "creates and retargets arrows by dragging between step cards" do
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
 
     visual_page.drag_connector(queue_step, review_step)
 
@@ -135,7 +135,7 @@ RSpec.describe "Process admin visual" do
   end
 
   it "creates arrows from connector handles without dragging" do
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
 
     visual_page.click_connector_handle(review_step, "right")
 
@@ -152,7 +152,7 @@ RSpec.describe "Process admin visual" do
   end
 
   it "updates arrow option labels from the connector dropdown" do
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
 
     expect(visual_page).to have_option(queue_to_done_option)
 
@@ -165,9 +165,9 @@ RSpec.describe "Process admin visual" do
   end
 
   it "falls back to process option names for untranslated action slugs" do
-    custom_option = Fabricate(:workflow_option, slug: "custom-action", name: "Custom action")
+    custom_option = Fabricate(:process_option, slug: "custom-action", name: "Custom action")
 
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
 
     expect(visual_page).to have_selected_option_label(queue_to_done_option, "Next")
 
@@ -178,7 +178,7 @@ RSpec.describe "Process admin visual" do
   end
 
   it "preserves scroll position after visual process changes" do
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
     visual_page.make_page_scrollable.scroll_window_to(500)
 
     scroll_y = visual_page.window_scroll_y
@@ -190,7 +190,7 @@ RSpec.describe "Process admin visual" do
   end
 
   it "deletes arrows from the connector option control after confirmation" do
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
 
     visual_page.delete_option(queue_to_done_option)
 
@@ -210,7 +210,7 @@ RSpec.describe "Process admin visual" do
   it "deletes steps and their incoming and outgoing connectors after confirmation" do
     incoming_option =
       Fabricate(
-        :workflow_step_option,
+        :process_step_option,
         workflow_step_id: queue_step.id,
         workflow_option_id: next_option.id,
         target_step_id: review_step.id,
@@ -218,14 +218,14 @@ RSpec.describe "Process admin visual" do
       )
     outgoing_option =
       Fabricate(
-        :workflow_step_option,
+        :process_step_option,
         workflow_step_id: review_step.id,
         workflow_option_id: next_option.id,
         target_step_id: done_step.id,
         position: 1,
       )
 
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
 
     visual_page.delete_step(review_step)
 
@@ -247,7 +247,7 @@ RSpec.describe "Process admin visual" do
   end
 
   it "moves steps between swimlanes by dragging cards" do
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
 
     visual_page.drag_step_to_lane_position(queue_step, done_category, 1)
 
@@ -261,14 +261,14 @@ RSpec.describe "Process admin visual" do
     orphan_category = Fabricate(:category, parent_category_id: orphan_parent_category.id)
     orphan_step =
       Fabricate(
-        :workflow_step,
-        workflow_id: workflow.id,
+        :process_step,
+        workflow_id: process.id,
         category_id: orphan_category.id,
         position: 4,
         name: "Temporary lane",
       )
 
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
 
     expect(visual_page).to have_lane(orphan_category, text: orphan_category.name)
 
@@ -281,7 +281,7 @@ RSpec.describe "Process admin visual" do
   end
 
   it "moves steps into explicit x-axis positions" do
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
 
     visual_page.drag_step_to_lane_position(done_step, review_category, 1)
 
@@ -292,28 +292,28 @@ RSpec.describe "Process admin visual" do
   end
 
   it "adds a step from the visual builder" do
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
 
     visual_page.fill_new_step_name("QA").choose_new_step_category(review_category).add_step
 
-    step = ProcessManager::ProcessStep.find_by!(workflow_id: workflow.id, name: "QA")
+    step = ProcessManager::ProcessStep.find_by!(workflow_id: process.id, name: "QA")
     expect(step.category_id).to eq(review_category.id)
     expect(step.position).to eq(4)
     expect(visual_page).to have_step(step, text: "QA")
   end
 
   it "uses a position-neutral default name when adding a visual step without a name" do
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
 
     visual_page.choose_new_step_category(review_category).add_step
 
-    step = ProcessManager::ProcessStep.find_by!(workflow_id: workflow.id, name: "New step")
+    step = ProcessManager::ProcessStep.find_by!(workflow_id: process.id, name: "New step")
     expect(step.position).to eq(4)
     expect(visual_page).to have_step(step, text: "New step")
   end
 
   it "opens the new step form from a swimlane with the category preselected" do
-    visual_page.visit_process(workflow).switch_to_visual
+    visual_page.visit_process(process).switch_to_visual
 
     visual_page.add_step_from_lane(done_category)
 

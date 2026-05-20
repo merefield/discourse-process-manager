@@ -8,8 +8,8 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   fab!(:blocked_user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
   fab!(:allowed_group, :group)
 
-  fab!(:workflow) { Fabricate(:workflow, name: "Burn Down Process") }
-  fab!(:other_workflow) { Fabricate(:workflow, name: "Other Process") }
+  fab!(:process) { Fabricate(:process, name: "Burn Down Process") }
+  fab!(:other_process) { Fabricate(:process, name: "Other Process") }
 
   fab!(:category_1, :category)
   fab!(:category_2, :category)
@@ -19,8 +19,8 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
 
   fab!(:step_1) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: category_1.id,
       position: 1,
       name: "Queue",
@@ -28,8 +28,8 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   end
   fab!(:step_2) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: category_2.id,
       position: 2,
       name: "Review",
@@ -37,8 +37,8 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   end
   fab!(:step_3) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: category_3.id,
       position: 3,
       name: "Approval",
@@ -46,8 +46,8 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   end
   fab!(:step_4) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: category_4.id,
       position: 4,
       name: "Done",
@@ -55,8 +55,8 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   end
   fab!(:other_step) do
     Fabricate(
-      :workflow_step,
-      workflow_id: other_workflow.id,
+      :process_step,
+      workflow_id: other_process.id,
       category_id: other_category.id,
       position: 1,
       name: "Other Queue",
@@ -76,9 +76,9 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
     topics = 10.times.map { Fabricate(:topic, category: category_1) }
     topics.each do |topic|
       Fabricate(
-        :workflow_state,
+        :process_state,
         topic_id: topic.id,
-        workflow_id: workflow.id,
+        workflow_id: process.id,
         workflow_step_id: step_1.id,
       )
     end
@@ -114,7 +114,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
     get "/discourse-process-manager/charts.json"
 
     expect(response.status).to eq(200)
-    expect(response.parsed_body["selected_process_id"]).to eq(workflow.id)
+    expect(response.parsed_body["selected_process_id"]).to eq(process.id)
   end
 
   it "allows admins to query process chart data" do
@@ -123,7 +123,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
     get "/discourse-process-manager/charts.json"
 
     expect(response.status).to eq(200)
-    expect(response.parsed_body["selected_process_id"]).to eq(workflow.id)
+    expect(response.parsed_body["selected_process_id"]).to eq(process.id)
   end
 
   it "serves the process charts discovery route for authorized users" do
@@ -145,7 +145,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   it "returns full-week daily labels and per-step series for 2 weeks by default" do
     sign_in(admin)
 
-    get "/discourse-process-manager/charts.json", params: { process_id: workflow.id }
+    get "/discourse-process-manager/charts.json", params: { process_id: process.id }
 
     payload = response.parsed_body
     labels = payload["labels"]
@@ -173,7 +173,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
 
     get "/discourse-process-manager/charts.json",
         params: {
-          process_id: other_workflow.id,
+          process_id: other_process.id,
           weeks: 12,
         }
 
@@ -182,8 +182,8 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
     expect(response.status).to eq(200)
     expect(payload["weeks"]).to eq(12)
     expect(payload["labels"].length).to eq(84)
-    expect(payload["selected_process_id"]).to eq(other_workflow.id)
-    expect(payload["selected_process_name"]).to eq(other_workflow.name)
+    expect(payload["selected_process_id"]).to eq(other_process.id)
+    expect(payload["selected_process_name"]).to eq(other_process.name)
     expect(payload).not_to have_key("processes")
   end
 
@@ -192,7 +192,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
 
     workflow_queries, workflow_steps_queries =
       track_sql_queries do
-        get "/discourse-process-manager/charts.json", params: { process_id: workflow.id, weeks: 1 }
+        get "/discourse-process-manager/charts.json", params: { process_id: process.id, weeks: 1 }
       end.partition { |query| query.include?('FROM "processes"') }
 
     workflow_steps_queries.select! do |query|
@@ -206,7 +206,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
 
     expect(response.status).to eq(200)
     expect(unscoped_workflow_query).to eq(false)
-    expect(workflow_steps_queries.any? { |query| query.include?(other_workflow.id.to_s) }).to eq(
+    expect(workflow_steps_queries.any? { |query| query.include?(other_process.id.to_s) }).to eq(
       false,
     )
   end
@@ -214,7 +214,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
   it "supports a one-week horizon when requested" do
     sign_in(admin)
 
-    get "/discourse-process-manager/charts.json", params: { process_id: workflow.id, weeks: 1 }
+    get "/discourse-process-manager/charts.json", params: { process_id: process.id, weeks: 1 }
 
     payload = response.parsed_body
     expect(response.status).to eq(200)
@@ -226,7 +226,7 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
     freeze_time(Time.zone.parse("2026-02-18 10:00:00 UTC")) do
       sign_in(admin)
 
-      get "/discourse-process-manager/charts.json", params: { process_id: workflow.id, weeks: 1 }
+      get "/discourse-process-manager/charts.json", params: { process_id: process.id, weeks: 1 }
 
       payload = response.parsed_body
       labels = payload["labels"]
@@ -251,30 +251,30 @@ RSpec.describe ProcessManager::ProcessChartsController, type: :request do
       queue_count, review_count, approval_count, done_count = counts_by_day[index]
 
       Fabricate(
-        :workflow_stat,
+        :process_stat,
         cob_date: day,
-        workflow: workflow,
+        workflow: process,
         workflow_step: step_1,
         count: queue_count,
       )
       Fabricate(
-        :workflow_stat,
+        :process_stat,
         cob_date: day,
-        workflow: workflow,
+        workflow: process,
         workflow_step: step_2,
         count: review_count,
       )
       Fabricate(
-        :workflow_stat,
+        :process_stat,
         cob_date: day,
-        workflow: workflow,
+        workflow: process,
         workflow_step: step_3,
         count: approval_count,
       )
       Fabricate(
-        :workflow_stat,
+        :process_stat,
         cob_date: day,
-        workflow: workflow,
+        workflow: process,
         workflow_step: step_4,
         count: done_count,
       )

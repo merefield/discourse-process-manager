@@ -4,13 +4,13 @@ require_relative "../plugin_helper"
 
 RSpec.describe ProcessManager::ProcessActionController, type: :request do
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
-  fab!(:workflow) { Fabricate(:workflow, name: "Transition Process") }
+  fab!(:process) { Fabricate(:process, name: "Transition Process") }
   fab!(:category_1, :category)
   fab!(:category_2, :category)
   fab!(:step_1) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: category_1.id,
       position: 1,
       name: "Step A",
@@ -18,18 +18,18 @@ RSpec.describe ProcessManager::ProcessActionController, type: :request do
   end
   fab!(:step_2) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: category_2.id,
       position: 2,
       name: "Step B",
     )
   end
-  fab!(:next_option) { Fabricate(:workflow_option, slug: "next", name: "Next") }
-  fab!(:back_option) { Fabricate(:workflow_option, slug: "back", name: "Back") }
+  fab!(:next_option) { Fabricate(:process_option, slug: "next", name: "Next") }
+  fab!(:back_option) { Fabricate(:process_option, slug: "back", name: "Back") }
   fab!(:step_1_option) do
     Fabricate(
-      :workflow_step_option,
+      :process_step_option,
       workflow_step_id: step_1.id,
       workflow_option_id: next_option.id,
       target_step_id: step_2.id,
@@ -38,7 +38,7 @@ RSpec.describe ProcessManager::ProcessActionController, type: :request do
   end
   fab!(:step_2_option) do
     Fabricate(
-      :workflow_step_option,
+      :process_step_option,
       workflow_step_id: step_2.id,
       workflow_option_id: back_option.id,
       target_step_id: step_1.id,
@@ -46,11 +46,11 @@ RSpec.describe ProcessManager::ProcessActionController, type: :request do
     )
   end
   fab!(:topic) { Fabricate(:topic, category: category_1, user: user) }
-  fab!(:workflow_state) do
+  fab!(:process_state) do
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: topic.id,
-      workflow_id: workflow.id,
+      workflow_id: process.id,
       workflow_step_id: step_1.id,
     )
   end
@@ -70,7 +70,7 @@ RSpec.describe ProcessManager::ProcessActionController, type: :request do
 
     expect(response.status).to eq(200)
     expect(response.parsed_body["success"]).to eq("OK")
-    expect(workflow_state.reload.workflow_step_id).to eq(step_2.id)
+    expect(process_state.reload.workflow_step_id).to eq(step_2.id)
   end
 
   it "returns conflict when trying a stale transition option" do

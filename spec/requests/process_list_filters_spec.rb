@@ -4,19 +4,19 @@ require_relative "../plugin_helper"
 
 RSpec.describe "Process list filters", type: :request do
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1], refresh_auto_groups: true) }
-  fab!(:workflow) { Fabricate(:workflow, name: "Filtered Process") }
+  fab!(:process) { Fabricate(:process, name: "Filtered Process") }
   fab!(:category_a, :category)
   fab!(:category_b, :category)
   fab!(:step_1) do
-    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: category_a.id, position: 1)
+    Fabricate(:process_step, workflow_id: process.id, category_id: category_a.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: category_b.id, position: 2)
+    Fabricate(:process_step, workflow_id: process.id, category_id: category_b.id, position: 2)
   end
-  fab!(:next_option) { Fabricate(:workflow_option, slug: "next", name: "Next") }
+  fab!(:next_option) { Fabricate(:process_option, slug: "next", name: "Next") }
   fab!(:step_transition) do
     Fabricate(
-      :workflow_step_option,
+      :process_step_option,
       workflow_step_id: step_1.id,
       workflow_option_id: next_option.id,
       target_step_id: step_2.id,
@@ -26,17 +26,17 @@ RSpec.describe "Process list filters", type: :request do
   fab!(:topic_b) { Fabricate(:topic, category: category_a) }
   fab!(:state_a) do
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: topic_a.id,
-      workflow_id: workflow.id,
+      workflow_id: process.id,
       workflow_step_id: step_1.id,
     )
   end
   fab!(:state_b) do
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: topic_b.id,
-      workflow_id: workflow.id,
+      workflow_id: process.id,
       workflow_step_id: step_2.id,
     )
   end
@@ -92,7 +92,7 @@ RSpec.describe "Process list filters", type: :request do
     topics_by_id = topic_list["topics"].index_by { |topic| topic["id"] }
 
     expect(topic_list["process_kanban_compatible"]).to eq(true)
-    expect(topic_list["process_kanban_process_name"]).to eq(workflow.name)
+    expect(topic_list["process_kanban_process_name"]).to eq(process.name)
     expect(topic_list["process_kanban_show_tags"]).to eq(true)
     expect(step_positions).to eq([1, 2])
     expect(steps_by_position[1]["category_color"]).to eq(category_a.color)
@@ -103,7 +103,7 @@ RSpec.describe "Process list filters", type: :request do
   end
 
   it "serializes process_kanban_show_tags false when disabled on the process" do
-    workflow.update!(show_kanban_tags: false)
+    process.update!(show_kanban_tags: false)
 
     get "/processes.json"
 
@@ -112,19 +112,19 @@ RSpec.describe "Process list filters", type: :request do
   end
 
   it "does not mark kanban compatibility when multiple processes are visible" do
-    other_workflow = Fabricate(:workflow, name: "Secondary Process")
+    other_process = Fabricate(:process, name: "Secondary Process")
     other_step =
       Fabricate(
-        :workflow_step,
-        workflow_id: other_workflow.id,
+        :process_step,
+        workflow_id: other_process.id,
         category_id: category_a.id,
         position: 1,
       )
     other_topic = Fabricate(:topic, category: category_a)
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: other_topic.id,
-      workflow_id: other_workflow.id,
+      workflow_id: other_process.id,
       workflow_step_id: other_step.id,
     )
 

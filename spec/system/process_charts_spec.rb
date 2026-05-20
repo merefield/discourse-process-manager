@@ -5,8 +5,8 @@ RSpec.describe "Process charts" do
   fab!(:admin, :admin)
   fab!(:allowed_group, :group)
 
-  fab!(:workflow) { Fabricate(:workflow, name: "Primary Burn Down Process") }
-  fab!(:other_workflow) { Fabricate(:workflow, name: "Secondary Burn Down Process") }
+  fab!(:process) { Fabricate(:process, name: "Primary Burn Down Process") }
+  fab!(:other_process) { Fabricate(:process, name: "Secondary Burn Down Process") }
 
   fab!(:category_1, :category)
   fab!(:category_2, :category)
@@ -16,8 +16,8 @@ RSpec.describe "Process charts" do
 
   fab!(:step_1) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: category_1.id,
       position: 1,
       name: "Queue",
@@ -25,8 +25,8 @@ RSpec.describe "Process charts" do
   end
   fab!(:step_2) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: category_2.id,
       position: 2,
       name: "Review",
@@ -34,8 +34,8 @@ RSpec.describe "Process charts" do
   end
   fab!(:step_3) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: category_3.id,
       position: 3,
       name: "Approval",
@@ -43,8 +43,8 @@ RSpec.describe "Process charts" do
   end
   fab!(:step_4) do
     Fabricate(
-      :workflow_step,
-      workflow_id: workflow.id,
+      :process_step,
+      workflow_id: process.id,
       category_id: category_4.id,
       position: 4,
       name: "Done",
@@ -52,8 +52,8 @@ RSpec.describe "Process charts" do
   end
   fab!(:other_step) do
     Fabricate(
-      :workflow_step,
-      workflow_id: other_workflow.id,
+      :process_step,
+      workflow_id: other_process.id,
       category_id: other_category.id,
       position: 1,
       name: "Other Queue",
@@ -68,15 +68,15 @@ RSpec.describe "Process charts" do
     10.times do
       topic = Fabricate(:topic, category: category_1)
       Fabricate(
-        :workflow_state,
+        :process_state,
         topic_id: topic.id,
-        workflow_id: workflow.id,
+        workflow_id: process.id,
         workflow_step_id: step_1.id,
       )
     end
 
-    create_stats_history_for(workflow, [step_1, step_2, step_3, step_4])
-    create_stats_history_for(other_workflow, [other_step], base_count: 10)
+    create_stats_history_for(process, [step_1, step_2, step_3, step_4])
+    create_stats_history_for(other_process, [other_step], base_count: 10)
 
     sign_in(admin)
   end
@@ -87,7 +87,7 @@ RSpec.describe "Process charts" do
     expect(page).to have_current_path("/processes/charts", url: false)
     expect(process_discovery_page).to have_process_burndown_chart
     expect(process_discovery_page).to have_process_burndown_chart_canvas
-    expect(page).to have_css(".process-burndown__process-name", text: "Process: #{workflow.name}")
+    expect(page).to have_css(".process-burndown__process-name", text: "Process: #{process.name}")
     expect(process_discovery_page).to have_process_view_option("Chart")
     expect(process_discovery_page).to have_process_chart_weeks_selector
     expect(process_discovery_page).to have_no_process_view_option("Kanban")
@@ -127,7 +127,7 @@ RSpec.describe "Process charts" do
     expect(process_discovery_page).to have_process_burndown_chart
   end
 
-  def create_stats_history_for(workflow_record, steps, base_count: nil)
+  def create_stats_history_for(process_record, steps, base_count: nil)
     end_date = Date.current.end_of_week(:saturday)
     start_date = end_date - 13.days
     days = (start_date..end_date).to_a
@@ -135,9 +135,9 @@ RSpec.describe "Process charts" do
     days.each_with_index do |day, day_index|
       if steps.length == 1
         Fabricate(
-          :workflow_stat,
+          :process_stat,
           cob_date: day,
-          workflow: workflow_record,
+          workflow: process_record,
           workflow_step: steps.first,
           count: base_count || 10,
         )
@@ -148,30 +148,30 @@ RSpec.describe "Process charts" do
         complex_daily_counts(days.count)[day_index]
 
       Fabricate(
-        :workflow_stat,
+        :process_stat,
         cob_date: day,
-        workflow: workflow_record,
+        workflow: process_record,
         workflow_step: steps[0],
         count: queue_count,
       )
       Fabricate(
-        :workflow_stat,
+        :process_stat,
         cob_date: day,
-        workflow: workflow_record,
+        workflow: process_record,
         workflow_step: steps[1],
         count: review_count,
       )
       Fabricate(
-        :workflow_stat,
+        :process_stat,
         cob_date: day,
-        workflow: workflow_record,
+        workflow: process_record,
         workflow_step: steps[2],
         count: approval_count,
       )
       Fabricate(
-        :workflow_stat,
+        :process_stat,
         cob_date: day,
-        workflow: workflow_record,
+        workflow: process_record,
         workflow_step: steps[3],
         count: done_count,
       )

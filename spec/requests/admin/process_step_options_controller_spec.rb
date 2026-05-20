@@ -4,20 +4,20 @@ require_relative "../../plugin_helper"
 
 describe ProcessManager::Admin::ProcessStepOptionsController do
   fab!(:admin)
-  fab!(:workflow) { Fabricate(:workflow, name: "Controller Process") }
+  fab!(:process) { Fabricate(:process, name: "Controller Process") }
   fab!(:category_1, :category)
   fab!(:category_2, :category)
   fab!(:step_1) do
-    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: category_1.id, position: 1)
+    Fabricate(:process_step, workflow_id: process.id, category_id: category_1.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: category_2.id, position: 2)
+    Fabricate(:process_step, workflow_id: process.id, category_id: category_2.id, position: 2)
   end
-  fab!(:existing_option) { Fabricate(:workflow_option, slug: "start") }
-  fab!(:new_option) { Fabricate(:workflow_option, slug: "next") }
+  fab!(:existing_option) { Fabricate(:process_option, slug: "start") }
+  fab!(:new_option) { Fabricate(:process_option, slug: "next") }
   fab!(:step_option) do
     Fabricate(
-      :workflow_step_option,
+      :process_step_option,
       workflow_step_id: step_1.id,
       workflow_option_id: existing_option.id,
       target_step_id: step_2.id,
@@ -43,7 +43,7 @@ describe ProcessManager::Admin::ProcessStepOptionsController do
     expect(ProcessManager::ProcessStepOption.order(:id).last.position).to eq(2)
   end
 
-  it "updates the workflow option used by a step option" do
+  it "updates the process option used by a step option" do
     put "/admin/plugins/discourse-process-manager/process_step_options/#{step_option.id}.json",
         params: {
           process_step_option: {
@@ -59,26 +59,26 @@ describe ProcessManager::Admin::ProcessStepOptionsController do
   end
 
   it "does not add per-option queries when listing step options" do
-    get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps/#{step_1.id}/process_step_options.json"
+    get "/admin/plugins/discourse-process-manager/processes/#{process.id}/process_steps/#{step_1.id}/process_step_options.json"
     base_query_count =
       track_sql_queries do
-        get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps/#{step_1.id}/process_step_options.json"
+        get "/admin/plugins/discourse-process-manager/processes/#{process.id}/process_steps/#{step_1.id}/process_step_options.json"
         expect(response.status).to eq(200)
       end.count
 
-    extra_option = Fabricate(:workflow_option, slug: "branch")
+    extra_option = Fabricate(:process_option, slug: "branch")
     Fabricate(
-      :workflow_step_option,
+      :process_step_option,
       workflow_step_id: step_1.id,
       workflow_option_id: extra_option.id,
       target_step_id: step_2.id,
       position: 2,
     )
 
-    get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps/#{step_1.id}/process_step_options.json"
+    get "/admin/plugins/discourse-process-manager/processes/#{process.id}/process_steps/#{step_1.id}/process_step_options.json"
     expanded_query_count =
       track_sql_queries do
-        get "/admin/plugins/discourse-process-manager/processes/#{workflow.id}/process_steps/#{step_1.id}/process_step_options.json"
+        get "/admin/plugins/discourse-process-manager/processes/#{process.id}/process_steps/#{step_1.id}/process_step_options.json"
         expect(response.status).to eq(200)
       end.count
 

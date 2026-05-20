@@ -5,7 +5,7 @@ require_relative "../../../plugin_helper"
 RSpec.describe Jobs::ProcessManager::AiTransitions do
   let(:job) { described_class.new }
 
-  it "delegates scheduled execution to AI workflow transitions" do
+  it "delegates scheduled execution to AI process transitions" do
     ai_actions = instance_spy(ProcessManager::AiActions)
     allow(ProcessManager::AiActions).to receive(:new).and_return(ai_actions)
 

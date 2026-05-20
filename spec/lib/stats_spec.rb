@@ -3,30 +3,30 @@
 require_relative "../plugin_helper"
 
 describe ProcessManager::Stats do
-  fab!(:workflow) { Fabricate(:workflow, name: "Stats Process") }
+  fab!(:process) { Fabricate(:process, name: "Stats Process") }
   fab!(:category_1, :category)
   fab!(:category_2, :category)
   fab!(:step_1) do
-    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: category_1.id, position: 1)
+    Fabricate(:process_step, workflow_id: process.id, category_id: category_1.id, position: 1)
   end
   fab!(:step_2) do
-    Fabricate(:workflow_step, workflow_id: workflow.id, category_id: category_2.id, position: 2)
+    Fabricate(:process_step, workflow_id: process.id, category_id: category_2.id, position: 2)
   end
   fab!(:topic_1) { Fabricate(:topic, category: category_1) }
   fab!(:topic_2) { Fabricate(:topic, category: category_1) }
   fab!(:state_1) do
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: topic_1.id,
-      workflow_id: workflow.id,
+      workflow_id: process.id,
       workflow_step_id: step_1.id,
     )
   end
   fab!(:state_2) do
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: topic_2.id,
-      workflow_id: workflow.id,
+      workflow_id: process.id,
       workflow_step_id: step_2.id,
     )
   end
@@ -47,9 +47,9 @@ describe ProcessManager::Stats do
 
     valid_topic = Fabricate(:topic, category: category_1)
     Fabricate(
-      :workflow_state,
+      :process_state,
       topic_id: valid_topic.id,
-      workflow_id: workflow.id,
+      workflow_id: process.id,
       workflow_step_id: step_1.id,
     )
 
@@ -57,7 +57,7 @@ describe ProcessManager::Stats do
 
     today_stats = ProcessManager::ProcessStat.where(cob_date: Date.current)
     expect(today_stats.count).to eq(1)
-    expect(today_stats.first.workflow_id).to eq(workflow.id)
+    expect(today_stats.first.workflow_id).to eq(process.id)
     expect(today_stats.first.workflow_step_id).to eq(step_1.id)
     expect(today_stats.first.count).to eq(1)
   end
