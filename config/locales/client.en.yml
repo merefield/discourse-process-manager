@@ -18,6 +18,7 @@ en:
         process_topic_arrival: "A topic titled %{topic_title} has arrived in step: %{process_step_name} of the process: %{process_name}, authored by %{username}"
     action_codes:
       process_transition: "acted upon topic in a process %{when}"
+      workflow_transition: "acted upon topic in a process %{when}"
     topics:
       bottom:
         processes: Currently, there are no more viewable process topics.
@@ -43,7 +44,8 @@ en:
           one: "In this step for %{count} day"
           other: "In this step for %{count} days"
         actions_intro: "Actions:"
-        transition_target: "-> %{target_step_name}"
+        transition_target: "Target step: %{target_step_name}"
+        transition_confirmation_target: "%{confirmation} and move it to %{target_step_name}?"
         blocked_reason_create_permission: "You can reply in this step, but only users with topic creation permission in this category can transition it."
         visualisation_button: "Visualise"
         visualisation_title: "Process: %{process_name}"
@@ -77,49 +79,49 @@ en:
       options:
         submit:
           button_label: "Submit"
-          confirmation: "Are you sure you want to submit this topic?"
+          confirmation: "Are you sure you want to submit this item?"
         start:
           button_label: "Start"
-          confirmation: "Are you sure you want to start this process?"
+          confirmation: "Are you sure you want to start this item?"
         accept:
           button_label: "Accept"
-          confirmation: "Are you sure you want to accept this topic?"
+          confirmation: "Are you sure you want to accept this item?"
         reject:
           button_label: "Reject"
-          confirmation: "Are you sure you want to reject this topic?"
+          confirmation: "Are you sure you want to reject this item?"
         great:
           button_label: "Great"
-          confirmation: "Are you sure you want to mark this topic as great?"
+          confirmation: "Are you sure you want to mark this item as great?"
         good:
           button_label: "Good"
-          confirmation: "Are you sure you want to mark this topic as good?"
+          confirmation: "Are you sure you want to mark this item as good?"
         average:
           button_label: "Average"
-          confirmation: "Are you sure you want to mark this topic as average?"
+          confirmation: "Are you sure you want to mark this item as average?"
         bad:
           button_label: "Bad"
-          confirmation: "Are you sure you want to mark this topic as bad?"
+          confirmation: "Are you sure you want to mark this item as bad?"
         terrible:
           button_label: "Terrible"
-          confirmation: "Are you sure you want to mark this topic as terrible?"
+          confirmation: "Are you sure you want to mark this item as terrible?"
         done:
           button_label: "Done"
-          confirmation: "Are you sure you want to mark this topic as done?"
+          confirmation: "Are you sure you want to mark this item as done?"
         next:
           button_label: "Next"
-          confirmation: "Are you sure you want to move this Topic to the next step?"
+          confirmation: "Are you sure you want to move this item to the next step?"
         back:
           button_label: "Back"
-          confirmation: "Are you sure you want to move this Topic back to the previous step?"
+          confirmation: "Are you sure you want to move this item back to the previous step?"
         finish:
           button_label: "Finish"
-          confirmation: "Are you sure you want to finish this process?"
+          confirmation: "Are you sure you want to finish this item?"
         close:
           button_label: "Close"
-          confirmation: "Are you sure you want to close this process?"
+          confirmation: "Are you sure you want to close this item?"
         reopen:
           button_label: "Reopen"
-          confirmation: "Are you sure you want to reopen this process?"
+          confirmation: "Are you sure you want to reopen this item?"
   admin_js:
     admin:
       site_settings:

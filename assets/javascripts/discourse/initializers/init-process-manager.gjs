@@ -198,6 +198,8 @@ export default {
       );
 
       api.addPostSmallActionIcon("process_transition", "right-left");
+      // TODO(11-2026): Remove this legacy action code after Workflow-era posts have aged out.
+      api.addPostSmallActionIcon("workflow_transition", "right-left");
     });
   },
 };

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-process-manager
 # about: A process management plugin for Discourse
-# version: 0.6.0
+# version: 0.6.1
 # authors: Robert Barrow
 # contact_emails: robert@pavilion.tech
 # url: https://github.com/merefield/discourse-process-manager
