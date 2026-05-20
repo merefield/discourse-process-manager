@@ -356,7 +356,7 @@ export default class ProcessQuickFiltersConnector extends Component {
           (topic) =>
             Number(
               get(topic, "process_step_position") ||
-                get(topic, "workflowStepPosition")
+                get(topic, "processStepPosition")
             ) === position
         )
         .map((topic) => ({
@@ -364,7 +364,7 @@ export default class ProcessQuickFiltersConnector extends Component {
           title: get(topic, "title"),
           process_step_position: Number(
             get(topic, "process_step_position") ||
-              get(topic, "workflowStepPosition")
+              get(topic, "processStepPosition")
           ),
           process_overdue: !!get(topic, "process_overdue"),
           process_can_act: !!get(topic, "process_can_act"),
@@ -728,7 +728,7 @@ export default class ProcessQuickFiltersConnector extends Component {
       }
 
       set(topic, "process_step_position", targetPosition);
-      set(topic, "workflowStepPosition", targetPosition);
+      set(topic, "processStepPosition", targetPosition);
       set(topic, "process_step_position", targetPosition);
       set(topic, "process_step_name", this.kanbanStepNames[targetPosition]);
       set(topic, "process_overdue", false);

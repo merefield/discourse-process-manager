@@ -24,7 +24,7 @@ export default class ProcessVisualisationComponent extends Component {
     await this.ensureD3();
     const result = await this.fetchData(this.args.model.topic_id);
 
-    const workflowData = {
+    const processData = {
       lanes: result.lanes,
       nodes: result.nodes,
       links: result.links,
@@ -33,8 +33,8 @@ export default class ProcessVisualisationComponent extends Component {
     // Set up the SVG canvas dimensions
     const width = 950;
     const height = 700;
-    const laneHeight = height / workflowData.lanes.length;
-    const nodeSpacing = width / (workflowData.nodes.length + 1);
+    const laneHeight = height / processData.lanes.length;
+    const nodeSpacing = width / (processData.nodes.length + 1);
     const nodeWidth = nodeSpacing / 2;
     const nodeHeight = laneHeight / 3;
 
@@ -47,7 +47,7 @@ export default class ProcessVisualisationComponent extends Component {
     // Draw swim lanes
     const lanes = svg
       .selectAll(".lane")
-      .data(workflowData.lanes)
+      .data(processData.lanes)
       .enter()
       .append("g");
 
@@ -92,7 +92,7 @@ export default class ProcessVisualisationComponent extends Component {
       .append("g")
       .attr("class", "links")
       .selectAll("path")
-      .data(workflowData.links)
+      .data(processData.links)
       .enter()
       .append("path")
       .style("stroke-width", width / 400)
@@ -104,7 +104,7 @@ export default class ProcessVisualisationComponent extends Component {
       .append("g")
       .attr("class", "link-labels")
       .selectAll("text")
-      .data(workflowData.links)
+      .data(processData.links)
       .enter()
       .append("text")
       .attr("class", "link-label")
@@ -117,7 +117,7 @@ export default class ProcessVisualisationComponent extends Component {
       .append("g")
       .attr("class", "nodes")
       .selectAll("rect")
-      .data(workflowData.nodes)
+      .data(processData.nodes)
       .enter()
       .append("rect")
       .attr("class", (d) => (d.active ? "node active" : "node"))
@@ -135,7 +135,7 @@ export default class ProcessVisualisationComponent extends Component {
       .append("g")
       .attr("class", "labels")
       .selectAll("text")
-      .data(workflowData.nodes)
+      .data(processData.nodes)
       .enter()
       .append("text")
       .attr("text-anchor", "middle")
@@ -146,24 +146,24 @@ export default class ProcessVisualisationComponent extends Component {
 
     // Update links layout
     link.attr("d", (d) => {
-      const sourceIndex = workflowData.nodes.findIndex(
+      const sourceIndex = processData.nodes.findIndex(
         (node) => node.id === d.source
       );
-      const targetIndex = workflowData.nodes.findIndex(
+      const targetIndex = processData.nodes.findIndex(
         (node) => node.id === d.target
       );
       const sourceX = nodeSpacing * (sourceIndex + 1) + nodeWidth;
       const sourceTopY =
-        workflowData.nodes[sourceIndex].lane * laneHeight +
+        processData.nodes[sourceIndex].lane * laneHeight +
         laneHeight / 2 -
         nodeHeight / 2;
       const sourceY =
-        workflowData.nodes[sourceIndex].lane * laneHeight + laneHeight / 2;
+        processData.nodes[sourceIndex].lane * laneHeight + laneHeight / 2;
       const targetX = nodeSpacing * (targetIndex + 1);
       const targetY =
-        workflowData.nodes[targetIndex].lane * laneHeight + laneHeight / 2;
+        processData.nodes[targetIndex].lane * laneHeight + laneHeight / 2;
       const targetBottomY =
-        workflowData.nodes[targetIndex].lane * laneHeight +
+        processData.nodes[targetIndex].lane * laneHeight +
         laneHeight / 2 +
         nodeHeight / 2;
 
@@ -186,10 +186,10 @@ export default class ProcessVisualisationComponent extends Component {
 
     linkLabels
       .attr("x", (d) => {
-        const sourceIndex = workflowData.nodes.findIndex(
+        const sourceIndex = processData.nodes.findIndex(
           (node) => node.id === d.source
         );
-        const targetIndex = workflowData.nodes.findIndex(
+        const targetIndex = processData.nodes.findIndex(
           (node) => node.id === d.target
         );
         const sourceX = nodeSpacing * (sourceIndex + 1) + nodeWidth / 2;
@@ -201,14 +201,14 @@ export default class ProcessVisualisationComponent extends Component {
         return (sourceX + targetX) / 2;
       })
       .attr("y", (d) => {
-        const sourceIndex = workflowData.nodes.findIndex(
+        const sourceIndex = processData.nodes.findIndex(
           (node) => node.id === d.source
         );
-        const targetIndex = workflowData.nodes.findIndex(
+        const targetIndex = processData.nodes.findIndex(
           (node) => node.id === d.target
         );
         const sourceY =
-          workflowData.nodes[sourceIndex].lane * laneHeight + laneHeight / 2;
+          processData.nodes[sourceIndex].lane * laneHeight + laneHeight / 2;
 
         if (sourceIndex > targetIndex) {
           return sourceY - laneHeight / 3.333;

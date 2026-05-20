@@ -21,7 +21,7 @@ export default class ProcessVisualEditor extends Component {
 
   @tracked processSteps = [];
   @tracked processOptions = [];
-  @tracked workflowCategories = [];
+  @tracked processCategories = [];
   @tracked edgeLayouts = [];
   @tracked previewPath = null;
   @tracked draggedStepId = null;
@@ -45,7 +45,7 @@ export default class ProcessVisualEditor extends Component {
 
   get lanes() {
     const lanesById = new Map(
-      this.workflowCategories.map((category) => [
+      this.processCategories.map((category) => [
         category.id,
         {
           ...category,
@@ -281,7 +281,7 @@ export default class ProcessVisualEditor extends Component {
       }
     }
 
-    this.workflowCategories = [...categoriesById.values()];
+    this.processCategories = [...categoriesById.values()];
   }
 
   updateStep(step, attributes) {
@@ -2356,7 +2356,7 @@ export default class ProcessVisualEditor extends Component {
           {{didUpdate
             this.scheduleEdgeLayout
             this.processSteps
-            this.workflowCategories
+            this.processCategories
           }}
           {{on "dragover" this.dragConnectorOverBoard}}
         >
