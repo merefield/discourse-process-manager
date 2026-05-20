@@ -32,8 +32,8 @@ RSpec.describe Jobs::ProcessManager::DataExplorerQueriesCompleteness do
 
   it "inserts both default queries when neither query exists" do
     allow(connection).to receive(:table_exists?).with(:data_explorer_queries).and_return(true)
-    allow(query_class).to receive(:exists?).with(name: "Workflow Stats (default)").and_return(false)
-    allow(query_class).to receive(:exists?).with(name: "Workflow Audit Log (default)").and_return(
+    allow(query_class).to receive(:exists?).with(name: "Process Stats (default)").and_return(false)
+    allow(query_class).to receive(:exists?).with(name: "Process Audit Log (default)").and_return(
       false,
     )
     allow(DB).to receive(:exec)
@@ -45,8 +45,8 @@ RSpec.describe Jobs::ProcessManager::DataExplorerQueriesCompleteness do
 
   it "inserts only missing default queries when one query is already present" do
     allow(connection).to receive(:table_exists?).with(:data_explorer_queries).and_return(true)
-    allow(query_class).to receive(:exists?).with(name: "Workflow Stats (default)").and_return(true)
-    allow(query_class).to receive(:exists?).with(name: "Workflow Audit Log (default)").and_return(
+    allow(query_class).to receive(:exists?).with(name: "Process Stats (default)").and_return(true)
+    allow(query_class).to receive(:exists?).with(name: "Process Audit Log (default)").and_return(
       false,
     )
     allow(DB).to receive(:exec)
