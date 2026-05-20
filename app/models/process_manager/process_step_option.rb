@@ -12,18 +12,18 @@ end
 #
 # Table name: process_manager_process_step_options
 #
-#  id                 :bigint           not null, primary key
-#  position           :integer
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  target_process_step_id :bigint
+#  id                     :bigint           not null, primary key
+#  position               :integer
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #  process_option_id      :bigint
 #  process_step_id        :bigint
+#  target_process_step_id :bigint
 #
 # Indexes
 #
-#  index_process_step_options_on_process_option_id  (process_option_id)
-#  index_process_step_options_on_process_step_id    (process_step_id)
+#  idx_on_process_option_id_01b63efea1                            (process_option_id)
+#  index_process_manager_process_step_options_on_process_step_id  (process_step_id)
 #
 # Foreign Keys
 #

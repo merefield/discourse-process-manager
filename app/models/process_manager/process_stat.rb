@@ -21,19 +21,19 @@ end
 #
 # Table name: process_manager_process_stats
 #
-#  id               :bigint           not null, primary key
-#  cob_date         :datetime
-#  count            :integer
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
+#  id              :bigint           not null, primary key
+#  cob_date        :datetime
+#  count           :integer
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
 #  process_id      :bigint
 #  process_step_id :bigint
 #
 # Indexes
 #
-#  idx_pm_stats_daily_process_step_unique  (cob_date,process_id,process_step_id) UNIQUE
-#  index_process_stats_on_process_id       (process_id)
-#  index_process_stats_on_process_step_id  (process_step_id)
+#  idx_pm_process_stats_daily_process_step_unique          (cob_date,process_id,process_step_id) UNIQUE
+#  index_process_manager_process_stats_on_process_id       (process_id)
+#  index_process_manager_process_stats_on_process_step_id  (process_step_id)
 #
 # Foreign Keys
 #

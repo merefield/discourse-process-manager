@@ -42,8 +42,8 @@ end
 #
 # Indexes
 #
-#  index_process_steps_on_category_id  (category_id)
-#  index_process_steps_on_process_id   (process_id)
+#  index_process_manager_process_steps_on_category_id  (category_id)
+#  index_process_manager_process_steps_on_process_id   (process_id)
 #
 # Foreign Keys
 #
